@@ -140,10 +140,10 @@ bool Window::test_run()
     }
 
 
-    SDL_Event test_event;
-    while (!isquit) 
+    SDL_Event test_event; // creates an event QUEUE
+    while (!isquit) // quit trigger is not activated
     {
-        if (SDL_PollEvent( & test_event)) 
+        if (SDL_PollEvent( & test_event)) // if there is an event in the event QUEUE, process
         {
             if (test_event.type == SDL_QUIT)
              {
