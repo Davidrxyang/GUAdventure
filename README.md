@@ -7,6 +7,6 @@ This is a 2D flat-plane exploration game. Explore Georgetown University playing 
 
 ### Back-End Information
 
-This game is created with C++ utilizing the SDL2 library.
+This game was created with C++ utilizing the SDL2 library.
 
 Copyright 2023 Ruoxing (David) Yang.
