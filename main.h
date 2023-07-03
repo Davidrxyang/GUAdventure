@@ -12,7 +12,7 @@
 #include "window.h"
 #include "entity.h"
 #include "dog.h"
-#include "platform.h"
+#include "level.h"
 
 using namespace std;
 
