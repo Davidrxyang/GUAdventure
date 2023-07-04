@@ -32,6 +32,7 @@ class Game
         Game(string player_name); // explicit constructor
         void start_game(); // start a new game
 
+
     private:
         Player player;
         Window game_window;

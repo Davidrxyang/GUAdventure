@@ -147,27 +147,14 @@ bool Window::test_run()
     {
         cout << "Failed to load background: " << SDL_GetError() << endl;
         success = false;
-    }
+    } // if
     else // apply background
     {
         background = temp_image; // set the background
         SDL_BlitSurface(background, nullptr, window_surface, nullptr);
         SDL_UpdateWindowSurface(window);
-    }
+    } // else
 
-    bool media = load_media("media/jack.bmp");
-
-    // load the test image, jack the bulldog
-    if(!media)
-    {
-        cout << "Failed to load media: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-    else // apply the image
-    {
-        //SDL_BlitSurface(temp_image, nullptr, window_surface, nullptr);
-        //SDL_UpdateWindowSurface(window);
-    }
 
     SDL_Event test_event; // creates an event QUEUE
     while (!isquit) // quit trigger is not activated
@@ -175,11 +162,45 @@ bool Window::test_run()
         if (SDL_PollEvent( & test_event)) // if there is an event in the event QUEUE, process
         {
             if (test_event.type == SDL_QUIT)
-             {
+            {
                 isquit = true;
             } // if
+            else if (test_event.type == SDL_KEYDOWN)
+            {
+                // a key has been pressed
+                switch(test_event.key.keysym.sym)
+                {
+                    case SDLK_UP:
+                    load_media("media/jack.bmp");
+                    break;
+
+                    case SDLK_DOWN:
+                    load_media("media/fish.bmp");
+                    break;
+
+                    case SDLK_LEFT:
+                    load_media("media/hotdog.bmp");
+                    break;
+
+                    case SDLK_RIGHT:
+                    load_media("media/potato.bmp");
+                    break;
+
+                    case SDLK_q:
+                    isquit = true;
+                    break;
+                }                
+
+                SDL_BlitSurface(temp_image, nullptr, window_surface, nullptr);
+                SDL_UpdateWindowSurface(window);
+            }
+
+            // updates the surface
+            
         } // if
     } // while
+
+    close_window(); // deallocate surfaces, in case of C undefined behavior
 
     return success;
 } // Window::test_run - runs a test event

@@ -4,7 +4,19 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
+//#include "game.h"
+
 using namespace std;
+
+enum KeyPress
+{
+    key_default,
+    key_up,
+    key_down,
+    key_left,
+    key_right,
+    key_total,
+};
 
 class Window
 {
@@ -19,6 +31,7 @@ class Window
         void set_name(string name);
 
         bool load_media(string media_path); // load a media file
+        
         SDL_Surface* load_surface(string media_path);
         void close_window(); // close the window
         
