@@ -2,7 +2,7 @@
 #this Makefile was created by user "bjj" on GitHub
 
 
-program_NAME := PG
+program_NAME := GU
 program_CXX_SRCS := $(wildcard *.cpp)
 program_CXX_OBJS := ${program_CXX_SRCS:.cpp=.o}
 progaram_CXX_INCLS := ${wildcard *.h}
