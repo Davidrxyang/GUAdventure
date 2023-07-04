@@ -2,13 +2,13 @@
 
 Window::Window()
 {
-    string window_name = "default window";
+    set_name("default name");
     center_x = SDL_WINDOWPOS_CENTERED;
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
 
-    window = build_window(window_name, center_x, center_y, width, height);   
+    window = build_window(center_x, center_y, width, height);   
 
     if(!window)
     {
@@ -29,12 +29,13 @@ Window::Window(string name)
 {
     initialize();
     
+    set_name(name);
     center_x = SDL_WINDOWPOS_CENTERED;
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
 
-    window = build_window(name, center_x, center_y, width, height);
+    window = build_window(center_x, center_y, width, height);
     if(!window)
     {
         cout << "Failed to create window: " << SDL_GetError();
@@ -51,7 +52,8 @@ Window::Window(string name)
 Window::Window(string name, int x, int y, int w, int h)
 {
     initialize();
-    window = build_window(name, x, y, w, h);
+    set_name(name);
+    window = build_window(x, y, w, h);
     if(!window)
     {
         cout << "Failed to create window: " << SDL_GetError();
@@ -65,7 +67,12 @@ Window::Window(string name, int x, int y, int w, int h)
     } // if
 } // Window::Window - explicit constructor with dimensions
 
-SDL_Window* Window::build_window(string window_name, int center_x, int center_y, int width, int height)
+void Window::set_name(string name)
+{
+    this -> window_name = name;
+} // Window::set_name
+
+SDL_Window* Window::build_window(int center_x, int center_y, int width, int height)
 {
     const char* title = window_name.c_str();
     return SDL_CreateWindow(title, center_x, center_y, width, height, 0);
@@ -87,19 +94,25 @@ bool Window::initialize() const // private member function
 bool Window::load_media(string media_path)
 {
     bool success = true;
-    image = nullptr;
 
-    image = SDL_LoadBMP(media_path.c_str());
-
-    if (image == nullptr)
-    {
-        cout << "Failed to load image: " << SDL_GetError() << endl;
-        cout << "Image path: " << media_path << endl;
-        success = false;
-    }
+    load_surface(media_path);
+    
 
     return success;
 } // Window::load_media
+
+SDL_Surface* Window::load_surface(string media_path)
+{
+    SDL_Surface* loaded_surface = SDL_LoadBMP(media_path.c_str());
+    
+    if (loaded_surface == nullptr)
+    {
+        cout << "Failed to load image: " << SDL_GetError() << endl;
+        cout << "Image path: " << media_path << endl;
+    }
+
+    return loaded_surface;
+}
 
 void Window::close_window()
 {
@@ -138,7 +151,6 @@ bool Window::test_run()
         SDL_BlitSurface(image, nullptr, window_surface, nullptr);
         SDL_UpdateWindowSurface(window);
     }
-
 
     SDL_Event test_event; // creates an event QUEUE
     while (!isquit) // quit trigger is not activated

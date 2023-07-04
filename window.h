@@ -16,7 +16,10 @@ class Window
         Window(string name); // create a default window
         Window(string name, int x, int y, int w, int h); // window with specified dimensions
         
+        void set_name(string name);
+
         bool load_media(string media_path); // load a media file
+        SDL_Surface* load_surface(string media_path);
         void close_window(); // close the window
         
         
@@ -26,7 +29,7 @@ class Window
         
         // private functions
 
-        SDL_Window* build_window(string, int, int, int, int);
+        SDL_Window* build_window(int, int, int, int);
         bool initialize() const;
 
         // window data dimensions

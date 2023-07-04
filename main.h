@@ -9,10 +9,7 @@
 #include <SDL2/SDL.h>
 
 //original files
-#include "window.h"
-#include "entity.h"
-#include "dog.h"
-#include "level.h"
+#include "game.h"
 
 using namespace std;
 
