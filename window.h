@@ -41,7 +41,9 @@ class Window
         string window_name;
         SDL_Window* window;
 
-        SDL_Surface* image;
+        SDL_Surface* background;
+
+        SDL_Surface* temp_image;
 
         SDL_Surface* window_surface;
 };

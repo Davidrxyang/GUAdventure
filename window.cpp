@@ -95,9 +95,8 @@ bool Window::load_media(string media_path)
 {
     bool success = true;
 
-    load_surface(media_path);
+    temp_image = load_surface(media_path);
     
-
     return success;
 } // Window::load_media
 
@@ -118,9 +117,11 @@ void Window::close_window()
 {
 
     // frees allocated image surface
-    SDL_FreeSurface(image);
-    image = nullptr;
+    SDL_FreeSurface(temp_image);
+    temp_image = nullptr;
 
+    SDL_FreeSurface(background);
+    background = nullptr;
     // this frees window and the window surface
     SDL_DestroyWindow(window);
     window = nullptr;
@@ -138,9 +139,25 @@ bool Window::test_run()
 {
     bool success = true;
     bool isquit = false;
-    bool media = load_media("media/red_brick.bmp");
 
-    // load the test image background
+    bool load_background = load_media("media/red_brick.bmp");
+
+    // load the background
+    if (!load_background)
+    {
+        cout << "Failed to load background: " << SDL_GetError() << endl;
+        success = false;
+    }
+    else // apply background
+    {
+        background = temp_image; // set the background
+        SDL_BlitSurface(background, nullptr, window_surface, nullptr);
+        SDL_UpdateWindowSurface(window);
+    }
+
+    bool media = load_media("media/jack.bmp");
+
+    // load the test image, jack the bulldog
     if(!media)
     {
         cout << "Failed to load media: " << SDL_GetError() << endl;
@@ -148,8 +165,8 @@ bool Window::test_run()
     } // if
     else // apply the image
     {
-        SDL_BlitSurface(image, nullptr, window_surface, nullptr);
-        SDL_UpdateWindowSurface(window);
+        //SDL_BlitSurface(temp_image, nullptr, window_surface, nullptr);
+        //SDL_UpdateWindowSurface(window);
     }
 
     SDL_Event test_event; // creates an event QUEUE
