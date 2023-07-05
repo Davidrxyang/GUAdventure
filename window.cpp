@@ -131,7 +131,7 @@ bool Window::load_media()
     } // if
 
     return success;
-}
+} // Window::load_media
 
 bool Window::load_media(string media_path)
 {
@@ -144,16 +144,37 @@ bool Window::load_media(string media_path)
 
 SDL_Surface* Window::load_surface(string media_path)
 {
+    return load_surface(media_path, true);
+} // Window::load_surface
+
+SDL_Surface* Window::load_surface(string media_path, bool optimized)
+{
+    SDL_Surface* optimized_surface = nullptr;
     SDL_Surface* loaded_surface = SDL_LoadBMP(media_path.c_str());
-    
     if (loaded_surface == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         cout << "Image path: " << media_path << endl;
-    }
+    } // if
+    else if (optimized)
+    {
+        //converting format
+        optimized_surface = SDL_ConvertSurface(loaded_surface, window_surface -> format, 0);
 
+        if (optimized_surface == nullptr)
+        {
+            cout << "Unable to optimize surface: " << SDL_GetError() << endl;
+            cout << "Image path: " << media_path << endl;
+        } // if
+        SDL_FreeSurface(loaded_surface); // destroy unused surface
+        return optimized_surface;
+    } // else if
+    else
+    {
+        return loaded_surface;
+    } // else
     return loaded_surface;
-}
+} // Window::load_surface
 
 void Window::close_window()
 {
@@ -261,7 +282,7 @@ bool Window::test_run()
         } // while CLOSES MAIN LOOP
     } // else
 
-    close_window(); // deallocate surfaces, in case of C undefined behavior
+    // close_window(); // deallocate surfaces, in case of C undefined behavior
 
     return success;
 } // Window::test_run - runs a test event

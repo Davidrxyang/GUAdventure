@@ -2,6 +2,9 @@
 #define WINDOW_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <iostream>
 
 //#include "game.h"
@@ -33,7 +36,8 @@ class Window
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
         
-        SDL_Surface* load_surface(string media_path);
+        SDL_Surface* load_surface(string media_path); // optimized to screen format by default
+        SDL_Surface* load_surface(string media_path, bool optimized); // choose to non-optimize
         void close_window(); // close the window
         
         
@@ -56,11 +60,8 @@ class Window
         SDL_Window* window;
 
         SDL_Surface* background;
-
         SDL_Surface* temp_image;
-
         SDL_Surface* window_surface;
-
         SDL_Surface* KeyPress[key_total]; // array for corresponding keypress surfaces, testing
 };
 
