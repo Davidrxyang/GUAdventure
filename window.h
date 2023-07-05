@@ -30,7 +30,8 @@ class Window
         
         void set_name(string name);
 
-        bool load_media(string media_path); // load a media file
+        bool load_media(); // load preset media files
+        bool load_media(string media_path); // load a specfic media file
         
         SDL_Surface* load_surface(string media_path);
         void close_window(); // close the window
@@ -59,6 +60,8 @@ class Window
         SDL_Surface* temp_image;
 
         SDL_Surface* window_surface;
+
+        SDL_Surface* KeyPress[key_total]; // array for corresponding keypress surfaces, testing
 };
 
 #endif

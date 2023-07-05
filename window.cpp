@@ -91,6 +91,48 @@ bool Window::initialize() const // private member function
     return success;
 } // Window::initialize - initializes the SDL2 library
 
+bool Window::load_media()
+{
+    bool success = true;
+
+    KeyPress[key_default] = load_surface("media/coke.bmp");
+    if (KeyPress[key_default] == nullptr)
+    {
+        cout << "Failed to load image: " << SDL_GetError() << endl;
+        success = false;
+    } // if
+
+    KeyPress[key_up] = load_surface("media/jack.bmp");
+    if (KeyPress[key_up] == nullptr)
+    {
+        cout << "Failed to load image: " << SDL_GetError() << endl;
+        success = false;
+    } // if
+
+    KeyPress[key_down] = load_surface("media/fish.bmp");
+    if (KeyPress[key_down] == nullptr)
+    {
+        cout << "Failed to load image: " << SDL_GetError() << endl;
+        success = false;
+    } // if
+
+    KeyPress[key_left] = load_surface("media/hotdog.bmp");
+    if (KeyPress[key_left] == nullptr)
+    {
+        cout << "Failed to load image: " << SDL_GetError() << endl;
+        success = false;
+    } // if
+
+    KeyPress[key_right] = load_surface("media/potato.bmp");
+    if (KeyPress[key_right] == nullptr)
+    {
+        cout << "Failed to load image: " << SDL_GetError() << endl;
+        success = false;
+    } // if
+
+    return success;
+}
+
 bool Window::load_media(string media_path)
 {
     bool success = true;
@@ -116,6 +158,11 @@ SDL_Surface* Window::load_surface(string media_path)
 void Window::close_window()
 {
 
+	for (size_t i = 0; i < key_total; ++i)
+	{
+		SDL_FreeSurface( KeyPress[i] );
+		KeyPress[i] = nullptr;
+	}
     // frees allocated image surface
     SDL_FreeSurface(temp_image);
     temp_image = nullptr;
@@ -155,50 +202,64 @@ bool Window::test_run()
         SDL_UpdateWindowSurface(window);
     } // else
 
+    // loading default media
 
-    SDL_Event test_event; // creates an event QUEUE
-    while (!isquit) // quit trigger is not activated
+    if (!load_media())
     {
-        if (SDL_PollEvent( & test_event)) // if there is an event in the event QUEUE, process
+        cout << "Failed to load default media: " << SDL_GetError() << endl;
+        success = false;
+    }
+
+    else
+    {
+
+        // THIS IS THE MAIN LOOP 
+
+        SDL_Event test_event; // creates an event QUEUE
+        while (!isquit) // quit trigger is not activated
         {
-            if (test_event.type == SDL_QUIT)
+            if (SDL_PollEvent( & test_event)) // if there is an event in the event QUEUE, process
             {
-                isquit = true;
-            } // if
-            else if (test_event.type == SDL_KEYDOWN)
-            {
-                // a key has been pressed
-                switch(test_event.key.keysym.sym)
+                if (test_event.type == SDL_QUIT)
                 {
-                    case SDLK_UP:
-                    load_media("media/jack.bmp");
-                    break;
-
-                    case SDLK_DOWN:
-                    load_media("media/fish.bmp");
-                    break;
-
-                    case SDLK_LEFT:
-                    load_media("media/hotdog.bmp");
-                    break;
-
-                    case SDLK_RIGHT:
-                    load_media("media/potato.bmp");
-                    break;
-
-                    case SDLK_q:
                     isquit = true;
-                    break;
-                }                
+                } // if
+                else if (test_event.type == SDL_KEYDOWN)
+                {
+                    // a key has been pressed
+                    switch(test_event.key.keysym.sym)
+                    {
+                        case SDLK_UP:
+                        temp_image = KeyPress[key_up];
+                        break;
 
+                        case SDLK_DOWN:
+                        temp_image = KeyPress[key_down];
+                        break;
+
+                        case SDLK_LEFT:
+                        temp_image = KeyPress[key_left];
+                        break;
+
+                        case SDLK_RIGHT:
+                        temp_image = KeyPress[key_right];
+                        break;
+
+                        case SDLK_q: // quits the loop 
+                        isquit = true;
+                        break;
+
+                        default:
+                        temp_image = KeyPress[key_default];
+                        break;
+                    }                
+                }
                 SDL_BlitSurface(temp_image, nullptr, window_surface, nullptr);
                 SDL_UpdateWindowSurface(window);
-            }
-
-            // updates the surface
-            
-        } // if
-    } // while
+                // updates the surface
+            } // if
+        } // while CLOSES MAIN LOOP
+    } // else
 
     close_window(); // deallocate surfaces, in case of C undefined behavior
 
