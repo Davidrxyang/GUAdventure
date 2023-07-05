@@ -82,9 +82,18 @@ bool Window::initialize() const // private member function
 {
     bool success = true;
 
+    // initialize SDL video
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         cout << "Failed to initialize SDL2 library: " << SDL_GetError() << endl;
+        success = false;
+    } // if
+
+    // initialize SDL image
+    int IMG_flag = IMG_INIT_PNG;
+    if (!(IMG_Init(IMG_flag) & IMG_flag))
+    {
+        cout << "Failed to initialize SDL_image library: " << IMG_GetError() << endl;
         success = false;
     } // if
 
@@ -95,35 +104,35 @@ bool Window::load_media()
 {
     bool success = true;
 
-    KeyPress[key_default] = load_surface("media/coke.bmp");
+    KeyPress[key_default] = load_surface("media/coke.png");
     if (KeyPress[key_default] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_up] = load_surface("media/jack.bmp");
+    KeyPress[key_up] = load_surface("media/jack.png");
     if (KeyPress[key_up] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_down] = load_surface("media/fish.bmp");
+    KeyPress[key_down] = load_surface("media/fish.png");
     if (KeyPress[key_down] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_left] = load_surface("media/hotdog.bmp");
+    KeyPress[key_left] = load_surface("media/hotdog.png");
     if (KeyPress[key_left] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_right] = load_surface("media/potato.bmp");
+    KeyPress[key_right] = load_surface("media/potato.png");
     if (KeyPress[key_right] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
@@ -150,10 +159,14 @@ SDL_Surface* Window::load_surface(string media_path)
 SDL_Surface* Window::load_surface(string media_path, bool optimized)
 {
     SDL_Surface* optimized_surface = nullptr;
-    SDL_Surface* loaded_surface = SDL_LoadBMP(media_path.c_str());
+    SDL_Surface* loaded_surface = IMG_Load(media_path.c_str());
+    // old BMP implementation
+    // SDL_Surface* loaded_surface = SDL_LoadBMP(media_path.c_str());
+
     if (loaded_surface == nullptr)
     {
-        cout << "Failed to load image: " << SDL_GetError() << endl;
+        cout << "Failed to load image: " << IMG_GetError() << endl; 
+        // change IMG to SDL to use default BMP load error throw
         cout << "Image path: " << media_path << endl;
     } // if
     else if (optimized)
