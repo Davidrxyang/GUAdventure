@@ -2,6 +2,12 @@
 
 Window::Window()
 {
+    // initialize all pointers to nullptr
+    renderer = nullptr;
+    background = nullptr;
+    temp_image = nullptr;
+    window_surface = nullptr;
+
     set_name("default name");
     center_x = SDL_WINDOWPOS_CENTERED;
     center_y = SDL_WINDOWPOS_CENTERED;
@@ -9,6 +15,7 @@ Window::Window()
     height = 480;
 
     window = build_window(center_x, center_y, width, height);   
+    //renderer = build_renderer(window);
 
     if(!window)
     {
@@ -23,11 +30,19 @@ Window::Window()
     } // if
 
     SDL_UpdateWindowSurface(window);
+
+
 } // Window::Window default constructor             
 
 Window::Window(string name)
 {
     initialize();
+    
+    // initialize all pointers to nullptr
+    renderer = nullptr;
+    background = nullptr;
+    temp_image = nullptr;
+    window_surface = nullptr;
     
     set_name(name);
     center_x = SDL_WINDOWPOS_CENTERED;
@@ -36,6 +51,9 @@ Window::Window(string name)
     height = 480;
 
     window = build_window(center_x, center_y, width, height);
+    SDL_Window* t_window = build_window(center_x, center_y, width, height);
+    renderer = build_renderer(t_window);
+
     if(!window)
     {
         cout << "Failed to create window: " << SDL_GetError();
@@ -52,8 +70,17 @@ Window::Window(string name)
 Window::Window(string name, int x, int y, int w, int h)
 {
     initialize();
+
+    // initialize all pointers to nullptr
+    renderer = nullptr;
+    background = nullptr;
+    temp_image = nullptr;
+    window_surface = nullptr;
+    
     set_name(name);
     window = build_window(x, y, w, h);
+    //renderer = build_renderer(window);
+
     if(!window)
     {
         cout << "Failed to create window: " << SDL_GetError();
@@ -75,8 +102,31 @@ void Window::set_name(string name)
 SDL_Window* Window::build_window(int center_x, int center_y, int width, int height)
 {
     const char* title = window_name.c_str();
-    return SDL_CreateWindow(title, center_x, center_y, width, height, 0);
-} // Window::build_window - private build window member function, builds SDL window with specified dimensions
+    SDL_Window* new_window = SDL_CreateWindow(title, center_x, center_y, width, height, 0);
+    
+    if (new_window == nullptr)
+    {
+        cout << "Failed to build window: " << SDL_GetError() << endl;
+        return nullptr;
+    } // if
+    
+    return new_window;
+} // Window::build_window - private function, builds window and corresponding renderer
+
+SDL_Renderer* Window::build_renderer(SDL_Window* temp_window)
+{ 
+    SDL_Renderer* new_renderer = SDL_CreateRenderer(temp_window, -1, SDL_RENDERER_ACCELERATED);
+
+    if (new_renderer == nullptr)
+    {
+        cout << "Failed to create renderer: " << SDL_GetError() << endl;
+    } // if
+
+    // initialize renderer color
+    SDL_SetRenderDrawColor(new_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    
+    return new_renderer;
+} // Window::build_renderer
 
 bool Window::initialize() const // private member function
 {
@@ -100,10 +150,24 @@ bool Window::initialize() const // private member function
     return success;
 } // Window::initialize - initializes the SDL2 library
 
+bool Window::set_background(string media_path)
+{
+    bool success = true;
+    background = load_texture(media_path);
+    if (background == nullptr)
+    {
+        cout << "Failed to load background: " << SDL_GetError() << endl;
+        cout << "background image path: " << media_path << endl;
+        success = false;
+    } // if
+
+    return success;
+} // Window::set_background
+
 bool Window::load_media()
 {
     bool success = true;
-
+    
     KeyPress[key_default] = load_surface("media/coke.png");
     if (KeyPress[key_default] == nullptr)
     {
@@ -189,6 +253,31 @@ SDL_Surface* Window::load_surface(string media_path, bool optimized)
     return loaded_surface;
 } // Window::load_surface
 
+SDL_Texture* Window::load_texture(string media_path)
+{
+    SDL_Texture* loaded_texture = nullptr;
+    SDL_Surface* loaded_surface = IMG_Load(media_path.c_str());
+
+    if (loaded_surface == nullptr)
+    {
+        cout << "Failed to load image: " << IMG_GetError() << endl;
+        cout << "Image path: " << media_path << endl;
+    } // if
+    else
+    {
+        // make a texture from the loaded surface
+        loaded_texture = SDL_CreateTextureFromSurface(renderer, loaded_surface);
+        if (loaded_texture == nullptr)
+        {
+            cout << "Failed to create texture from surface: " << SDL_GetError() << endl;
+        } // if
+
+        // deallocate temporary loaded surface
+        SDL_FreeSurface(loaded_surface);
+    }
+    return loaded_texture; // if failed returns nullptr
+} // Window::load_texture
+
 void Window::close_window()
 {
 
@@ -197,12 +286,14 @@ void Window::close_window()
 		SDL_FreeSurface( KeyPress[i] );
 		KeyPress[i] = nullptr;
 	}
+
+    SDL_DestroyTexture(background);
+    background = nullptr;
+
     // frees allocated image surface
     SDL_FreeSurface(temp_image);
     temp_image = nullptr;
 
-    SDL_FreeSurface(background);
-    background = nullptr;
     // this frees window and the window surface
     SDL_DestroyWindow(window);
     window = nullptr;
@@ -221,6 +312,22 @@ bool Window::test_run()
     bool success = true;
     bool isquit = false;
 
+    // calls default constructor for window 
+
+    /*
+    // load the background
+    if (!set_background("media/red_brick.png"))
+    {
+        cout << "Failed to load background: " << SDL_GetError() << endl;
+        success = false;
+    } // if
+    else // apply background texture
+    {
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, background, nullptr, nullptr);
+        SDL_RenderPresent(renderer);
+    } // else
+    */
     bool load_background = load_media("media/red_brick.bmp");
 
     // load the background
@@ -231,8 +338,8 @@ bool Window::test_run()
     } // if
     else // apply background
     {
-        background = temp_image; // set the background
-        SDL_BlitSurface(background, nullptr, window_surface, nullptr);
+        surface_background = temp_image; // set the background
+        SDL_BlitSurface(surface_background, nullptr, window_surface, nullptr);
         SDL_UpdateWindowSurface(window);
     } // else
 
@@ -286,12 +393,20 @@ bool Window::test_run()
                         default:
                         temp_image = KeyPress[key_default];
                         break;
-                    }                
-                }
+                    } // SWITCH            
+                } // else if - event keydown 
                 SDL_BlitSurface(temp_image, nullptr, window_surface, nullptr);
                 SDL_UpdateWindowSurface(window);
                 // updates the surface
-            } // if
+            } // if - there is an event in the event queue
+
+            /*
+            // after poll for event, render texture background
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+            SDL_RenderPresent(renderer);
+            */
+
         } // while CLOSES MAIN LOOP
     } // else
 
