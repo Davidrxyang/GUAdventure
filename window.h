@@ -38,7 +38,6 @@ class Window
         bool load_media(string media_path); // load a specfic media file
         
         SDL_Surface* load_surface(string media_path); // optimized to screen format by default
-        SDL_Surface* load_surface(string media_path, bool optimized); // choose to non-optimize
         SDL_Texture* load_texture(string media_path); // load a fast SDL texture
         void close_window(); // close the window
         
@@ -61,15 +60,16 @@ class Window
         int height;
         string window_name;
         SDL_Window* window;
+        SDL_Window* t_window;
 
         SDL_Renderer* renderer;
         
         SDL_Texture* background;
         SDL_Texture* texture;
-        SDL_Surface* surface_background;
         SDL_Surface* temp_image;
         SDL_Surface* window_surface;
         SDL_Surface* KeyPress[key_total]; // array for corresponding keypress surfaces, testing
+        SDL_Rect rect;
 };
 
 #endif

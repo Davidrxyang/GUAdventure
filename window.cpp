@@ -15,23 +15,12 @@ Window::Window()
     height = 480;
 
     window = build_window(center_x, center_y, width, height);   
-    //renderer = build_renderer(window);
+    renderer = build_renderer(window);
 
     if(!window)
     {
         cout << "Failed to create window: " << SDL_GetError();
     } // if
-
-    window_surface = SDL_GetWindowSurface(window);
-
-    if (!window_surface)
-    {
-        cout << "Failed to get the surface from the window: " << SDL_GetError();
-    } // if
-
-    SDL_UpdateWindowSurface(window);
-
-
 } // Window::Window default constructor             
 
 Window::Window(string name)
@@ -49,21 +38,13 @@ Window::Window(string name)
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
-
+    
     window = build_window(center_x, center_y, width, height);
-    SDL_Window* t_window = build_window(center_x, center_y, width, height);
-    renderer = build_renderer(t_window);
+    renderer = build_renderer(window);
 
     if(!window)
     {
         cout << "Failed to create window: " << SDL_GetError();
-    } // if
-
-    window_surface = SDL_GetWindowSurface(window);
-
-    if (!window_surface)
-    {
-        cout << "Failed to get the surface from the window: " << SDL_GetError();
     } // if
 } // Window::Window explicit constructor with name
 
@@ -79,18 +60,11 @@ Window::Window(string name, int x, int y, int w, int h)
     
     set_name(name);
     window = build_window(x, y, w, h);
-    //renderer = build_renderer(window);
+    renderer = build_renderer(window);
 
     if(!window)
     {
         cout << "Failed to create window: " << SDL_GetError();
-    } // if
-
-    window_surface = SDL_GetWindowSurface(window);
-
-    if (!window_surface)
-    {
-        cout << "Failed to get the surface from the window: " << SDL_GetError();
     } // if
 } // Window::Window - explicit constructor with dimensions
 
@@ -217,46 +191,14 @@ bool Window::load_media(string media_path)
 
 SDL_Surface* Window::load_surface(string media_path)
 {
-    return load_surface(media_path, true);
-} // Window::load_surface
-
-SDL_Surface* Window::load_surface(string media_path, bool optimized)
-{
-    SDL_Surface* optimized_surface = nullptr;
     SDL_Surface* loaded_surface = IMG_Load(media_path.c_str());
-    // old BMP implementation
-    // SDL_Surface* loaded_surface = SDL_LoadBMP(media_path.c_str());
-
-    if (loaded_surface == nullptr)
-    {
-        cout << "Failed to load image: " << IMG_GetError() << endl; 
-        // change IMG to SDL to use default BMP load error throw
-        cout << "Image path: " << media_path << endl;
-    } // if
-    else if (optimized)
-    {
-        //converting format
-        optimized_surface = SDL_ConvertSurface(loaded_surface, window_surface -> format, 0);
-
-        if (optimized_surface == nullptr)
-        {
-            cout << "Unable to optimize surface: " << SDL_GetError() << endl;
-            cout << "Image path: " << media_path << endl;
-        } // if
-        SDL_FreeSurface(loaded_surface); // destroy unused surface
-        return optimized_surface;
-    } // else if
-    else
-    {
-        return loaded_surface;
-    } // else
     return loaded_surface;
-} // Window::load_surface
+} // Window::load_surface - TODO implement optimize option, fine for now
 
 SDL_Texture* Window::load_texture(string media_path)
 {
     SDL_Texture* loaded_texture = nullptr;
-    SDL_Surface* loaded_surface = IMG_Load(media_path.c_str());
+    SDL_Surface* loaded_surface = load_surface(media_path);
 
     if (loaded_surface == nullptr)
     {
@@ -307,41 +249,23 @@ void Window::close_window()
 
 
 
+
+
+
+
 bool Window::test_run()
 {
     bool success = true;
     bool isquit = false;
 
-    // calls default constructor for window 
+    // calls explicit name constructor for window 
 
-    /*
     // load the background
     if (!set_background("media/red_brick.png"))
     {
         cout << "Failed to load background: " << SDL_GetError() << endl;
         success = false;
     } // if
-    else // apply background texture
-    {
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, background, nullptr, nullptr);
-        SDL_RenderPresent(renderer);
-    } // else
-    */
-    bool load_background = load_media("media/red_brick.bmp");
-
-    // load the background
-    if (!load_background)
-    {
-        cout << "Failed to load background: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-    else // apply background
-    {
-        surface_background = temp_image; // set the background
-        SDL_BlitSurface(surface_background, nullptr, window_surface, nullptr);
-        SDL_UpdateWindowSurface(window);
-    } // else
 
     // loading default media
 
@@ -389,24 +313,27 @@ bool Window::test_run()
                         case SDLK_q: // quits the loop 
                         isquit = true;
                         break;
-
+                    
                         default:
                         temp_image = KeyPress[key_default];
                         break;
                     } // SWITCH            
                 } // else if - event keydown 
-                SDL_BlitSurface(temp_image, nullptr, window_surface, nullptr);
-                SDL_UpdateWindowSurface(window);
-                // updates the surface
-            } // if - there is an event in the event queue
 
-            /*
-            // after poll for event, render texture background
+            // after poll for event, render texture 
+
+            rect.x = 0;
+            rect.y = 0;
+            rect.w = 100;
+            rect.h = 100;
+    
+            texture = SDL_CreateTextureFromSurface(renderer, temp_image);
             SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+            SDL_RenderCopy(renderer, background, nullptr, nullptr); // background
+            SDL_RenderCopy(renderer, texture, nullptr, &rect);
             SDL_RenderPresent(renderer);
-            */
-
+        
+            } // if - there is an event in the event queue
         } // while CLOSES MAIN LOOP
     } // else
 
