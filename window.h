@@ -37,7 +37,7 @@ class Window
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
         
-        SDL_Surface* load_surface(string media_path); // optimized to screen format by default
+        SDL_Surface* load_surface(string media_path); // TODO implement format optimization
         SDL_Texture* load_texture(string media_path); // load a fast SDL texture
         void close_window(); // close the window
         
