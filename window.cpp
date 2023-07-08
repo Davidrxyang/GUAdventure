@@ -263,6 +263,25 @@ SDL_Texture* Window::texture_from_surface(SDL_Surface* surface, Uint8 key_r, Uin
     return temp_texture;
 } // Window::texture_from_surface
 
+void Window::render(SDL_Texture* texture) const
+{
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+} // Window::render
+
+void Window::render(SDL_Texture* texture, SDL_Rect* rect) const
+{
+    SDL_RenderCopy(renderer, texture, nullptr, rect);
+} // Window::render - with rect specification
+
+void Window::render_clear() const
+{
+    SDL_RenderClear(renderer);
+} // Window::render_clear
+
+void Window::update_screen() const
+{
+    SDL_RenderPresent(renderer);
+}
 void Window::close_window()
 {
 
@@ -372,10 +391,19 @@ bool Window::test_run()
             rect.h = 100;
             
             texture = texture_from_surface(temp_image, 0xFF, 0xFF, 0xFF);
+            
+            render_clear();
+
+            render(background);
+            render(texture, &rect);
+
+            update_screen();
+            /*
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, background, nullptr, nullptr); // background
             SDL_RenderCopy(renderer, texture, nullptr, &rect);
             SDL_RenderPresent(renderer);
+            */
         
             } // if - there is an event in the event queue
         } // while CLOSES MAIN LOOP
