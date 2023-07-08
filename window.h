@@ -34,10 +34,13 @@ class Window
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
         
-        SDL_Renderer* get_renderer() const {return renderer;}; // returns  the renderer for texture class
-
         SDL_Surface* load_surface(string media_path); // TODO implement format optimization
+        
         SDL_Texture* load_texture(string media_path); // load a fast SDL texture
+        SDL_Texture* load_texture(string media_path, Uint8 key_r, Uint8 key_g, Uint8 key_b); // load texture with colorkey
+        SDL_Texture* texture_from_surface(SDL_Surface* surface); // wrap SDL function to convert surface to texture
+        SDL_Texture* texture_from_surface(SDL_Surface* surface, Uint8 key_r, Uint8 key_g, Uint8 key_b); // with color key
+
         void close_window(); // close the window
         
         

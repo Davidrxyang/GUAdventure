@@ -220,6 +220,49 @@ SDL_Texture* Window::load_texture(string media_path)
     return loaded_texture; // if failed returns nullptr
 } // Window::load_texture
 
+SDL_Texture* Window::load_texture(string media_path, Uint8 key_r, Uint8 key_g, Uint8 key_b)
+{
+    SDL_Texture* loaded_texture = nullptr;
+    SDL_Surface* loaded_surface = load_surface(media_path);
+
+    if (loaded_surface == nullptr)
+    {
+        cout << "Failed to load image: " << IMG_GetError() << endl;
+        cout << "Image path: " << media_path << endl;
+    } // if
+    else
+    {
+        SDL_SetColorKey(loaded_surface, SDL_TRUE, SDL_MapRGB(loaded_surface -> format, key_r, key_g, key_b));
+        // make a texture from the loaded surface
+        loaded_texture = SDL_CreateTextureFromSurface(renderer, loaded_surface);
+        if (loaded_texture == nullptr)
+        {
+            cout << "Failed to create texture from surface: " << SDL_GetError() << endl;
+        } // if
+
+        // deallocate temporary loaded surface
+        SDL_FreeSurface(loaded_surface);
+    }
+    return loaded_texture; // if failed returns nullptr
+} // Window::load_texture - with RGB color key input
+
+SDL_Texture* Window::texture_from_surface(SDL_Surface* surface)
+{
+    return SDL_CreateTextureFromSurface(renderer, surface);
+} // Window::texture_from_surface
+
+SDL_Texture* Window::texture_from_surface(SDL_Surface* surface, Uint8 key_r, Uint8 key_g, Uint8 key_b)
+{
+    SDL_Texture* temp_texture = nullptr;
+    if (surface != nullptr)
+    {
+        SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface -> format, key_r, key_g, key_b));
+    } // if surface is null, directly return without setting color key
+    temp_texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    return temp_texture;
+} // Window::texture_from_surface
+
 void Window::close_window()
 {
 
@@ -327,8 +370,8 @@ bool Window::test_run()
             rect.y = 0;
             rect.w = 100;
             rect.h = 100;
-    
-            texture = SDL_CreateTextureFromSurface(renderer, temp_image);
+            
+            texture = texture_from_surface(temp_image, 0xFF, 0xFF, 0xFF);
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, background, nullptr, nullptr); // background
             SDL_RenderCopy(renderer, texture, nullptr, &rect);
