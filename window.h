@@ -7,8 +7,6 @@
 #include <SDL2/SDL_mixer.h>
 #include <iostream>
 
-//#include "game.h"
-
 using namespace std;
 
 enum KeyPress
@@ -24,7 +22,6 @@ enum KeyPress
 class Window
 {
 
-
     public:
 
         Window(); // constructor
@@ -37,6 +34,8 @@ class Window
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
         
+        SDL_Renderer* get_renderer() const {return renderer;}; // returns  the renderer for texture class
+
         SDL_Surface* load_surface(string media_path); // TODO implement format optimization
         SDL_Texture* load_texture(string media_path); // load a fast SDL texture
         void close_window(); // close the window
@@ -59,17 +58,16 @@ class Window
         int width;
         int height;
         string window_name;
-        SDL_Window* window;
-        SDL_Window* t_window;
 
-        SDL_Renderer* renderer;
-        
         SDL_Texture* background;
         SDL_Texture* texture;
         SDL_Surface* temp_image;
         SDL_Surface* window_surface;
         SDL_Surface* KeyPress[key_total]; // array for corresponding keypress surfaces, testing
         SDL_Rect rect;
+
+        SDL_Window* window;
+        SDL_Renderer* renderer;
 };
 
 #endif

@@ -44,7 +44,7 @@ Window::Window(string name)
 
     if(!window)
     {
-        cout << "Failed to create window: " << SDL_GetError();
+        cout << "Failed to create wcccindow: " << SDL_GetError();
     } // if
 } // Window::Window explicit constructor with name
 
@@ -87,9 +87,9 @@ SDL_Window* Window::build_window(int center_x, int center_y, int width, int heig
     return new_window;
 } // Window::build_window - private function, builds window and corresponding renderer
 
-SDL_Renderer* Window::build_renderer(SDL_Window* temp_window)
+SDL_Renderer* Window::build_renderer(SDL_Window* window)
 { 
-    SDL_Renderer* new_renderer = SDL_CreateRenderer(temp_window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* new_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     if (new_renderer == nullptr)
     {
@@ -322,6 +322,7 @@ bool Window::test_run()
 
             // after poll for event, render texture 
 
+            // temporary SDL rectangle for image dimensions
             rect.x = 0;
             rect.y = 0;
             rect.w = 100;
