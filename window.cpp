@@ -293,6 +293,12 @@ void Window::modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) con
     SDL_SetTextureColorMod(texture, r, g, b);
 } // Window::modulate_color
 
+void Window::modulate_alpha(SDL_Texture* texture, Uint8 alpha) const
+{
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND); // enables blending
+    SDL_SetTextureAlphaMod(texture, alpha); // alpha blending - TRANSPARENCY OF TEXTURE
+} // Window::modulate_alpha
+
 void Window::close_window()
 {
 
@@ -320,13 +326,7 @@ void Window::close_window()
 
 
 
-
-
-
-
-
-
-bool Window::test_run()
+bool Window::test_run_1()
 {
     bool success = true;
     bool isquit = false;
@@ -417,3 +417,14 @@ bool Window::test_run()
 
     return success;
 } // Window::test_run - runs a test event
+
+bool Window::test_run_2()
+{
+    bool success = true;
+    bool isquit = false;
+
+    set_background("media/red_brick.png");
+
+    
+    return success;
+}

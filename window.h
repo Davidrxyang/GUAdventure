@@ -48,11 +48,12 @@ class Window
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
-        
-        
+        void modulate_alpha(SDL_Texture* texture, Uint8 alpha) const; // alpha blending, modulate transparency
+
         void close_window(); // close the window
         
-        bool test_run();
+        bool test_run_1();
+        bool test_run_2();
 
     private:
         

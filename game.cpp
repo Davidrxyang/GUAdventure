@@ -13,5 +13,5 @@ Game::Game(string player_name)
 
 void Game::start_game()
 {
-    game_window.test_run();
+    game_window.test_run_2();
 } // Game::new_game
