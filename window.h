@@ -75,8 +75,8 @@ class Window
         SDL_Texture* texture;
         SDL_Surface* temp_image;
         SDL_Surface* window_surface;
-        SDL_Surface* KeyPress[key_total]; // array for corresponding keypress surfaces, testing
-        SDL_Rect rect;
+        SDL_Surface* KeyPress[key_total]; // TESTING array for corresponding keypress surfaces
+        SDL_Rect rect; // TESTING
 
         SDL_Window* window;
         SDL_Renderer* renderer;
