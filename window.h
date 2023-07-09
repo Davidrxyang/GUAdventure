@@ -41,12 +41,16 @@ class Window
         SDL_Texture* texture_from_surface(SDL_Surface* surface); // wrap SDL function to convert surface to texture
         SDL_Texture* texture_from_surface(SDL_Surface* surface, Uint8 key_r, Uint8 key_g, Uint8 key_b); // with color key
 
+        // wrapping render and update functions from SDL in class methods
         void render(SDL_Texture* texture) const; // renders to full screen
-        void render(SDL_Texture* texture, SDL_Rect* rect) const; // renders to a position on the screen
-        void render_clear() const;
-        void update_screen() const;
-        void close_window(); // close the window
+        void render(SDL_Texture* texture, SDL_Rect* rect) const; // renders to a position and size on the screen
+        void render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const; // clip rendering
+        void render_clear() const; // clears renderer
+        void update_screen() const; // updates screen, renders to screen
+        void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
         
+        
+        void close_window(); // close the window
         
         bool test_run();
 

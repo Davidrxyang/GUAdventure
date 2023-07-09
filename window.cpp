@@ -273,6 +273,11 @@ void Window::render(SDL_Texture* texture, SDL_Rect* rect) const
     SDL_RenderCopy(renderer, texture, nullptr, rect);
 } // Window::render - with rect specification
 
+void Window::render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const
+{
+    SDL_RenderCopy(renderer, texture, clip, rect);
+} // Window::render - with rect specs and clip rendering for sprite sheet functionality
+
 void Window::render_clear() const
 {
     SDL_RenderClear(renderer);
@@ -281,7 +286,13 @@ void Window::render_clear() const
 void Window::update_screen() const
 {
     SDL_RenderPresent(renderer);
-}
+} // Window::update_screen
+
+void Window::modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const
+{
+    SDL_SetTextureColorMod(texture, r, g, b);
+} // Window::modulate_color
+
 void Window::close_window()
 {
 
@@ -341,7 +352,7 @@ bool Window::test_run()
     {
 
         // THIS IS THE MAIN LOOP 
-
+        
         SDL_Event test_event; // creates an event QUEUE
         while (!isquit) // quit trigger is not activated
         {
@@ -375,7 +386,7 @@ bool Window::test_run()
                         case SDLK_q: // quits the loop 
                         isquit = true;
                         break;
-                    
+
                         default:
                         temp_image = KeyPress[key_default];
                         break;
@@ -396,15 +407,8 @@ bool Window::test_run()
 
             render(background);
             render(texture, &rect);
-
             update_screen();
-            /*
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, background, nullptr, nullptr); // background
-            SDL_RenderCopy(renderer, texture, nullptr, &rect);
-            SDL_RenderPresent(renderer);
-            */
-        
+
             } // if - there is an event in the event queue
         } // while CLOSES MAIN LOOP
     } // else
