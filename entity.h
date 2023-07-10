@@ -19,6 +19,8 @@ class Entity
         void set_position_y(int y); // set y
         int get_position_x() const; // get x
         int get_position_y() const; // get y
+        SDL_Texture* get_texture() const {return sprite_sheet;}; // get texture
+        SDL_Rect get_frame(int frame) const {return frames[frame];}; // get frames
 
     protected:
 
