@@ -13,5 +13,23 @@ Game::Game(string player_name)
 
 void Game::start_game()
 {
-    game_window.test_run_2();
+    bool isquit = false;
+
+    game_window.set_background("media/red_brick.png");
+
+
+    SDL_Event game_event;
+    while(!isquit)
+    {
+        if (SDL_PollEvent(& game_event))
+        {
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            }
+        }
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        game_window.update_screen();
+    }
 } // Game::new_game

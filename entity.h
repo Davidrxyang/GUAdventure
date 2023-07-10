@@ -2,8 +2,11 @@
 #define ENTITY_H
 
 #include <SDL2/SDL.h>
+#include "window.h"
 
 using namespace std;
+
+const int animation_frame_count = 4;
 
 class Entity
 {
@@ -21,6 +24,8 @@ class Entity
 
         int x; // position x
         int y; // posiiton y
+        SDL_Texture* sprite_sheet;
+        SDL_Rect frames[animation_frame_count];
 };
 
 #endif

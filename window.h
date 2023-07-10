@@ -40,7 +40,7 @@ class Window
         SDL_Texture* load_texture(string media_path, Uint8 key_r, Uint8 key_g, Uint8 key_b); // load texture with colorkey
         SDL_Texture* texture_from_surface(SDL_Surface* surface); // wrap SDL function to convert surface to texture
         SDL_Texture* texture_from_surface(SDL_Surface* surface, Uint8 key_r, Uint8 key_g, Uint8 key_b); // with color key
-
+        SDL_Texture* get_background() const {return background;}; // get background
         // wrapping render and update functions from SDL in class methods
         void render(SDL_Texture* texture) const; // renders to full screen
         void render(SDL_Texture* texture, SDL_Rect* rect) const; // renders to a position and size on the screen
@@ -53,8 +53,7 @@ class Window
         void close_window(); // close the window
         
         bool test_run_1();
-        bool test_run_2();
-
+        
     private:
         
         // private functions

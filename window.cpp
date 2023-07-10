@@ -44,7 +44,7 @@ Window::Window(string name)
 
     if(!window)
     {
-        cout << "Failed to create wcccindow: " << SDL_GetError();
+        cout << "Failed to create window: " << SDL_GetError();
     } // if
 } // Window::Window explicit constructor with name
 
@@ -89,7 +89,8 @@ SDL_Window* Window::build_window(int center_x, int center_y, int width, int heig
 
 SDL_Renderer* Window::build_renderer(SDL_Window* window)
 { 
-    SDL_Renderer* new_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    // create VSYNCed renderer for window
+    SDL_Renderer* new_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     if (new_renderer == nullptr)
     {
@@ -417,14 +418,3 @@ bool Window::test_run_1()
 
     return success;
 } // Window::test_run - runs a test event
-
-bool Window::test_run_2()
-{
-    bool success = true;
-    bool isquit = false;
-
-    set_background("media/red_brick.png");
-
-    
-    return success;
-}

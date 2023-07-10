@@ -39,6 +39,7 @@ class Game
     private:
         Player player;
         Window game_window;
+        Dog jack;
 };
 
 #endif
