@@ -66,10 +66,12 @@ void Game::start_game()
                     break;
 
                     case SDLK_RIGHT:
+                    flip = SDL_FLIP_HORIZONTAL;
                     x = x + 20;
                     break;
 
                     case SDLK_LEFT:
+                    flip = SDL_FLIP_NONE;
                     x = x - 20;
                     break;
 
@@ -87,7 +89,7 @@ void Game::start_game()
 
         game_window.render_clear();
         game_window.render(game_window.get_background());
-        game_window.render(game_window.get_text(), &text_target);
+        // game_window.render(game_window.get_text(), &text_target);
         game_window.render(jack.get_texture(), &target, &current_frame, angle, nullptr, flip);
         game_window.update_screen();
         
