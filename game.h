@@ -21,6 +21,9 @@
 #include "player.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 
 using namespace std;
@@ -32,9 +35,11 @@ class Game
         Game(string player_name); // explicit constructor
         void start_game(); // start a new game
 
+
     private:
         Player player;
         Window game_window;
+        Dog jack;
 };
 
 #endif

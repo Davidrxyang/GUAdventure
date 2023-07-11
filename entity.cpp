@@ -4,6 +4,7 @@ Entity::Entity()
 {
     int x = 0;
     int y = 0;
+    sprite_sheet = nullptr;
 } // default constructor
 
 void Entity::set_position_x(int x) 

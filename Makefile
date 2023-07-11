@@ -9,7 +9,7 @@ progaram_CXX_INCLS := ${wildcard *.h}
 program_OBJS := $(program_CXX_OBJS)
 program_INCLUDE_DIRS := /usr/include/SDL2
 program_LIBRARY_DIRS :=
-program_LIBRARIES := SDL2
+program_LIBRARIES := SDL2 SDL2_image SDL2_ttf SDL2_mixer
 
 CPPFLAGS = $(foreach includedir,$(program_INCLUDE_DIRS),-I$(includedir))
 LDFLAGS = $(foreach librarydir,$(program_LIBRARY_DIRS),-L$(librarydir))
