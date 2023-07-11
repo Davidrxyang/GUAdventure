@@ -6,6 +6,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -26,25 +27,31 @@ class Window
 
         Window(); // constructor
         Window(string name); // create a default window
-        Window(string name, int x, int y, int w, int h); // window with specified dimensions
+        Window(string name, int x, int y, int w, int h, string font_path, int font_size); // window with specified dimensions
         
-        void set_name(string name);
-
+        void set_name(string name); // set name
+        void set_font(string font_path, int font_size, Uint8 r, Uint8 g, Uint8 b); // set font
         bool set_background(string media_path); // loads background texture
+        void set_local_text(string text); // sets the local text
+        SDL_Texture* get_background() const {return background;}; // get background
+        SDL_Texture* get_text() const {return text_texture;}; // get text
+        
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
-        
         SDL_Surface* load_surface(string media_path); // TODO implement format optimization
         
         SDL_Texture* load_texture(string media_path); // load a fast SDL texture
         SDL_Texture* load_texture(string media_path, Uint8 key_r, Uint8 key_g, Uint8 key_b); // load texture with colorkey
+        SDL_Texture* load_from_rendered_text(string text, SDL_Color text_color); // load TTF text as texture
         SDL_Texture* texture_from_surface(SDL_Surface* surface); // wrap SDL function to convert surface to texture
         SDL_Texture* texture_from_surface(SDL_Surface* surface, Uint8 key_r, Uint8 key_g, Uint8 key_b); // with color key
-        SDL_Texture* get_background() const {return background;}; // get background
+
         // wrapping render and update functions from SDL in class methods
         void render(SDL_Texture* texture) const; // renders to full screen
         void render(SDL_Texture* texture, SDL_Rect* rect) const; // renders to a position and size on the screen
         void render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const; // clip rendering
+        void render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip, double rotate_angle, 
+                    SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
@@ -69,9 +76,12 @@ class Window
         int width;
         int height;
         string window_name;
+        TTF_Font* font;
+        SDL_Color font_color;
 
         SDL_Texture* background;
         SDL_Texture* texture;
+        SDL_Texture* text_texture;
         SDL_Surface* temp_image;
         SDL_Surface* window_surface;
         SDL_Surface* KeyPress[key_total]; // TESTING array for corresponding keypress surfaces

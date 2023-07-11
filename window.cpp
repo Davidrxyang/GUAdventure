@@ -13,6 +13,7 @@ Window::Window()
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
+    font = nullptr;
 
     window = build_window(center_x, center_y, width, height);   
     renderer = build_renderer(window);
@@ -38,6 +39,7 @@ Window::Window(string name)
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
+    font = nullptr;
     
     window = build_window(center_x, center_y, width, height);
     renderer = build_renderer(window);
@@ -48,7 +50,7 @@ Window::Window(string name)
     } // if
 } // Window::Window explicit constructor with name
 
-Window::Window(string name, int x, int y, int w, int h)
+Window::Window(string name, int x, int y, int w, int h, string font_path, int font_size)
 {
     initialize();
 
@@ -59,6 +61,7 @@ Window::Window(string name, int x, int y, int w, int h)
     window_surface = nullptr;
     
     set_name(name);
+    set_font(font_path, font_size, 0xFF, 0xFF, 0xFF);
     window = build_window(x, y, w, h);
     renderer = build_renderer(window);
 
@@ -72,6 +75,35 @@ void Window::set_name(string name)
 {
     this -> window_name = name;
 } // Window::set_name
+
+void Window::set_font(string font_path, int font_size, Uint8 r, Uint8 g, Uint8 b)
+{
+    font = TTF_OpenFont(font_path.c_str(), font_size);
+    if (font == nullptr)
+    {
+        cout << "Failed to load font: " << TTF_GetError() << endl;
+    } // if
+    SDL_Color color = {0,0,0};
+    font_color = color;
+} // Window::set_font
+
+bool Window::set_background(string media_path)
+{
+    bool success = true;
+    background = load_texture(media_path);
+    if (background == nullptr)
+    {
+        cout << "Failed to load background: " << SDL_GetError() << endl;
+        cout << "background image path: " << media_path << endl;
+        success = false;
+    } // if
+    return success;
+} // Window::set_background
+
+void Window::set_local_text(string text)
+{
+    text_texture = load_from_rendered_text(text.c_str(), font_color);
+} // Window::set_local_text
 
 SDL_Window* Window::build_window(int center_x, int center_y, int width, int height)
 {
@@ -122,22 +154,15 @@ bool Window::initialize() const // private member function
         success = false;
     } // if
 
-    return success;
-} // Window::initialize - initializes the SDL2 library
-
-bool Window::set_background(string media_path)
-{
-    bool success = true;
-    background = load_texture(media_path);
-    if (background == nullptr)
+    // initialize SDL true type fonts (TTF)
+    if (TTF_Init() == -1)
     {
-        cout << "Failed to load background: " << SDL_GetError() << endl;
-        cout << "background image path: " << media_path << endl;
+        cout << "Failed to initialize SDL_ttf library: " << TTF_GetError() << endl;
         success = false;
     } // if
 
     return success;
-} // Window::set_background
+} // Window::initialize - initializes the SDL2 libraries
 
 bool Window::load_media()
 {
@@ -247,6 +272,27 @@ SDL_Texture* Window::load_texture(string media_path, Uint8 key_r, Uint8 key_g, U
     return loaded_texture; // if failed returns nullptr
 } // Window::load_texture - with RGB color key input
 
+SDL_Texture* Window::load_from_rendered_text(string text, SDL_Color text_color)
+{
+    SDL_Surface* text_surface = TTF_RenderText_Solid(font, text.c_str(), text_color);
+    SDL_Texture* text_texture = nullptr;
+
+    if (text_surface == nullptr)
+    {
+        cout << "Failed to load text: " << TTF_GetError() << endl;
+    } // if
+    else
+    {
+        text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+        if (text_texture == nullptr)
+        {
+            cout << "Failed to create text from surface: " << TTF_GetError() << endl;
+        } // if
+    } // else
+    SDL_FreeSurface(text_surface); 
+    return text_texture;
+} // Window::load_from_rendered_text
+
 SDL_Texture* Window::texture_from_surface(SDL_Surface* surface)
 {
     return SDL_CreateTextureFromSurface(renderer, surface);
@@ -278,6 +324,12 @@ void Window::render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const
 {
     SDL_RenderCopy(renderer, texture, clip, rect);
 } // Window::render - with rect specs and clip rendering for sprite sheet functionality
+
+void Window::render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip, double rotate_angle,
+                    SDL_Point* rotate_center, SDL_RendererFlip flip) const
+{
+    SDL_RenderCopyEx(renderer, texture, clip, rect, rotate_angle, rotate_center, flip);
+} // Window::render - above, with rotation specs
 
 void Window::render_clear() const
 {
