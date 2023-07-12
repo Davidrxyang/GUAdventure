@@ -29,6 +29,9 @@ void Game::start_game()
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
 
+    // initialize scancode key states
+    const Uint8* current_key_states = SDL_GetKeyboardState(nullptr);
+
     Button buttons[4];
     // setting button positions
     buttons[0].set_position(0, 0);
@@ -69,28 +72,34 @@ void Game::start_game()
                     angle = angle - 60;
                     break;
 
-                    case SDLK_UP:
-                    y = y - 20;
-                    break;
-
-                    case SDLK_DOWN:
-                    y = y + 20;
-                    break;
-
-                    case SDLK_RIGHT:
-                    flip = SDL_FLIP_HORIZONTAL;
-                    x = x + 20;
-                    break;
-
-                    case SDLK_LEFT:
-                    flip = SDL_FLIP_NONE;
-                    x = x - 20;
-                    break;
-
                     case SDLK_q: // quit program
                     isquit = true;
                     break;
                 } // switch
+
+                
+                if (current_key_states[SDL_SCANCODE_UP])
+                {
+                    y = y - 20;
+                }           
+
+                else if (current_key_states[SDL_SCANCODE_DOWN])
+                
+                {
+                    y = y + 20;
+                }
+
+                else if (current_key_states[SDL_SCANCODE_RIGHT])
+                {
+                    flip = SDL_FLIP_HORIZONTAL;
+                    x = x + 20;
+                }    
+
+                else if (current_key_states[SDL_SCANCODE_LEFT])
+                {
+                    flip = SDL_FLIP_NONE;
+                    x = x - 20;
+                }
             } // else if
             else // mouse event
             {
