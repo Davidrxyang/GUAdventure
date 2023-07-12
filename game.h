@@ -19,6 +19,7 @@
 #include "window.h"
 #include "entity.h"
 #include "player.h"
+#include "button.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>

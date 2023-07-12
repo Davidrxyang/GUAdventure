@@ -29,6 +29,18 @@ void Game::start_game()
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
 
+    Button buttons[4];
+    // setting button positions
+    buttons[0].set_position(0, 0);
+    buttons[1].set_position(400,0);
+    buttons[2].set_position(0,400);
+    buttons[3].set_position(400,400);
+
+    for (size_t i = 0; i < 4; i++)
+    {
+        buttons[i].set_texture(game_window, "media/buttons.png");
+    } // for
+
     while(!isquit)
     {
         if (SDL_PollEvent(& game_event))
@@ -80,17 +92,31 @@ void Game::start_game()
                     break;
                 } // switch
             } // else if
+            else // mouse event
+            {
+                for (size_t i = 0; i < 4; i++)
+                {
+                    buttons[i].handle_event(&game_event);
+                }
+            }
         } // if - game event poll check
         
         SDL_Rect current_frame = jack.get_frame(frame/8);
     
         target.x = x;
         target.y = y;
-
+        
         game_window.render_clear();
         game_window.render(game_window.get_background());
         // game_window.render(game_window.get_text(), &text_target);
         game_window.render(jack.get_texture(), &target, &current_frame, angle, nullptr, flip);
+        
+        //render buttons
+        for (size_t i = 0; i < 4; i++)
+        {
+            buttons[i].render(game_window);
+        }
+
         game_window.update_screen();
         
         frame++;
