@@ -10,7 +10,7 @@ Dog::Dog(string name, Window window) : Entity()
 {
     set_name(name);
 
-    sprite_sheet = window.load_texture("media/man.png", 0, 0xFF, 0xFF);
+    sprite_sheet = window.load_texture("assets/media/man.png", 0, 0xFF, 0xFF);
     // loads sprite sheet with cyan background
 
     frames[0].x =   0;

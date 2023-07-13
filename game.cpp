@@ -17,8 +17,8 @@ void Game::start_game()
 {
     bool isquit = false;
 
-    game_window.set_background("media/red_brick.png");
-    game_window.set_font("fonts/font.ttf", 20, 0, 0xFF, 0xFF);
+    game_window.set_background("assets/media/red_brick.png");
+    game_window.set_font("assets/fonts/font.ttf", 20, 0, 0xFF, 0xFF);
     game_window.set_local_text("sup fellas");
     int frame = 0;
     int x = 200;
@@ -39,9 +39,15 @@ void Game::start_game()
     buttons[2].set_position(0,400);
     buttons[3].set_position(400,400);
 
+    Music music;
+    music.load_music("assets/music/music.wav");
+
+    Audio effect;
+    effect.load_audio("assets/audio/effect.wav");
+
     for (size_t i = 0; i < 4; i++)
     {
-        buttons[i].set_texture(game_window, "media/buttons.png");
+        buttons[i].set_texture(game_window, "assets/media/buttons.png");
     } // for
 
     while(!isquit)
@@ -75,6 +81,7 @@ void Game::start_game()
                     case SDLK_q: // quit program
                     isquit = true;
                     break;
+
                 } // switch
 
                 
@@ -108,6 +115,25 @@ void Game::start_game()
                     buttons[i].handle_event(&game_event);
                 }
             }
+
+            // play audio based on mouse event
+            if (buttons[0].get_state() == button_mouse_down)
+            {
+                music.play();
+            }
+            else if (buttons[0].get_state() == button_mouse_up)
+            {
+                music.pause();
+            }
+            else if (buttons[1].get_state() == button_mouse_down)
+            {
+                music.stop();
+            }
+            else if (buttons[2].get_state() == button_mouse_down)
+            {
+                effect.play();
+            }
+        
         } // if - game event poll check
         
         SDL_Rect current_frame = jack.get_frame(frame/8);

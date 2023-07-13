@@ -26,6 +26,7 @@ class Button
         void set_position(int x, int y); // sets button position
         void set_texture(Window window, string media_path); // load buttont texture
         void handle_event(SDL_Event* event); // handle mouse event
+        MouseState get_state() const {return current_state;}; // get current mouse state
         void render(Window window); // render in specified window
         
     private:

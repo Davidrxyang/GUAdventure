@@ -168,35 +168,35 @@ bool Window::load_media()
 {
     bool success = true;
     
-    KeyPress[key_default] = load_surface("media/coke.png");
+    KeyPress[key_default] = load_surface("assets/assets/media/coke.png");
     if (KeyPress[key_default] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_up] = load_surface("media/jack.png");
+    KeyPress[key_up] = load_surface("assets/media/jack.png");
     if (KeyPress[key_up] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_down] = load_surface("media/fish.png");
+    KeyPress[key_down] = load_surface("assets/media/fish.png");
     if (KeyPress[key_down] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_left] = load_surface("media/hotdog.png");
+    KeyPress[key_left] = load_surface("assets/media/hotdog.png");
     if (KeyPress[key_left] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_right] = load_surface("media/potato.png");
+    KeyPress[key_right] = load_surface("assets/media/potato.png");
     if (KeyPress[key_right] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
@@ -387,7 +387,7 @@ bool Window::test_run_1()
     // calls explicit name constructor for window 
 
     // load the background
-    if (!set_background("media/red_brick.png"))
+    if (!set_background("assets/media/red_brick.png"))
     {
         cout << "Failed to load background: " << SDL_GetError() << endl;
         success = false;
