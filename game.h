@@ -37,6 +37,12 @@ class Game
         Game(); // default constructor
         Game(string player_name); // explicit constructor
         void start_game(); // start a new game
+        
+        void TEST_TEMPLATE(); // template for test games
+
+        // test games
+        void start_test_game_1(); // test V1
+        void start_test_game_2(); // test V2
 
 
     private:
