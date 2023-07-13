@@ -22,6 +22,7 @@
 #include "button.h"
 #include "audio.h"
 #include "music.h"
+#include "timer.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -49,6 +50,9 @@ class Game
         Player player;
         Window game_window;
         Dog jack;
+
+        Timer FPS_timer;
+        double FPS_AVG;
 };
 
 #endif

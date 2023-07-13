@@ -9,11 +9,11 @@ Window::Window()
     window_surface = nullptr;
 
     set_name("default name");
+    set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
     center_x = SDL_WINDOWPOS_CENTERED;
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
-    font = nullptr;
 
     window = build_window(center_x, center_y, width, height);   
     renderer = build_renderer(window);
@@ -33,13 +33,13 @@ Window::Window(string name)
     background = nullptr;
     temp_image = nullptr;
     window_surface = nullptr;
-    
+
+    set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
     set_name(name);
     center_x = SDL_WINDOWPOS_CENTERED;
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
-    font = nullptr;
     
     window = build_window(center_x, center_y, width, height);
     renderer = build_renderer(window);

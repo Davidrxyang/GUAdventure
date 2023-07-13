@@ -218,14 +218,33 @@ void Game::start_test_game_2()
     bool isquit = false;
 
     game_window.set_background("assets/media/red_brick.png");
+
     int frame = 0;
     SDL_Event game_event;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
 
+    Timer timer;
+    stringstream time_text;
+    SDL_Texture* text = nullptr;
+    timer.start();
+
+    int counted_frames = 0;
+    FPS_timer.start();
+
+
     while(!isquit)
     {
         // GAME LOOP
+        
+        // calculate frames per second
+
+        FPS_AVG = counted_frames / (FPS_timer.get_ticks() / 1000.f);
+        if (FPS_AVG > 200000)
+        {
+            FPS_AVG = 0;
+        } // if - correct for boot error
+
         if (SDL_PollEvent(& game_event))
         {        
             // PROCESS EVENTS    
@@ -237,18 +256,40 @@ void Game::start_test_game_2()
             {
                 switch (game_event.key.keysym.sym)
                 {
+                    case SDLK_s:
+                    timer.start();
+                    break;
 
+                    case SDLK_p:
+                    timer.pause();
+                    break;
+
+                    case SDLK_u:
+                    timer.unpause();
+                    break;
+
+                    case SDLK_k:
+                    timer.stop();
+                    break;
                 } // switch - process key event
             } // else if
         } // if - game event poll check
         
+        // get the time text
+        SDL_Rect target = {0,0, 600, 200};
+        SDL_Color color = {0, 0, 0};
+        time_text.str(""); // initialize
+        time_text << "Average Frames Per Second " << FPS_AVG; // get FPS
+        text = game_window.load_from_rendered_text(time_text.str().c_str(), color);
         // RENDER
 
         game_window.render_clear();
         game_window.render(game_window.get_background());
+        game_window.render(text, &target);
         game_window.update_screen();
         
-        frame++; // increment frame
+        frame++; // increment frame for animation
+        counted_frames++; // increment total global frame count for FPS calculation
 
         // the game will have four frame animaiton speed, four frame animation too
         if (frame / 4 >= animation_frame_count)
