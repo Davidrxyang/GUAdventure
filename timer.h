@@ -20,7 +20,8 @@ class Timer
         void pause();
         void unpause();
 
-        Uint32 get_ticks(); // get time
+        Uint32 get_ticks() const; // get time
+        double get_seconds() const {return (get_ticks() / 1000.f);}; // get time in seconds
 
         bool is_started() const {return started;}; 
         bool is_paused() const {return started && paused;};

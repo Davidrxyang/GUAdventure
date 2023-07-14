@@ -122,7 +122,7 @@ SDL_Window* Window::build_window(int center_x, int center_y, int width, int heig
 SDL_Renderer* Window::build_renderer(SDL_Window* window)
 { 
     // create VSYNCed renderer for window
-    SDL_Renderer* new_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer* new_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
     if (new_renderer == nullptr)
     {

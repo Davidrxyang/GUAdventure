@@ -44,7 +44,7 @@ void Timer::unpause()
     } // if - if not started or not paused, do nothing 
 } // Timer::unpause
 
-Uint32 Timer::get_ticks()
+Uint32 Timer::get_ticks() const
 {
     Uint32 time = 0;
 
@@ -61,3 +61,4 @@ Uint32 Timer::get_ticks()
     } // if the timer has not been started, the time is returned as its initial value, 0
     return time;
 } // Timer::get_ticks
+

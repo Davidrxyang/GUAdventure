@@ -239,7 +239,7 @@ void Game::start_test_game_2()
         
         // calculate frames per second
 
-        FPS_AVG = counted_frames / (FPS_timer.get_ticks() / 1000.f);
+        FPS_AVG = counted_frames / FPS_timer.get_seconds();
         if (FPS_AVG > 200000)
         {
             FPS_AVG = 0;
