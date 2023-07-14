@@ -49,8 +49,11 @@ class Game
     private:
         Player player;
         Window game_window;
+
+        // character entities
         Dog jack;
 
+        // FPS controls 
         Timer FPS_timer;
         double FPS_AVG;
 };

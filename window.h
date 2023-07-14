@@ -29,7 +29,8 @@ class Window
 
         Window(); // constructor
         Window(string name); // create a default window
-        Window(string name, int x, int y, int w, int h, string font_path, int font_size); // window with specified dimensions
+        Window(string name, int x, int y, int w, int h); // window with dimensions
+        Window(string name, int x, int y, int w, int h, string font_path, int font_size); // window with dimensions and font
         
         void set_name(string name); // set name
         void set_font(string font_path, int font_size, Uint8 r, Uint8 g, Uint8 b); // set font
@@ -37,7 +38,8 @@ class Window
         void set_local_text(string text); // sets the local text
         SDL_Texture* get_background() const {return background;}; // get background
         SDL_Texture* get_text() const {return text_texture;}; // get text
-        
+        int get_width() const {return width;}; // get width
+        int get_height() const {return height;}; // get height
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
         SDL_Surface* load_surface(string media_path); // TODO implement format optimization

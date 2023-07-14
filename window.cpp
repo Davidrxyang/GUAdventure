@@ -50,6 +50,31 @@ Window::Window(string name)
     } // if
 } // Window::Window explicit constructor with name
 
+Window::Window(string name, int x, int y, int w, int h)
+{
+    initialize();
+
+    // initialize all pointers to nullptr
+    renderer = nullptr;
+    background = nullptr;
+    temp_image = nullptr;
+    window_surface = nullptr;
+    
+    set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
+    set_name(name);
+    center_x = x;
+    center_y = y;
+    width = w;
+    height = h;
+    window = build_window(x, y, w, h);
+    renderer = build_renderer(window);
+
+    if(!window)
+    {
+        cout << "Failed to create window: " << SDL_GetError();
+    } // if   
+} // Window::Window explicit constructor with dimensions
+
 Window::Window(string name, int x, int y, int w, int h, string font_path, int font_size)
 {
     initialize();
@@ -62,6 +87,10 @@ Window::Window(string name, int x, int y, int w, int h, string font_path, int fo
     
     set_name(name);
     set_font(font_path, font_size, 0xFF, 0xFF, 0xFF);
+    center_x = x;
+    center_y = y;
+    width = w;
+    height = h;
     window = build_window(x, y, w, h);
     renderer = build_renderer(window);
 

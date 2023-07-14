@@ -6,7 +6,7 @@ Game::Game()
 } // default constructor
 
 Game::Game(string player_name) 
-: game_window("Game")
+: game_window("Game", 0, 0, 1400, 600)
 {
     this -> jack = Dog("jack", game_window);
     // Window game_window("Game");
@@ -206,7 +206,7 @@ void Game::start_test_game_1()
         
         frame++;
 
-        if (frame/8 >= animation_frame_count)
+        if (frame/4 >= animation_frame_count)
         {
             frame = 0; // reset frame count
         } // if - animation frame reset
@@ -217,7 +217,7 @@ void Game::start_test_game_2()
 {
     bool isquit = false;
 
-    game_window.set_background("assets/media/red_brick.png");
+    game_window.set_background("assets/media/track.png");
 
     int frame = 0;
     SDL_Event game_event;
@@ -256,22 +256,9 @@ void Game::start_test_game_2()
             {
                 switch (game_event.key.keysym.sym)
                 {
-                    case SDLK_s:
-                    timer.start();
-                    break;
 
-                    case SDLK_p:
-                    timer.pause();
-                    break;
-
-                    case SDLK_u:
-                    timer.unpause();
-                    break;
-
-                    case SDLK_k:
-                    timer.stop();
-                    break;
                 } // switch - process key event
+                jack.handle_event(game_event);
             } // else if
         } // if - game event poll check
         
@@ -281,11 +268,15 @@ void Game::start_test_game_2()
         time_text.str(""); // initialize
         time_text << "Average Frames Per Second " << FPS_AVG; // get FPS
         text = game_window.load_from_rendered_text(time_text.str().c_str(), color);
+        
+        // PROCESS CHARACTER ENTITIES
+        jack.move(game_window);
         // RENDER
 
         game_window.render_clear();
         game_window.render(game_window.get_background());
         game_window.render(text, &target);
+        jack.render(game_window, frame); // render jack
         game_window.update_screen();
         
         frame++; // increment frame for animation
