@@ -19,6 +19,10 @@
 #include "window.h"
 #include "entity.h"
 #include "player.h"
+#include "button.h"
+#include "audio.h"
+#include "music.h"
+#include "timer.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -34,12 +38,24 @@ class Game
         Game(); // default constructor
         Game(string player_name); // explicit constructor
         void start_game(); // start a new game
+        
+        void TEST_TEMPLATE(); // template for test games
+
+        // test games
+        void start_test_game_1(); // test V1
+        void start_test_game_2(); // test V2
 
 
     private:
         Player player;
         Window game_window;
+
+        // character entities
         Dog jack;
+
+        // FPS controls 
+        Timer FPS_timer;
+        double FPS_AVG;
 };
 
 #endif

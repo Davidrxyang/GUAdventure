@@ -16,9 +16,9 @@ class Dog : public Entity
         Dog(); // default constructor
         Dog(string name, Window window); // explicit constructor, spec name and window
         
-        void set_name(string name); // set name
-        string get_name() const; // get name
-
+        void set_name(string name) {this -> name = name;}; // set name
+        string get_name() const {return name;}; // get name
+        void render(Window window, int frame) const;
     private:
 
         string name;

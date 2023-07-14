@@ -9,11 +9,11 @@ Window::Window()
     window_surface = nullptr;
 
     set_name("default name");
+    set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
     center_x = SDL_WINDOWPOS_CENTERED;
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
-    font = nullptr;
 
     window = build_window(center_x, center_y, width, height);   
     renderer = build_renderer(window);
@@ -33,13 +33,13 @@ Window::Window(string name)
     background = nullptr;
     temp_image = nullptr;
     window_surface = nullptr;
-    
+
+    set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
     set_name(name);
     center_x = SDL_WINDOWPOS_CENTERED;
     center_y = SDL_WINDOWPOS_CENTERED;
     width = 680;
     height = 480;
-    font = nullptr;
     
     window = build_window(center_x, center_y, width, height);
     renderer = build_renderer(window);
@@ -49,6 +49,31 @@ Window::Window(string name)
         cout << "Failed to create window: " << SDL_GetError();
     } // if
 } // Window::Window explicit constructor with name
+
+Window::Window(string name, int x, int y, int w, int h)
+{
+    initialize();
+
+    // initialize all pointers to nullptr
+    renderer = nullptr;
+    background = nullptr;
+    temp_image = nullptr;
+    window_surface = nullptr;
+    
+    set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
+    set_name(name);
+    center_x = x;
+    center_y = y;
+    width = w;
+    height = h;
+    window = build_window(x, y, w, h);
+    renderer = build_renderer(window);
+
+    if(!window)
+    {
+        cout << "Failed to create window: " << SDL_GetError();
+    } // if   
+} // Window::Window explicit constructor with dimensions
 
 Window::Window(string name, int x, int y, int w, int h, string font_path, int font_size)
 {
@@ -62,6 +87,10 @@ Window::Window(string name, int x, int y, int w, int h, string font_path, int fo
     
     set_name(name);
     set_font(font_path, font_size, 0xFF, 0xFF, 0xFF);
+    center_x = x;
+    center_y = y;
+    width = w;
+    height = h;
     window = build_window(x, y, w, h);
     renderer = build_renderer(window);
 
@@ -122,7 +151,7 @@ SDL_Window* Window::build_window(int center_x, int center_y, int width, int heig
 SDL_Renderer* Window::build_renderer(SDL_Window* window)
 { 
     // create VSYNCed renderer for window
-    SDL_Renderer* new_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer* new_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
     if (new_renderer == nullptr)
     {
@@ -168,35 +197,35 @@ bool Window::load_media()
 {
     bool success = true;
     
-    KeyPress[key_default] = load_surface("media/coke.png");
+    KeyPress[key_default] = load_surface("assets/assets/media/coke.png");
     if (KeyPress[key_default] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_up] = load_surface("media/jack.png");
+    KeyPress[key_up] = load_surface("assets/media/jack.png");
     if (KeyPress[key_up] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_down] = load_surface("media/fish.png");
+    KeyPress[key_down] = load_surface("assets/media/fish.png");
     if (KeyPress[key_down] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_left] = load_surface("media/hotdog.png");
+    KeyPress[key_left] = load_surface("assets/media/hotdog.png");
     if (KeyPress[key_left] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
         success = false;
     } // if
 
-    KeyPress[key_right] = load_surface("media/potato.png");
+    KeyPress[key_right] = load_surface("assets/media/potato.png");
     if (KeyPress[key_right] == nullptr)
     {
         cout << "Failed to load image: " << SDL_GetError() << endl;
@@ -387,7 +416,7 @@ bool Window::test_run_1()
     // calls explicit name constructor for window 
 
     // load the background
-    if (!set_background("media/red_brick.png"))
+    if (!set_background("assets/media/red_brick.png"))
     {
         cout << "Failed to load background: " << SDL_GetError() << endl;
         success = false;
