@@ -17,7 +17,6 @@ Entity::Entity()
     collision_box.h = h;
 } // default constructor
 
-
 void Entity::handle_event(SDL_Event &e)
 {
     // initialize scancode key states

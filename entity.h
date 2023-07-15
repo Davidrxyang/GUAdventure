@@ -25,7 +25,7 @@ class Entity
         void handle_event(SDL_Event& e); // handle event input
         
         // Entity actions
-        
+
         void spin(double a) {angle += a;}; // spin
         void move(Window window); // move entity
         void stop(); // stop entity - resets velocity
@@ -42,9 +42,9 @@ class Entity
         int vy; // velocity y
         double angle; // rotation angle
         SDL_RendererFlip flip; // is flip?
-        SDL_Texture* sprite_sheet;
-        SDL_Rect frames[animation_frame_count];
-        SDL_Rect collision_box;
+        SDL_Texture* sprite_sheet; // sprite texture
+        SDL_Rect frames[animation_frame_count]; // for animated sprites
+        SDL_Rect collision_box; // collision box
         
 };
 
