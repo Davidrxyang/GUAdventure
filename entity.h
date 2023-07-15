@@ -21,11 +21,15 @@ class Entity
         int get_position_y() const {return y;}; // get y
         SDL_Texture* get_texture() const {return sprite_sheet;}; // get texture
         SDL_Rect get_frame(int frame) const {return frames[frame];}; // get frames
-
+        SDL_Rect get_box() const {return collision_box;}; // get collision box
         void handle_event(SDL_Event& e); // handle event input
+        void spin(double a) {angle += a;}; // spin
         void move(Window window); // move entity
+        void stop(); // stop entity - resets velocity
 
     protected:
+
+        void update_box() {collision_box.x = x; collision_box.y = y;} // update collision box
 
         int x; // position x
         int y; // posiiton y
@@ -37,6 +41,8 @@ class Entity
         SDL_RendererFlip flip; // is flip?
         SDL_Texture* sprite_sheet;
         SDL_Rect frames[animation_frame_count];
+        SDL_Rect collision_box;
+        
 };
 
 #endif

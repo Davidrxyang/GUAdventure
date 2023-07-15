@@ -18,6 +18,39 @@ void Game::start_game()
     bool isquit = false;
 } // Game::start_game - the actual logic for the game goes here
 
+bool Game::has_collided(Entity a, Entity b) const
+{
+    // a COLLIDES WITH b    
+    int left_a = a.get_box().x;
+    int right_a = left_a + a.get_box().w;
+    int top_a = a.get_box().y;
+    int bottom_a = top_a + a.get_box().h;
+
+    int left_b = b.get_box().x;
+    int right_b = left_b + b.get_box().w;
+    int top_b = b.get_box().y;
+    int bottom_b = top_b + b.get_box().h;
+
+    // collision logic
+    if (bottom_a <= top_b)
+    {
+        return false;
+    } // if
+    if (top_a >= bottom_b)
+    {
+        return false;
+    } // if
+    if (right_a <= left_b)
+    {
+        return false;
+    } // if
+    if (left_a >= right_b)
+    {
+        return false;
+    } // if
+    return true; // if none satisfy condition, the boxes do not overlap, return true
+} // Game::has_collided
+
 void Game::TEST_TEMPLATE()
 {
     bool isquit = false;
@@ -277,6 +310,7 @@ void Game::start_test_game_2()
         game_window.render(game_window.get_background());
         game_window.render(text, &target);
         jack.render(game_window, frame); // render jack
+        jack.render_box(game_window); // render jack's collision box
         game_window.update_screen();
         
         frame++; // increment frame for animation
@@ -290,3 +324,69 @@ void Game::start_test_game_2()
     } // while
 } // Game::start_test_game_2
 
+void Game::start_test_game_3()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/track.png");
+
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+    Desk desk("desk", game_window);
+
+    while(!isquit)
+    {
+        // GAME LOOP
+        
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            else if (game_event.type == SDL_KEYDOWN)
+            {
+                switch (game_event.key.keysym.sym)
+                {
+
+                } // switch - process key event
+                jack.handle_event(game_event);
+            } // else if
+        } // if - game event poll check
+        
+        // PROCESS CHARACTER ENTITIES
+
+        jack.move(game_window);
+
+        if (has_collided(jack, desk))
+        {
+            jack.stop();
+            jack.set_position_x(0);
+            jack.set_position_y(0);
+            jack.spin(180);
+        }
+
+        // RENDER
+
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        jack.render(game_window, frame); // render jack
+        desk.render(game_window);
+
+        jack.render_box(game_window);
+        desk.render_box(game_window);
+
+        game_window.update_screen();
+        
+        frame++; // increment frame for animation
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // if - reset animation frame
+    } // while
+} // Game::start_test_game_3

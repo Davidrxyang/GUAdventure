@@ -1,14 +1,29 @@
 #include "dog.h"
 
-Dog::Dog() : Entity()
+Dog::Dog() : Renderable()
 {
     name = "default name";
+    x = 0;
+    y = 0;
+    w = 64;
+    h = 205;
+    collision_box.x = x;
+    collision_box.y = y;
+    collision_box.w = w;
+    collision_box.h = h;
 } // default constructor
 
-Dog::Dog(string name, Window window) : Entity()
+Dog::Dog(string name, Window window) : Renderable()
 {
     set_name(name);
-
+    x = 0;
+    y = 0;
+    w = 64;
+    h = 205;
+    collision_box.x = x;
+    collision_box.y = y;
+    collision_box.w = w;
+    collision_box.h = h;
     sprite_sheet = window.load_texture("assets/media/man.png", 0, 0xFF, 0xFF);
     // loads sprite sheet with cyan background
 
@@ -37,11 +52,3 @@ Dog::Dog(string name, Window window) : Entity()
     
 } // explicit constructor
 
-void Dog::render(Window window, int frame) const
-{
-    SDL_Rect target = {x, y, w, h};
-    target.x = x;
-    target.y = y; // update position components as necessary
-    SDL_Rect current_frame = get_frame(frame / 4); // TODO set global constant animation rate speed
-    window.render(sprite_sheet, &target, &current_frame, angle, nullptr, flip);
-} // Dog::render
