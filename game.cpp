@@ -357,7 +357,7 @@ void Game::start_test_game_3()
             } // else if
         } // if - game event poll check
         
-        // PROCESS CHARACTER ENTITIES
+        // PROCESS ENTITIES
 
         jack.move(game_window);
 
@@ -367,7 +367,7 @@ void Game::start_test_game_3()
             jack.set_position_x(0);
             jack.set_position_y(0);
             jack.spin(180);
-        }
+        } // if - collision
 
         // RENDER
 

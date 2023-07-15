@@ -23,6 +23,9 @@ class Entity
         SDL_Rect get_frame(int frame) const {return frames[frame];}; // get frames
         SDL_Rect get_box() const {return collision_box;}; // get collision box
         void handle_event(SDL_Event& e); // handle event input
+        
+        // Entity actions
+        
         void spin(double a) {angle += a;}; // spin
         void move(Window window); // move entity
         void stop(); // stop entity - resets velocity

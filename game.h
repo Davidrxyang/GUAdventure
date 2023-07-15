@@ -31,11 +31,11 @@
 // assets
 #include "audio.h"
 #include "music.h"
+#include "button.h"
 
 // entities
 #include "dog.h"
 #include "desk.h"
-#include "button.h"
 
 using namespace std;
 
