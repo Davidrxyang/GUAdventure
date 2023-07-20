@@ -25,10 +25,11 @@
 #include "level.h"
 #include "window.h"
 #include "entity.h"
+#include "renderable.h"
 #include "player.h"
 #include "timer.h"
 
-// assets
+// tools
 #include "audio.h"
 #include "music.h"
 #include "button.h"
