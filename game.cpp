@@ -6,7 +6,7 @@ Game::Game()
 } // default constructor
 
 Game::Game(string player_name) 
-: game_window("Game", 0, 0, 1400, 600)
+: game_window("Game", 0, 0, GAME_WIDTH, GAME_HEIGHT)
 {
     this -> jack = Dog("jack", game_window);
     // Window game_window("Game");
@@ -335,6 +335,7 @@ void Game::start_test_game_3()
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
     Desk desk("desk", game_window);
+    Camera camera(0, 0, 500, 500);
 
     while(!isquit)
     {

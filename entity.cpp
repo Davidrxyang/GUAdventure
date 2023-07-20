@@ -69,6 +69,9 @@ void Entity::handle_event(SDL_Event &e)
 
 void Entity::move(Window window)
 {
+    // the w and h of the window is set to the global constants GAME_WIDTH and GAME_HEIGHT
+    // in the game constructor
+    
     x = x + vx;
     if ((x < 0) || (x + w > window.get_width()))
     {

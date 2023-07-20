@@ -32,10 +32,16 @@
 #include "audio.h"
 #include "music.h"
 #include "button.h"
+#include "camera.h"
 
 // entities
 #include "dog.h"
 #include "desk.h"
+
+// constants
+
+const int GAME_WIDTH = 1400;
+const int GAME_HEIGHT = 600;
 
 using namespace std;
 
