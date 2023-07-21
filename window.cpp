@@ -344,20 +344,20 @@ void Window::render(SDL_Texture* texture) const
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 } // Window::render
 
-void Window::render(SDL_Texture* texture, SDL_Rect* rect) const
+void Window::render(SDL_Texture* texture, SDL_Rect* target) const
 {
-    SDL_RenderCopy(renderer, texture, nullptr, rect);
+    SDL_RenderCopy(renderer, texture, nullptr, target);
 } // Window::render - with rect specification
 
-void Window::render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const
+void Window::render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip) const
 {
-    SDL_RenderCopy(renderer, texture, clip, rect);
+    SDL_RenderCopy(renderer, texture, clip, target);
 } // Window::render - with rect specs and clip rendering for sprite sheet functionality
 
-void Window::render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip, double rotate_angle,
+void Window::render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle,
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const
 {
-    SDL_RenderCopyEx(renderer, texture, clip, rect, rotate_angle, rotate_center, flip);
+    SDL_RenderCopyEx(renderer, texture, clip, target, rotate_angle, rotate_center, flip);
 } // Window::render - above, with rotation specs
 
 void Window::render_clear() const

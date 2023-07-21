@@ -54,9 +54,9 @@ class Window
 
         // wrapping render and update functions from SDL in class methods
         void render(SDL_Texture* texture) const; // renders to full screen
-        void render(SDL_Texture* texture, SDL_Rect* rect) const; // renders to a position and size on the screen
-        void render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const; // clip rendering
-        void render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip, double rotate_angle, 
+        void render(SDL_Texture* texture, SDL_Rect* target) const; // renders to a position and size on the screen
+        void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip) const; // clip rendering
+        void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle, 
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen

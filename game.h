@@ -28,12 +28,13 @@
 #include "renderable.h"
 #include "player.h"
 #include "timer.h"
+#include "text.h"
 
 // tools
 #include "audio.h"
 #include "music.h"
 #include "button.h"
-#include "camera.h"
+#include "camera.h" // camera is currently unused, saved for level scrolling functionality
 
 // entities
 #include "dog.h"
@@ -43,6 +44,7 @@
 
 const int GAME_WIDTH = 1400;
 const int GAME_HEIGHT = 600;
+const SDL_Color DEFAULT_BLACK = {0, 0, 0};
 
 using namespace std;
 

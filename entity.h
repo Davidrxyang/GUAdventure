@@ -32,7 +32,8 @@ class Entity
 
     protected:
 
-        void update_box() {collision_box.x = x; collision_box.y = y;} // update collision box
+        void update_box() {collision_box.x = x; collision_box.y = y;
+                           collision_box.w = w; collision_box.h = h;} // update collision box
 
         int x; // position x
         int y; // posiiton y

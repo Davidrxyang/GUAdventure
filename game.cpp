@@ -335,7 +335,10 @@ void Game::start_test_game_3()
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
     Desk desk("desk", game_window);
-    Camera camera(0, 0, 500, 500);
+    // Camera camera(0, 0, 500, 500);
+
+    // testing text input
+    Text text("text", game_window, DEFAULT_BLACK);
 
     while(!isquit)
     {
@@ -348,19 +351,14 @@ void Game::start_test_game_3()
             {
                 isquit = true;
             } // if - quit game
-            else if (game_event.type == SDL_KEYDOWN)
-            {
-                switch (game_event.key.keysym.sym)
-                {
-
-                } // switch - process key event
-                jack.handle_event(game_event);
-            } // else if
+            jack.handle_event(game_event);
+            text.handle_text_event(game_event);
         } // if - game event poll check
         
         // PROCESS ENTITIES
 
         jack.move(game_window);
+        text.move(game_window);
 
         if (has_collided(jack, desk))
         {
@@ -370,15 +368,23 @@ void Game::start_test_game_3()
             jack.spin(180);
         } // if - collision
 
+        if (has_collided(text, desk))
+        {
+            text.clear();
+            text.stop();
+        } //if - collision
+
         // RENDER
 
         game_window.render_clear();
         game_window.render(game_window.get_background());
         jack.render(game_window, frame); // render jack
         desk.render(game_window);
+        text.render_text(game_window);
 
         jack.render_box(game_window);
         desk.render_box(game_window);
+        text.render_box(game_window);
 
         game_window.update_screen();
         
