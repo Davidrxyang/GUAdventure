@@ -397,3 +397,105 @@ void Game::start_test_game_3()
         } // if - reset animation frame
     } // while
 } // Game::start_test_game_3
+
+void Game::start_test_game_4()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/red_brick.png");
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+
+    //testing data entry and storage
+    Sint32 data[10];
+    SDL_RWops* file = SDL_RWFromFile("data/file.bin", "r+b"); // path, r+b is read binary
+
+    if (file == nullptr)
+    {
+        cout << "Failed to open file: " << SDL_GetError() << endl;
+        // no file, so create file 
+        file = SDL_RWFromFile("data/file.bin", "w+b"); // write binary
+        if (file != nullptr)
+        {
+            cout << "new file created" << endl;
+            for (size_t i = 0; i < 10; i++)
+            {
+                // initialize data 
+                data[i] = i;
+                SDL_RWwrite(file, &data[i], sizeof(Sint32), 1);
+            } // initialize file
+            // close file
+            SDL_RWclose(file);
+        }
+        else 
+        {
+            cout << "failed to create file: " << SDL_GetError() << endl;
+        } // else - failed to create file
+    } // if - empty file
+    else 
+    {
+        cout << "Reading file." << endl;
+        for (size_t i = 0; i < 10; i++)
+        {
+            SDL_RWread(file, &data[i], sizeof(Sint32), 1);
+            // read from file into data array, the file should have all zeros
+        } // for - read file
+        SDL_RWclose(file);
+    } // else - file exists
+
+    // TODO ADD CLEAN FILE FUNCTIONALITY IN QUIT FUNCTION
+
+
+    string text = " ";
+    while(!isquit)
+    {
+        // GAME LOOP
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            else if (game_event.type == SDL_KEYDOWN)
+            {
+                switch (game_event.key.keysym.sym)
+                {
+                    case SDLK_0:
+                    text = to_string(data[0]);
+                    break;
+
+                    case SDLK_1:
+                    text = to_string(data[1]);
+                    break;
+                    
+                    case SDLK_2:
+                    text = to_string(data[2]);
+                    break;
+
+                    case SDLK_3:
+                    text = to_string(data[3]);
+                    break;
+                } // switch - process key event
+            } // else if
+        } // if - game event poll check
+        
+        // RENDER
+
+        SDL_Texture* text_texture = game_window.load_from_rendered_text(text, DEFAULT_BLACK);
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        game_window.render(text_texture);
+        game_window.update_screen();
+        
+        frame++; // increment frame
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // reset animation frame
+    } // while
+} // Game::start_test_game_4
