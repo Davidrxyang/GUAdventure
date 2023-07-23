@@ -6,10 +6,9 @@ Game::Game()
 } // default constructor
 
 Game::Game(string player_name) 
-: game_window("Game", 0, 0, 1400, 600)
+: game_window("Game", 0, 0, GAME_WIDTH, GAME_HEIGHT)
 {
     this -> jack = Dog("jack", game_window);
-    // Window game_window("Game");
     player.set_player_name(player_name);
 } // explicit constructor
 
@@ -17,6 +16,39 @@ void Game::start_game()
 {
     bool isquit = false;
 } // Game::start_game - the actual logic for the game goes here
+
+bool Game::has_collided(Entity a, Entity b) const
+{
+    // a COLLIDES WITH b    
+    int left_a = a.get_box().x;
+    int right_a = left_a + a.get_box().w;
+    int top_a = a.get_box().y;
+    int bottom_a = top_a + a.get_box().h;
+
+    int left_b = b.get_box().x;
+    int right_b = left_b + b.get_box().w;
+    int top_b = b.get_box().y;
+    int bottom_b = top_b + b.get_box().h;
+
+    // collision logic
+    if (bottom_a <= top_b)
+    {
+        return false;
+    } // if
+    if (top_a >= bottom_b)
+    {
+        return false;
+    } // if
+    if (right_a <= left_b)
+    {
+        return false;
+    } // if
+    if (left_a >= right_b)
+    {
+        return false;
+    } // if
+    return true; // if none satisfy condition, the boxes do not overlap, return true
+} // Game::has_collided
 
 void Game::TEST_TEMPLATE()
 {
@@ -277,6 +309,7 @@ void Game::start_test_game_2()
         game_window.render(game_window.get_background());
         game_window.render(text, &target);
         jack.render(game_window, frame); // render jack
+        jack.render_box(game_window); // render jack's collision box
         game_window.update_screen();
         
         frame++; // increment frame for animation
@@ -290,3 +323,284 @@ void Game::start_test_game_2()
     } // while
 } // Game::start_test_game_2
 
+void Game::start_test_game_3()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/track.png");
+
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+    Desk desk("desk", game_window);
+    // Camera camera(0, 0, 500, 500);
+
+    // testing text input
+    Text text("text", game_window, DEFAULT_BLACK);
+
+    while(!isquit)
+    {
+        // GAME LOOP
+        
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            jack.handle_event(game_event);
+            text.handle_text_event(game_event);
+        } // if - game event poll check
+        
+        // PROCESS ENTITIES
+
+        jack.move(game_window);
+        text.move(game_window);
+
+        if (has_collided(jack, desk))
+        {
+            jack.stop();
+            jack.set_x(0);
+            jack.set_y(0);
+            jack.spin(180);
+        } // if - collision
+
+        if (has_collided(text, desk))
+        {
+            text.clear();
+            text.stop();
+        } //if - collision
+
+        // RENDER
+
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        jack.render(game_window, frame); // render jack
+        desk.render(game_window);
+        text.render_text(game_window);
+
+        jack.render_box(game_window);
+        desk.render_box(game_window);
+        text.render_box(game_window);
+
+        game_window.update_screen();
+        
+        frame++; // increment frame for animation
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // if - reset animation frame
+    } // while
+} // Game::start_test_game_3
+
+void Game::start_test_game_4()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/red_brick.png");
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+
+    //testing data entry and storage
+    Sint32 data[10];
+    SDL_RWops* file = SDL_RWFromFile("data/file.bin", "r+b"); // path, r+b is read binary
+
+    if (file == nullptr)
+    {
+        cout << "Failed to open file: " << SDL_GetError() << endl;
+        // no file, so create file 
+        file = SDL_RWFromFile("data/file.bin", "w+b"); // write binary
+        if (file != nullptr)
+        {
+            cout << "new file created" << endl;
+            for (size_t i = 0; i < 10; i++)
+            {
+                // initialize data 
+                data[i] = i;
+                SDL_RWwrite(file, &data[i], sizeof(Sint32), 1);
+            } // initialize file
+            // close file
+            SDL_RWclose(file);
+        }
+        else 
+        {
+            cout << "failed to create file: " << SDL_GetError() << endl;
+        } // else - failed to create file
+    } // if - empty file
+    else 
+    {
+        cout << "Reading file." << endl;
+        for (size_t i = 0; i < 10; i++)
+        {
+            SDL_RWread(file, &data[i], sizeof(Sint32), 1);
+            // read from file into data array, the file should have all zeros
+        } // for - read file
+        SDL_RWclose(file);
+    } // else - file exists
+
+    // TODO ADD CLEAN FILE FUNCTIONALITY IN QUIT FUNCTION
+
+
+    string text = " ";
+    while(!isquit)
+    {
+        // GAME LOOP
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            else if (game_event.type == SDL_KEYDOWN)
+            {
+                switch (game_event.key.keysym.sym)
+                {
+                    case SDLK_0:
+                    text = to_string(data[0]);
+                    break;
+
+                    case SDLK_1:
+                    text = to_string(data[1]);
+                    break;
+                    
+                    case SDLK_2:
+                    text = to_string(data[2]);
+                    break;
+
+                    case SDLK_3:
+                    text = to_string(data[3]);
+                    break;
+                } // switch - process key event
+            } // else if
+        } // if - game event poll check
+        
+        // RENDER
+
+        SDL_Texture* text_texture = game_window.load_from_rendered_text(text, DEFAULT_BLACK);
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        game_window.render(text_texture);
+        game_window.update_screen();
+        
+        frame++; // increment frame
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // reset animation frame
+    } // while
+} // Game::start_test_game_4
+
+void Game::start_test_game_5()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/track.png");
+
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+    Desk desk("desk", game_window);
+    // Camera camera(0, 0, 500, 500);
+
+    while(!isquit)
+    {
+        // GAME LOOP
+        
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            jack.handle_event(game_event);
+        } // if - game event poll check
+        
+        // PROCESS ENTITIES
+
+        jack.move(game_window);
+
+        if (has_collided(jack, desk))
+        {
+            jack.stop();
+            jack.set_x(0);
+            jack.set_y(0);
+            jack.spin(180);
+        } // if - collision
+
+        // RENDER
+
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        jack.render_dog(game_window, frame); // render jack
+        desk.render(game_window);
+
+        jack.render_box(game_window);
+        desk.render_box(game_window);
+
+        game_window.update_screen();
+        
+        frame++; // increment frame for animation
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // if - reset animation frame
+    } // while
+} // Game::start_test_game_5
+
+void Game::start_test_game_6()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/track.png");
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+
+    while(!isquit)
+    {
+        // GAME LOOP
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            else if (game_event.type == SDL_KEYDOWN)
+            {
+                switch (game_event.key.keysym.sym)
+                {
+
+                } // switch - process key event
+            } // else if
+        } // if - game event poll check
+        
+        // RENDER
+
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        game_window.update_screen();
+        
+        frame++; // increment frame
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // reset animation frame
+    } // while
+} // Game::start_test_game_6

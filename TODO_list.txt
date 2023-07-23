@@ -1,0 +1,6 @@
+move all quit processes and memory deallocation into main close window method in window class
+    - quit all SDL systems we opened in Window::initialize
+    - deallocate all arrays
+    - deallocate all TEXTURES
+    - deallocate all SDL files that stored data - media, audio, etc
+    - dellocate dynamically allocated memory - PARTICLE ENGINE

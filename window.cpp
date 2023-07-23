@@ -344,20 +344,20 @@ void Window::render(SDL_Texture* texture) const
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 } // Window::render
 
-void Window::render(SDL_Texture* texture, SDL_Rect* rect) const
+void Window::render(SDL_Texture* texture, SDL_Rect* target) const
 {
-    SDL_RenderCopy(renderer, texture, nullptr, rect);
+    SDL_RenderCopy(renderer, texture, nullptr, target);
 } // Window::render - with rect specification
 
-void Window::render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const
+void Window::render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip) const
 {
-    SDL_RenderCopy(renderer, texture, clip, rect);
+    SDL_RenderCopy(renderer, texture, clip, target);
 } // Window::render - with rect specs and clip rendering for sprite sheet functionality
 
-void Window::render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip, double rotate_angle,
+void Window::render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle,
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const
 {
-    SDL_RenderCopyEx(renderer, texture, clip, rect, rotate_angle, rotate_center, flip);
+    SDL_RenderCopyEx(renderer, texture, clip, target, rotate_angle, rotate_center, flip);
 } // Window::render - above, with rotation specs
 
 void Window::render_clear() const
@@ -404,98 +404,3 @@ void Window::close_window()
     // quit sdl
     SDL_Quit();
 } // Window::close_window
-
-
-
-
-bool Window::test_run_1()
-{
-    bool success = true;
-    bool isquit = false;
-
-    // calls explicit name constructor for window 
-
-    // load the background
-    if (!set_background("assets/media/red_brick.png"))
-    {
-        cout << "Failed to load background: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-
-    // loading default media
-
-    if (!load_media())
-    {
-        cout << "Failed to load default media: " << SDL_GetError() << endl;
-        success = false;
-    }
-
-    else
-    {
-
-        // THIS IS THE MAIN LOOP 
-        
-        SDL_Event test_event; // creates an event QUEUE
-        while (!isquit) // quit trigger is not activated
-        {
-            if (SDL_PollEvent( & test_event)) // if there is an event in the event QUEUE, process
-            {
-                if (test_event.type == SDL_QUIT)
-                {
-                    isquit = true;
-                } // if
-                else if (test_event.type == SDL_KEYDOWN)
-                {
-                    // a key has been pressed
-                    switch(test_event.key.keysym.sym)
-                    {
-                        case SDLK_UP:
-                        temp_image = KeyPress[key_up];
-                        break;
-
-                        case SDLK_DOWN:
-                        temp_image = KeyPress[key_down];
-                        break;
-
-                        case SDLK_LEFT:
-                        temp_image = KeyPress[key_left];
-                        break;
-
-                        case SDLK_RIGHT:
-                        temp_image = KeyPress[key_right];
-                        break;
-
-                        case SDLK_q: // quits the loop 
-                        isquit = true;
-                        break;
-
-                        default:
-                        temp_image = KeyPress[key_default];
-                        break;
-                    } // SWITCH            
-                } // else if - event keydown 
-
-            // after poll for event, render texture 
-
-            // temporary SDL rectangle for image dimensions
-            rect.x = 0;
-            rect.y = 0;
-            rect.w = 100;
-            rect.h = 100;
-            
-            texture = texture_from_surface(temp_image, 0xFF, 0xFF, 0xFF);
-            
-            render_clear();
-
-            render(background);
-            render(texture, &rect);
-            update_screen();
-
-            } // if - there is an event in the event queue
-        } // while CLOSES MAIN LOOP
-    } // else
-
-    // close_window(); // deallocate surfaces, in case of C undefined behavior
-
-    return success;
-} // Window::test_run - runs a test event

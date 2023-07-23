@@ -40,6 +40,8 @@ class Window
         SDL_Texture* get_text() const {return text_texture;}; // get text
         int get_width() const {return width;}; // get width
         int get_height() const {return height;}; // get height
+        SDL_Renderer* get_renderer() const {return renderer;}; // get renderer
+        
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
         SDL_Surface* load_surface(string media_path); // TODO implement format optimization
@@ -52,19 +54,17 @@ class Window
 
         // wrapping render and update functions from SDL in class methods
         void render(SDL_Texture* texture) const; // renders to full screen
-        void render(SDL_Texture* texture, SDL_Rect* rect) const; // renders to a position and size on the screen
-        void render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip) const; // clip rendering
-        void render(SDL_Texture* texture, SDL_Rect* rect, SDL_Rect* clip, double rotate_angle, 
+        void render(SDL_Texture* texture, SDL_Rect* target) const; // renders to a position and size on the screen
+        void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip) const; // clip rendering
+        void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle, 
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
         void modulate_alpha(SDL_Texture* texture, Uint8 alpha) const; // alpha blending, modulate transparency
 
-        void close_window(); // close the window
-        
-        bool test_run_1();
-        
+        void close_window(); // TODO implement quit function
+                
     private:
         
         // private functions

@@ -11,8 +11,11 @@ Entity::Entity()
     angle = 0;
     flip = SDL_FLIP_NONE;
     sprite_sheet = nullptr;
+    collision_box.x = x;
+    collision_box.y = y;
+    collision_box.w = w;
+    collision_box.h = h;
 } // default constructor
-
 
 void Entity::handle_event(SDL_Event &e)
 {
@@ -66,6 +69,9 @@ void Entity::handle_event(SDL_Event &e)
 
 void Entity::move(Window window)
 {
+    // the w and h of the window is set to the global constants GAME_WIDTH and GAME_HEIGHT
+    // in the game constructor
+
     x = x + vx;
     if ((x < 0) || (x + w > window.get_width()))
     {
@@ -79,4 +85,13 @@ void Entity::move(Window window)
         y = y - vy;
         vy = 0;
     } // if - rebound
+    
+    update_box(); // update the collision box to follow entity movement
 } // Entity::move
+
+void Entity::stop()
+{
+    vx = 0;
+    vy = 0;
+} //  Entity::stop
+

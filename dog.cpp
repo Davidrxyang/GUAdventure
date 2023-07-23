@@ -1,14 +1,28 @@
 #include "dog.h"
 
-Dog::Dog() : Entity()
+Dog::Dog() : Renderable()
 {
     name = "default name";
+    x = 0;
+    y = 0;
+    w = 64;
+    h = 205;
+    update_box();
+
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        particles[i] = nullptr;
+    } // initialize array to null
 } // default constructor
 
-Dog::Dog(string name, Window window) : Entity()
+Dog::Dog(string name, Window window) : Renderable()
 {
     set_name(name);
-
+    x = 0;
+    y = 0;
+    w = 64;
+    h = 205;
+    update_box();
     sprite_sheet = window.load_texture("assets/media/man.png", 0, 0xFF, 0xFF);
     // loads sprite sheet with cyan background
 
@@ -34,14 +48,52 @@ Dog::Dog(string name, Window window) : Entity()
 
     w = 64;
     h = 205;
-    
+
+    // initialize particles
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        particles[i] = new Particle(x, y, window);
+    } // initialize array of particles
 } // explicit constructor
 
-void Dog::render(Window window, int frame) const
+void Dog::render_dog(Window window, int frame)
 {
-    SDL_Rect target = {x, y, w, h};
-    target.x = x;
-    target.y = y; // update position components as necessary
-    SDL_Rect current_frame = get_frame(frame / 4); // TODO set global constant animation rate speed
-    window.render(sprite_sheet, &target, &current_frame, angle, nullptr, flip);
+    if (vx || vy)
+    {
+        render(window, frame);
+        render_particles(window);
+    } // render animation and trail if moving
+    else
+    {
+        render(window, 1);
+    } // entity is stationary, no animation, fixed to frame 1
 } // Dog::render
+
+void Dog::render_particles(Window window)
+{
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        if (particles[i] -> is_dead())
+        {
+            delete particles[i];
+            particles[i] = new Particle(x, y + h, window); // offset y so particle is at foot
+        } // if the particle is dead make a new particle
+    } // for 
+
+    // render the particles
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        particles[i] -> render_particle(window);
+    } // for
+} // Dog::render_particles
+
+/*
+Dog::~Dog()
+{
+    //Delete particles
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        delete particles[i];
+    } // for
+} // destructor
+*/
