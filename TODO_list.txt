@@ -3,7 +3,12 @@ move all quit processes and memory deallocation into main close window method in
     - deallocate all arrays
     - deallocate all TEXTURES
     - deallocate all SDL files that stored data - media, audio, etc
-    - dellocate dynamically allocated memory - PARTICLE ENGINE
+    - deallocate dynamically allocated memory - PARTICLE ENGINE
 
 set global constants
     - consider setting constants in a global file?
+
+implement all rendering as part of a texture class?
+    - this will take a shit ton of time, but it may be worth it if we are implementing scrolling windows
+    - passing a window object every single time through to the texture class in order to access renderer?
+
