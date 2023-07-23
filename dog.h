@@ -16,7 +16,7 @@ class Dog : public Renderable
 
         Dog(); // default constructor
         Dog(string name, Window window); // explicit constructor, spec name and window
-        //~Dog(); // destructor TODO MOVE THIS TO MAIN GAME DESTRUCTOR WHEN BUILT
+        // ~Dog(); // destructor TODO MOVE THIS TO MAIN GAME DESTRUCTOR WHEN BUILT
         
         void set_name(string name) {this -> name = name;}; // set name
         string get_name() const {return name;}; // get name

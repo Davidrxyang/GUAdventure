@@ -9,7 +9,6 @@ Game::Game(string player_name)
 : game_window("Game", 0, 0, GAME_WIDTH, GAME_HEIGHT)
 {
     this -> jack = Dog("jack", game_window);
-    // Window game_window("Game");
     player.set_player_name(player_name);
 } // explicit constructor
 
@@ -363,8 +362,8 @@ void Game::start_test_game_3()
         if (has_collided(jack, desk))
         {
             jack.stop();
-            jack.set_position_x(0);
-            jack.set_position_y(0);
+            jack.set_x(0);
+            jack.set_y(0);
             jack.spin(180);
         } // if - collision
 
@@ -534,8 +533,8 @@ void Game::start_test_game_5()
         if (has_collided(jack, desk))
         {
             jack.stop();
-            jack.set_position_x(0);
-            jack.set_position_y(0);
+            jack.set_x(0);
+            jack.set_y(0);
             jack.spin(180);
         } // if - collision
 
@@ -560,3 +559,48 @@ void Game::start_test_game_5()
         } // if - reset animation frame
     } // while
 } // Game::start_test_game_5
+
+void Game::start_test_game_6()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/track.png");
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+
+    while(!isquit)
+    {
+        // GAME LOOP
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            else if (game_event.type == SDL_KEYDOWN)
+            {
+                switch (game_event.key.keysym.sym)
+                {
+
+                } // switch - process key event
+            } // else if
+        } // if - game event poll check
+        
+        // RENDER
+
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        game_window.update_screen();
+        
+        frame++; // increment frame
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // reset animation frame
+    } // while
+} // Game::start_test_game_6

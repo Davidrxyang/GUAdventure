@@ -17,10 +17,12 @@ class Entity
 
         Entity(); // default constructor
 
-        void set_position_x(int x) {this -> x = x;}; // set x
-        void set_position_y(int y) {this -> y = y;}; // set y
-        int get_position_x() const {return x;}; // get x
-        int get_position_y() const {return y;}; // get y
+        void set_x(int x) {this -> x = x;}; // set x
+        void set_y(int y) {this -> y = y;}; // set y
+        int get_x() const {return x;}; // get x
+        int get_y() const {return y;}; // get y
+        int get_h() const {return h;}; // get h
+        int get_w() const {return w;}; // get w
         SDL_Texture* get_texture() const {return sprite_sheet;}; // get texture
         SDL_Rect get_frame(int frame) const {return frames[frame];}; // get frames
         SDL_Rect get_box() const {return collision_box;}; // get collision box

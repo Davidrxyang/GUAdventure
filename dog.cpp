@@ -7,10 +7,7 @@ Dog::Dog() : Renderable()
     y = 0;
     w = 64;
     h = 205;
-    collision_box.x = x;
-    collision_box.y = y;
-    collision_box.w = w;
-    collision_box.h = h;
+    update_box();
 
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
@@ -25,10 +22,7 @@ Dog::Dog(string name, Window window) : Renderable()
     y = 0;
     w = 64;
     h = 205;
-    collision_box.x = x;
-    collision_box.y = y;
-    collision_box.w = w;
-    collision_box.h = h;
+    update_box();
     sprite_sheet = window.load_texture("assets/media/man.png", 0, 0xFF, 0xFF);
     // loads sprite sheet with cyan background
 

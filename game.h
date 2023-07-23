@@ -50,6 +50,7 @@ using namespace std;
 
 class Game
 {
+
     public:
         Game(); // default constructor
         Game(string player_name); // explicit constructor
@@ -61,11 +62,12 @@ class Game
         void TEST_TEMPLATE(); // template for test games
 
         // test games
-        void start_test_game_1(); // test V1
-        void start_test_game_2(); // test V2
-        void start_test_game_3(); // test V2
-        void start_test_game_4(); // test V2
-        void start_test_game_5(); // test V2
+        void start_test_game_1(); // audio testing, button testing
+        void start_test_game_2(); // frame rate timer
+        void start_test_game_3(); // text entity 
+        void start_test_game_4(); // file I/O
+        void start_test_game_5(); // jack has particles
+        void start_test_game_6(); // scrolling camera
 
     private:
         Player player;
