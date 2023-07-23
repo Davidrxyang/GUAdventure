@@ -58,15 +58,21 @@ Dog::Dog(string name, Window window) : Renderable()
     // initialize particles
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        Particle particle(x, y, window);
-        particles[i] = &particle;
+        particles[i] = new Particle(x, y, window);
     } // initialize array of particles
 } // explicit constructor
 
 void Dog::render_dog(Window window, int frame)
 {
-    render(window, frame);
-    render_particles(window);
+    if (vx || vy)
+    {
+        render(window, frame);
+        render_particles(window);
+    } // render animation and trail if moving
+    else
+    {
+        render(window, 1);
+    } // entity is stationary, no animation, fixed to frame 1
 } // Dog::render
 
 void Dog::render_particles(Window window)
@@ -75,15 +81,15 @@ void Dog::render_particles(Window window)
     {
         if (particles[i] -> is_dead())
         {
-            //delete particles[i];
-            //particles[i] = new Particle(x, y, window);
+            delete particles[i];
+            particles[i] = new Particle(x, y + h, window); // offset y so particle is at foot
         } // if the particle is dead make a new particle
     } // for 
 
     // render the particles
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        particles[i] -> render(window);
+        particles[i] -> render_particle(window);
     } // for
 } // Dog::render_particles
 
@@ -96,5 +102,4 @@ Dog::~Dog()
         delete particles[i];
     } // for
 } // destructor
-
 */

@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include <random>
 #include "window.h"
 
 using namespace std;
@@ -13,10 +14,11 @@ class Particle
     public:
 
         Particle(); // default constructor
-        Particle(int x, int y, Window window); // explicit constructor
+        Particle(int entity_x, int entity_y, Window window); // explicit constructor
 
-        void render(Window window); // render particle
+        void render_particle(Window window); // render particle
         bool is_dead(); // if particle has dissapeared
+        void set_life(int life); // sets the lifespan
 
     private:
 
@@ -24,8 +26,9 @@ class Particle
 
         int x; 
         int y;
+        int life; // lifespan of the particle
         SDL_Texture* particle_texture;
-        SDL_Texture* red;
+        SDL_Texture* red;   
         SDL_Texture* green;
         SDL_Texture* blue;
         int frame; // randomized internal frame count for animation
