@@ -11,6 +11,11 @@ Dog::Dog() : Renderable()
     collision_box.y = y;
     collision_box.w = w;
     collision_box.h = h;
+
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        particles[i] = nullptr;
+    } // initialize array to null
 } // default constructor
 
 Dog::Dog(string name, Window window) : Renderable()
@@ -49,6 +54,47 @@ Dog::Dog(string name, Window window) : Renderable()
 
     w = 64;
     h = 205;
-    
+
+    // initialize particles
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        Particle particle(x, y, window);
+        particles[i] = &particle;
+    } // initialize array of particles
 } // explicit constructor
 
+void Dog::render_dog(Window window, int frame)
+{
+    render(window, frame);
+    render_particles(window);
+} // Dog::render
+
+void Dog::render_particles(Window window)
+{
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        if (particles[i] -> is_dead())
+        {
+            //delete particles[i];
+            //particles[i] = new Particle(x, y, window);
+        } // if the particle is dead make a new particle
+    } // for 
+
+    // render the particles
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        particles[i] -> render(window);
+    } // for
+} // Dog::render_particles
+
+/*
+Dog::~Dog()
+{
+    //Delete particles
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        delete particles[i];
+    } // for
+} // destructor
+
+*/

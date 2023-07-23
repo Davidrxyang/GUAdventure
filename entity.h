@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include "window.h"
 
+const int TOTAL_PARTICLES = 10;
+
 using namespace std;
 
 const int animation_frame_count = 4;

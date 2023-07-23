@@ -499,3 +499,64 @@ void Game::start_test_game_4()
         } // reset animation frame
     } // while
 } // Game::start_test_game_4
+
+void Game::start_test_game_5()
+{
+    bool isquit = false;
+
+    game_window.set_background("assets/media/track.png");
+
+    int frame = 0;
+    SDL_Event game_event;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    double angle = 0;
+    Desk desk("desk", game_window);
+    // Camera camera(0, 0, 500, 500);
+
+    while(!isquit)
+    {
+        // GAME LOOP
+        
+        if (SDL_PollEvent(& game_event))
+        {        
+            // PROCESS EVENTS    
+            if (game_event.type == SDL_QUIT)
+            {
+                isquit = true;
+            } // if - quit game
+            jack.handle_event(game_event);
+        } // if - game event poll check
+        
+        // PROCESS ENTITIES
+
+        jack.move(game_window);
+
+        if (has_collided(jack, desk))
+        {
+            jack.stop();
+            jack.set_position_x(0);
+            jack.set_position_y(0);
+            jack.spin(180);
+        } // if - collision
+
+        // RENDER
+
+        game_window.render_clear();
+        game_window.render(game_window.get_background());
+        jack.render_dog(game_window, frame); // render jack
+        desk.render(game_window);
+
+        jack.render_box(game_window);
+        desk.render_box(game_window);
+
+        game_window.update_screen();
+        
+        frame++; // increment frame for animation
+
+        // the game will have four frame animaiton speed, four frame animation too
+        if (frame / 4 >= animation_frame_count)
+        {
+            frame = 0; // reset frame count
+        } // if - reset animation frame
+    } // while
+} // Game::start_test_game_5

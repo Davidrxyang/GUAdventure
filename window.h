@@ -63,10 +63,8 @@ class Window
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
         void modulate_alpha(SDL_Texture* texture, Uint8 alpha) const; // alpha blending, modulate transparency
 
-        void close_window(); // close the window
-        
-        bool test_run_1();
-        
+        void close_window(); // TODO implement quit function
+                
     private:
         
         // private functions

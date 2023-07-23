@@ -65,6 +65,7 @@ class Game
         void start_test_game_2(); // test V2
         void start_test_game_3(); // test V2
         void start_test_game_4(); // test V2
+        void start_test_game_5(); // test V2
 
     private:
         Player player;
