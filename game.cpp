@@ -6,10 +6,13 @@ Game::Game()
 } // default constructor
 
 Game::Game(string player_name) 
-: game_window("Game", 0, 0, GAME_WIDTH, GAME_HEIGHT)
+: game_window("Game", 0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT)
 {
     this -> jack = Dog("jack", game_window);
     player.set_player_name(player_name);
+
+    game_window.set_background_width(GAME_LEVEL_WIDTH);
+    game_window.set_background_height(GAME_LEVEL_HEIGHT);
 } // explicit constructor
 
 void Game::start_game()
@@ -50,6 +53,8 @@ bool Game::has_collided(Entity a, Entity b) const
     return true; // if none satisfy condition, the boxes do not overlap, return true
 } // Game::has_collided
 
+/*
+
 void Game::TEST_TEMPLATE()
 {
     bool isquit = false;
@@ -70,19 +75,21 @@ void Game::TEST_TEMPLATE()
             {
                 isquit = true;
             } // if - quit game
-            else if (game_event.type == SDL_KEYDOWN)
-            {
-                switch (game_event.key.keysym.sym)
-                {
-
-                } // switch - process key event
-            } // else if
+            jack.handle_event(game_event);
         } // if - game event poll check
         
+        // PROCESS ENTITIES
+
+        jack.move(game_window);
+
         // RENDER
 
         game_window.render_clear();
         game_window.render(game_window.get_background());
+        jack.render_dog(game_window, frame);
+
+        jack.render_box(game_window);
+        
         game_window.update_screen();
         
         frame++; // increment frame
@@ -560,15 +567,23 @@ void Game::start_test_game_5()
     } // while
 } // Game::start_test_game_5
 
+*/
+
 void Game::start_test_game_6()
 {
     bool isquit = false;
 
     game_window.set_background("assets/media/track.png");
+
     int frame = 0;
     SDL_Event game_event;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
+
+    // TESTING CAMERA SCROLLING
+
+    Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_LEVEL_HEIGHT);
+ 
 
     while(!isquit)
     {
@@ -580,19 +595,38 @@ void Game::start_test_game_6()
             {
                 isquit = true;
             } // if - quit game
-            else if (game_event.type == SDL_KEYDOWN)
-            {
-                switch (game_event.key.keysym.sym)
-                {
-
-                } // switch - process key event
-            } // else if
+            jack.handle_event(game_event);
         } // if - game event poll check
         
+        // PROCESS ENTITIES
+
+        jack.move(game_window);
+
+        // PROCESS CAMERA
+
+        camera.set_x((jack.get_x() + jack.get_w() / 2) - GAME_SCREEN_WIDTH / 2);
+        camera.set_y((jack.get_y() + jack.get_h() / 2) - GAME_SCREEN_HEIGHT / 2);
+
+        // camera bounds checking
+        if (camera.get_x() < 0)
+        {camera.set_x(0);}
+        if (camera.get_y() < 0)
+        {camera.set_y(0);}
+        if (camera.get_x() > GAME_LEVEL_WIDTH - camera.get_w())
+        {camera.set_w(GAME_LEVEL_WIDTH - camera.get_w());}
+        if (camera.get_y() > GAME_LEVEL_HEIGHT - camera.get_h())
+        {camera.set_h(GAME_LEVEL_HEIGHT - camera.get_h());} 
+        
+
+
         // RENDER
 
         game_window.render_clear();
-        game_window.render(game_window.get_background());
+        game_window.render_background(camera.get_x(), camera.get_y());
+
+        jack.render_dog(game_window, frame, camera.get_x(), camera.get_y());
+        jack.render_box(game_window);
+
         game_window.update_screen();
         
         frame++; // increment frame

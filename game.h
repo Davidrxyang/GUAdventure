@@ -42,8 +42,10 @@
 
 // constants
 
-const int GAME_WIDTH = 1400;
-const int GAME_HEIGHT = 600;
+const int GAME_SCREEN_WIDTH = 400;
+const int GAME_SCREEN_HEIGHT = 300;
+const int GAME_LEVEL_WIDTH = 1600;
+const int GAME_LEVEL_HEIGHT = 800;
 const SDL_Color DEFAULT_BLACK = {0, 0, 0};
 
 using namespace std;

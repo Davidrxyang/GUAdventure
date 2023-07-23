@@ -4,3 +4,6 @@ move all quit processes and memory deallocation into main close window method in
     - deallocate all TEXTURES
     - deallocate all SDL files that stored data - media, audio, etc
     - dellocate dynamically allocated memory - PARTICLE ENGINE
+
+set global constants
+    - consider setting constants in a global file?

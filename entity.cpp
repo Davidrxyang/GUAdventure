@@ -73,19 +73,18 @@ void Entity::move(Window window)
     // in the game constructor
 
     x = x + vx;
-    if ((x < 0) || (x + w > window.get_width()))
+    if ((x < 0) || (x + w > window.get_background_width()))
     {
         x = x - vx;
         vx = 0;
     } // if - at bounds, rebound
 
     y = y + vy;
-    if (y < 0 || (y + h > window.get_height()))
+    if (y < 0 || (y + h > window.get_background_height()))
     {
         y = y - vy;
         vy = 0;
-    } // if - rebound
-    
+    } // if - bounds checking
     update_box(); // update the collision box to follow entity movement
 } // Entity::move
 

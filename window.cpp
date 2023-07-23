@@ -360,6 +360,12 @@ void Window::render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, doub
     SDL_RenderCopyEx(renderer, texture, clip, target, rotate_angle, rotate_center, flip);
 } // Window::render - above, with rotation specs
 
+void Window::render_background(int cam_x, int cam_y)
+{
+    SDL_Rect target = {cam_x, cam_y, background_width, background_height};
+    render(background, &target);
+} // Window::render_background
+
 void Window::render_clear() const
 {
     SDL_RenderClear(renderer);

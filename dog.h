@@ -20,7 +20,7 @@ class Dog : public Renderable
         
         void set_name(string name) {this -> name = name;}; // set name
         string get_name() const {return name;}; // get name
-        void render_dog(Window window, int frame); // render 
+        void render_dog(Window window, int frame, int cam_x, int cam_y); // render 
 
     private:
 
