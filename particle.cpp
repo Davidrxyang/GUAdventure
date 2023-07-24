@@ -49,7 +49,14 @@ void Particle::render_particle(Window window)
     SDL_Rect target = {x, y, 20, 20};
     window.render(particle_texture, &target);
     frame++; // animate
-} // Particle::render
+} // Particle::render_particle 
+
+void Particle::render_particle(Window window, Camera camera)
+{
+    SDL_Rect target = {x - camera.get_x(), y - camera.get_y(), 20, 20};
+    window.render(particle_texture, &target);
+    frame++; // animate
+} // Particle::render_particle
 
 bool Particle::is_dead()
 {

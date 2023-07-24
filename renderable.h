@@ -3,6 +3,7 @@
 
 #include "entity.h"
 #include "window.h"
+#include "camera.h"
 
 using namespace std;
 
@@ -11,11 +12,19 @@ class Renderable : public Entity
     public:
 
         Renderable(); // default constructor
-        void render(Window window) const; // render, no animation
-        void render(Window window, int cam_x, int cam_y) const; // camera offset
-        void render(Window window, int frame) const; // render function
-        void render(Window window, int frame, int cam_x, int cam_y) const; // camera offset
-        void render_box(Window window) const;
+        void render(Window window); // render, no animation
+        void render(Window window, Camera camera); // camera offset
+        void render(Window window, int frame); // render function
+        void render(Window window, int frame, Camera camera); // camera offset
+        void render_box(Window window);
+        void render_box(Window window, Camera camera);
+
+    private:
+
+        void position_to_int(); // converts entity position in float to int render pos
+
+        int rx; // converting float position back to ints for the rendering methods
+        int ry;
 };
 
 #endif

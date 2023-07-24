@@ -9,6 +9,7 @@
 #include <string>
 #include <cmath>
 #include <sstream>
+#include "camera.h"
 
 using namespace std;
 
@@ -62,7 +63,7 @@ class Window
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip) const; // clip rendering
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle, 
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
-        void render_background(int cam_x, int cam_y);
+        void render_background(Camera camera);
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color

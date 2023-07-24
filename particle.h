@@ -5,6 +5,7 @@
 #include <string>
 #include <random>
 #include "window.h"
+#include "camera.h"
 
 using namespace std;
 
@@ -17,6 +18,8 @@ class Particle
         Particle(int entity_x, int entity_y, Window window); // explicit constructor
 
         void render_particle(Window window); // render particle
+        void render_particle(Window window, Camera camera); // render particle with camera offset
+
         bool is_dead(); // if particle has dissapeared
         void set_life(int life); // sets the lifespan
 

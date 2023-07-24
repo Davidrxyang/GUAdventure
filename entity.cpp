@@ -11,10 +11,10 @@ Entity::Entity()
     angle = 0;
     flip = SDL_FLIP_NONE;
     sprite_sheet = nullptr;
-    collision_box.x = x;
-    collision_box.y = y;
-    collision_box.w = w;
-    collision_box.h = h;
+    collision_box.x = int(x);
+    collision_box.y = int(y);
+    collision_box.w = int(w);
+    collision_box.h = int(h);
 } // default constructor
 
 void Entity::handle_event(SDL_Event &e)
@@ -26,21 +26,21 @@ void Entity::handle_event(SDL_Event &e)
     {
         if (current_key_states[SDL_SCANCODE_UP])
         {
-            vy = vy - 10;
+            vy = vy - DEFAULT_SPEED;
         } // if        
         else if (current_key_states[SDL_SCANCODE_DOWN]) 
         {
-            vy = vy + 10;
+            vy = vy + DEFAULT_SPEED;
         } // else if
         else if (current_key_states[SDL_SCANCODE_RIGHT])
         {
             flip = SDL_FLIP_HORIZONTAL;
-            vx = vx + 10;
+            vx = vx + DEFAULT_SPEED;
         } // else if  
         else if (current_key_states[SDL_SCANCODE_LEFT])
         {
             flip = SDL_FLIP_NONE;
-            vx = vx - 10;
+            vx = vx - DEFAULT_SPEED;
         } // else if
     } // if - check event type
 
@@ -50,41 +50,54 @@ void Entity::handle_event(SDL_Event &e)
     {
         if (current_key_states[SDL_SCANCODE_UP])
         {
-            vy = vy + 10;
+            vy = vy + DEFAULT_SPEED;
         } // if        
         else if (current_key_states[SDL_SCANCODE_DOWN]) 
         {
-            vy = vy - 10;
+            vy = vy - DEFAULT_SPEED;
         } // else if
         else if (current_key_states[SDL_SCANCODE_RIGHT])
         {
-            vx = vx - 10;
+            vx = vx - DEFAULT_SPEED;
         } // else if  
         else if (current_key_states[SDL_SCANCODE_LEFT])
         {
-            vx = vx + 10;
+            vx = vx + DEFAULT_SPEED;
         } // else if
     } // if - check event type
 } // Entity::handle_event
 
-void Entity::move(Window window)
+void Entity::move(Window window, double time_step)
 {
     // the w and h of the window is set to the global constants GAME_WIDTH and GAME_HEIGHT
     // in the game constructor
 
-    x = x + vx;
-    if ((x < 0) || (x + w > window.get_background_width()))
-    {
-        x = x - vx;
-        vx = 0;
-    } // if - at bounds, rebound
+    x = x + vx * time_step; // standard physics equation x = x_0 + vt
 
-    y = y + vy;
-    if (y < 0 || (y + h > window.get_background_height()))
+    // modified bounds checking for time step movement
+    if (x < 0)
     {
-        y = y - vy;
+        x = 0;
+        vx = 0;
+    } // if
+    else if (x + w > window.get_background_width())
+    {
+        x = window.get_background_width() - w;
+        vx = 0;
+    } // else if
+
+    y = y + vy * time_step;
+    if (y < 0)
+    {
+        y = 0;
         vy = 0;
-    } // if - bounds checking
+    } // if
+    else if (y + h > window.get_background_height())
+    {
+        y = window.get_background_height() - h;
+        vy = 0;
+    } // else if
+
     update_box(); // update the collision box to follow entity movement
 } // Entity::move
 

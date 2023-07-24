@@ -56,20 +56,21 @@ Dog::Dog(string name, Window window) : Renderable()
     } // initialize array of particles
 } // explicit constructor
 
-void Dog::render_dog(Window window, int frame, int cam_x, int cam_y)
+void Dog::render_dog(Window window, int frame, Camera camera)
 {
+
     if (vx || vy)
     {
-        render(window, frame, cam_x, cam_y);
-        render_particles(window);
+        render(window, frame, camera);
+        render_particles(window, camera);
     } // render animation and trail if moving
     else
     {
-        render(window, 1, cam_x, cam_y);
+        render(window, 1, camera);
     } // entity is stationary, no animation, fixed to frame 1
 } // Dog::render
 
-void Dog::render_particles(Window window)
+void Dog::render_particles(Window window, Camera camera)
 {
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
@@ -83,7 +84,7 @@ void Dog::render_particles(Window window)
     // render the particles
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        particles[i] -> render_particle(window);
+        particles[i] -> render_particle(window, camera);
     } // for
 } // Dog::render_particles
 

@@ -579,10 +579,11 @@ void Game::start_test_game_6()
     SDL_Event game_event;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
+    Timer step_timer;
 
     // TESTING CAMERA SCROLLING
 
-    Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_LEVEL_HEIGHT);
+    Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
  
 
     while(!isquit)
@@ -599,8 +600,10 @@ void Game::start_test_game_6()
         } // if - game event poll check
         
         // PROCESS ENTITIES
+        double time_step = step_timer.get_seconds();
+        jack.move(game_window, time_step);
 
-        jack.move(game_window);
+        step_timer.start(); // restart timer
 
         // PROCESS CAMERA
 
@@ -613,19 +616,17 @@ void Game::start_test_game_6()
         if (camera.get_y() < 0)
         {camera.set_y(0);}
         if (camera.get_x() > GAME_LEVEL_WIDTH - camera.get_w())
-        {camera.set_w(GAME_LEVEL_WIDTH - camera.get_w());}
+        {camera.set_x(GAME_LEVEL_WIDTH - camera.get_w());}
         if (camera.get_y() > GAME_LEVEL_HEIGHT - camera.get_h())
-        {camera.set_h(GAME_LEVEL_HEIGHT - camera.get_h());} 
+        {camera.set_y(GAME_LEVEL_HEIGHT - camera.get_h());} 
         
-
-
         // RENDER
 
         game_window.render_clear();
-        game_window.render_background(camera.get_x(), camera.get_y());
+        game_window.render_background(camera);
 
-        jack.render_dog(game_window, frame, camera.get_x(), camera.get_y());
-        jack.render_box(game_window);
+        jack.render_dog(game_window, frame, camera);
+        jack.render_box(game_window, camera);
 
         game_window.update_screen();
         
