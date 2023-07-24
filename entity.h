@@ -5,6 +5,7 @@
 #include "window.h"
 
 const int TOTAL_PARTICLES = 10;
+const double DEFAULT_SPEED = 640; // pixels per SECOND
 
 using namespace std;
 
@@ -17,8 +18,6 @@ class Entity
 
         Entity(); // default constructor
 
-        void set_x(int x) {this -> x = x;}; // set x
-        void set_y(int y) {this -> y = y;}; // set y
         int get_x() const {return x;}; // get x
         int get_y() const {return y;}; // get y
         int get_h() const {return h;}; // get h
@@ -31,7 +30,14 @@ class Entity
         // Entity actions
 
         void spin(double a) {angle += a;}; // spin
-        void move(Window window); // move entity
+        void move_x(int dx) {x += dx;}; // move x
+        void move_y(int dy) {y += dy;}; // move y
+        void set_vx(int vx) {this -> vx = vx;}; // velocity x
+        void set_vy(int vy) {this -> vy = vy;}; // velocuty y
+        void set_x(int x) {this -> x = x;}; // set x
+        void set_y(int y) {this -> y = y;}; // set y
+
+        void move(Window window, double time_step); // move entity
         void stop(); // stop entity - resets velocity
 
     protected:
@@ -39,12 +45,12 @@ class Entity
         void update_box() {collision_box.x = x; collision_box.y = y;
                            collision_box.w = w; collision_box.h = h;} // update collision box
 
-        int x; // position x
-        int y; // posiiton y
+        double x; // position x
+        double y; // posiiton y
         int w; // width
         int h; // height
-        int vx; // velocity x
-        int vy; // velocity y
+        double vx; // velocity x
+        double vy; // velocity y
         double angle; // rotation angle
         SDL_RendererFlip flip; // is flip?
         SDL_Texture* sprite_sheet; // sprite texture

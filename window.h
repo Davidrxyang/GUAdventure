@@ -9,6 +9,7 @@
 #include <string>
 #include <cmath>
 #include <sstream>
+#include "camera.h"
 
 using namespace std;
 
@@ -35,6 +36,10 @@ class Window
         void set_name(string name); // set name
         void set_font(string font_path, int font_size, Uint8 r, Uint8 g, Uint8 b); // set font
         bool set_background(string media_path); // loads background texture
+        void set_background_width(int w) {background_width = w;}; // set background width
+        void set_background_height(int h) {background_height = h;}; // set background height
+        int get_background_width() const {return background_width;}; // getter
+        int get_background_height() const {return background_height;}; // getter
         void set_local_text(string text); // sets the local text
         SDL_Texture* get_background() const {return background;}; // get background
         SDL_Texture* get_text() const {return text_texture;}; // get text
@@ -58,6 +63,7 @@ class Window
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip) const; // clip rendering
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle, 
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
+        void render_background(Camera camera);
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
@@ -83,13 +89,17 @@ class Window
         TTF_Font* font;
         SDL_Color font_color;
 
-        SDL_Texture* background;
         SDL_Texture* texture;
         SDL_Texture* text_texture;
         SDL_Surface* temp_image;
         SDL_Surface* window_surface;
         SDL_Surface* KeyPress[key_total]; // TESTING array for corresponding keypress surfaces
         SDL_Rect rect; // TESTING
+
+        // background
+        SDL_Texture* background;
+        int background_width;
+        int background_height;
 
         SDL_Window* window;
         SDL_Renderer* renderer;
