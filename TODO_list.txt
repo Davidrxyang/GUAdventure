@@ -7,3 +7,7 @@ move all quit processes and memory deallocation into main close window method in
 
 set global constants
     - consider setting constants in a global file?
+
+consider encapsulating texture in class
+    - complete overhaul, basically
+    
