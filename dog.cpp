@@ -8,6 +8,7 @@ Dog::Dog() : Perishable()
     w = 64;
     h = 205;
     update_box();
+    update_health();
 
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
@@ -23,6 +24,7 @@ Dog::Dog(string name, Window window) : Perishable()
     w = 64;
     h = 205;
     update_box();
+    update_health();
     sprite_sheet = window.load_texture("assets/media/man.png", 0, 0xFF, 0xFF);
     // loads sprite sheet with cyan background
 
@@ -63,10 +65,12 @@ void Dog::render_dog(Window window, int frame, Camera camera)
     {
         render(window, frame, camera);
         render_particles(window, camera);
+        render_health(window, camera);
     } // render animation and trail if moving
     else
     {
         render(window, 1, camera);
+        render_health(window, camera);
     } // entity is stationary, no animation, fixed to frame 1
 } // Dog::render
 

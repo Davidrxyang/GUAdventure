@@ -26,6 +26,7 @@
 #include "window.h"
 #include "entity.h"
 #include "renderable.h"
+#include "perishable.h"
 #include "player.h"
 #include "timer.h"
 #include "text.h"
