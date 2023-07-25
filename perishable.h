@@ -20,11 +20,11 @@ class Perishable : public Renderable
     public:
 
         Perishable(); // default constructor
-        Perishable(int initial_health, bool is_dead); // explicit constructor
-        bool died() const {return is_dead;}; // if the entity is dead
+        Perishable(int initial_health, bool dead); // explicit constructor
+        bool is_dead() const {return dead;}; // if the entity is dead
         int get_health() const {return health;}; // get health
         void kill() {health = 0;}; // kills the entity
-        void change_health(int n); // change health by n, with bounds checking, n can be POS or NEG
+        void change_health(int n); // change health by n units, pos or neg
 
         void render_health(Window window); // render health bar
         void render_health(Window window, Camera camera); // render health bar with cam offset
@@ -36,7 +36,7 @@ class Perishable : public Renderable
         int health;
         SDL_Rect health_bar_frame;
         SDL_Rect health_bar;
-        bool is_dead;
+        bool dead;
 };
 
 #endif

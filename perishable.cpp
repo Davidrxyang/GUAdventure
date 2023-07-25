@@ -2,21 +2,21 @@
 
 Perishable::Perishable() : Renderable()
 {
-    int health = MAX_HEALTH;
+    health = MAX_HEALTH;
     SDL_Rect frame = {int(x), int(y), MAX_HEALTH * HEALTH_BAR_UNIT_LENGTH, HEALTH_BAR_HEIGHT}; 
     SDL_Rect bar = {int(x), int(y), health * HEALTH_BAR_UNIT_LENGTH, HEALTH_BAR_HEIGHT};
-    is_dead = false;
+    dead = false;
 
     health_bar_frame = frame;
     health_bar = bar;
 } // default constructor
 
-Perishable::Perishable(int initial_health, bool is_dead) : Renderable()
+Perishable::Perishable(int initial_health, bool dead) : Renderable()
 {
-    int health = initial_health;
+    health = initial_health;
     SDL_Rect frame = {int(x), int(y), MAX_HEALTH * HEALTH_BAR_UNIT_LENGTH, HEALTH_BAR_HEIGHT}; 
     SDL_Rect bar = {int(x), int(y), health * HEALTH_BAR_UNIT_LENGTH, HEALTH_BAR_HEIGHT};
-    this -> is_dead = is_dead;
+    this -> dead = dead;
 
     health_bar_frame = frame;
     health_bar = bar;
@@ -32,6 +32,13 @@ void Perishable::change_health(int n)
     {
         health += n;
     } // else - health change is valid
+    
+    health_bar.w = health * HEALTH_BAR_UNIT_LENGTH; // update health bar to reflect health
+
+    if (health == 0)
+    {
+        dead = true;
+    } // if - health reaches 0 is dead
 } // Perishable::change_health - the change amount can be POSITIVE OR NEGATIVE, but usually negative 
 
 void Perishable::render_health(Window window)

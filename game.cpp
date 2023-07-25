@@ -585,6 +585,8 @@ void Game::start_test_game_6()
 
     Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
  
+    // just to make sure jack died
+    bool has_spun = false;
 
     while(!isquit)
     {
@@ -596,6 +598,15 @@ void Game::start_test_game_6()
             {
                 isquit = true;
             } // if - quit game
+            else if (game_event.type == SDL_KEYDOWN)
+            {
+                switch (game_event.key.keysym.sym)
+                {
+                    case SDLK_l:
+                    jack.change_health(-1);
+                    break;
+                } // switch - process key event
+            }
             jack.handle_event(game_event);
         } // if - game event poll check
         
@@ -604,6 +615,13 @@ void Game::start_test_game_6()
         jack.move(game_window, time_step);
 
         step_timer.start(); // restart timer
+
+        if (jack.is_dead() && !has_spun)
+        {
+            jack.spin(90);
+            cout << "Jack died..." << endl;
+            has_spun = true;
+        } // if - jack dies
 
         // PROCESS CAMERA
 
