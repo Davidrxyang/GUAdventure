@@ -1,6 +1,6 @@
 #include "dog.h"
 
-Dog::Dog() : Renderable()
+Dog::Dog() : Perishable()
 {
     name = "default name";
     x = 0;
@@ -15,7 +15,7 @@ Dog::Dog() : Renderable()
     } // initialize array to null
 } // default constructor
 
-Dog::Dog(string name, Window window) : Renderable()
+Dog::Dog(string name, Window window) : Perishable()
 {
     set_name(name);
     x = 0;

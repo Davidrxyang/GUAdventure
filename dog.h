@@ -5,12 +5,13 @@
 #include <string>
 #include "window.h"
 #include "renderable.h"
+#include "perishable.h"
 #include "particle.h"
 #include "camera.h"
 
 using namespace std;
 
-class Dog : public Renderable
+class Dog : public Perishable
 {
 
     public:
