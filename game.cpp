@@ -576,10 +576,24 @@ void Game::start_test_game_6()
     game_window.set_background("assets/media/track.png");
 
     int frame = 0;
+    int total_frames = 0;
     SDL_Event game_event;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     double angle = 0;
     Timer step_timer;
+
+    Dog me("me", game_window);
+    Desk desk("desk", game_window);
+    Dog dog1("dog1", game_window);
+    Dog dog2("dog2", game_window);
+    Dog dog3("dog3", game_window);
+
+    dog1.set_x(GAME_LEVEL_WIDTH - 300);
+    dog1.set_y(300);
+    dog2.set_x(300);
+    dog2.set_y(GAME_LEVEL_HEIGHT - 300);
+    dog3.set_x(GAME_LEVEL_WIDTH - 300);
+    dog3.set_y(GAME_LEVEL_HEIGHT - 300);
 
     // TESTING CAMERA SCROLLING
 
@@ -602,31 +616,96 @@ void Game::start_test_game_6()
             {
                 switch (game_event.key.keysym.sym)
                 {
-                    case SDLK_l:
-                    jack.change_health(-1);
-                    break;
-                } // switch - process key event
+
+                } // switch - process individual key event
             }
-            jack.handle_event(game_event);
+            me.handle_event(game_event);
         } // if - game event poll check
         
+        if (has_collided(me, desk))
+        {
+            me.stop();
+            me.change_health(3);
+            me.set_x(0);
+            me.set_y(0);
+        } // if - collision
+
+        // randomize dog movement
+
+        int change_rate = (100 - rand()%30);
+        if (total_frames % change_rate == 0)
+        {
+            dog1.set_vx(200 - rand()%400);
+            dog2.set_vx(200 - rand()%400);
+            dog3.set_vx(200 - rand()%400);
+            dog1.set_vy(200 - rand()%400);
+            dog2.set_vy(200 - rand()%400);
+            dog3.set_vy(200 - rand()%400);
+        }
+
+        if (!dog1.is_dead() && has_collided(me, dog1))
+        {
+            me.set_x(0);
+            me.set_y(0);
+            me.stop();
+            me.change_health(-1);
+            dog1.change_health(-2);
+        }
+        if (!dog2.is_dead() && has_collided(me, dog2))
+        {
+            me.set_x(0);
+            me.set_y(0);
+            me.stop();
+            me.change_health(-1);
+            dog2.change_health(-2);
+        }
+        if (!dog3.is_dead() && has_collided(me, dog3))
+        {
+            me.set_x(0);
+            me.set_y(0);
+            me.stop();
+            me.change_health(-1);
+            dog3.change_health(-2);
+        }
+
         // PROCESS ENTITIES
         double time_step = step_timer.get_seconds();
-        jack.move(game_window, time_step);
+        if (!me.is_dead())
+        {me.move(game_window, time_step);}
 
+        if(!dog1.is_dead())
+        {dog1.move(game_window, time_step);}
+        if(!dog2.is_dead())
+        {dog2.move(game_window, time_step);}
+        if(!dog3.is_dead())
+        {dog3.move(game_window, time_step);}
+
+        if (dog1.is_dead())
+        {
+            dog1.spin(30);
+        }
+        if (dog2.is_dead())
+        {   
+            dog2.spin(30);
+        }
+        if (dog3.is_dead())
+        {
+            dog3.spin(20);
+        }
+        
         step_timer.start(); // restart timer
 
-        if (jack.is_dead() && !has_spun)
+        if (me.is_dead() && !has_spun)
         {
-            jack.spin(90);
-            cout << "Jack died..." << endl;
+            me.spin(90);
+            cout << "You died..." << endl;
             has_spun = true;
         } // if - jack dies
 
         // PROCESS CAMERA
 
-        camera.set_x((jack.get_x() + jack.get_w() / 2) - GAME_SCREEN_WIDTH / 2);
-        camera.set_y((jack.get_y() + jack.get_h() / 2) - GAME_SCREEN_HEIGHT / 2);
+        camera.set_x((me.get_x() + me.get_w() / 2) - GAME_SCREEN_WIDTH / 2);
+        camera.set_y((me.get_y() + me.get_h() / 2) - GAME_SCREEN_HEIGHT / 2);
 
         // camera bounds checking
         if (camera.get_x() < 0)
@@ -643,12 +722,17 @@ void Game::start_test_game_6()
         game_window.render_clear();
         game_window.render_background(camera);
 
-        jack.render_dog(game_window, frame, camera);
-        jack.render_box(game_window, camera);
+        me.render_dog(game_window, frame, camera);
+        desk.render(game_window, camera);
+
+        dog1.render_dog(game_window, frame, camera);        
+        dog2.render_dog(game_window, frame, camera);        
+        dog3.render_dog(game_window, frame, camera);        
 
         game_window.update_screen();
         
         frame++; // increment frame
+        total_frames++;
 
         // the game will have four frame animaiton speed, four frame animation too
         if (frame / 4 >= animation_frame_count)
