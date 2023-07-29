@@ -43,8 +43,8 @@
 
 // constants
 
-const int GAME_SCREEN_WIDTH =800;
-const int GAME_SCREEN_HEIGHT = 600;
+const int GAME_SCREEN_WIDTH = 1400;
+const int GAME_SCREEN_HEIGHT = 1000;
 const int GAME_LEVEL_WIDTH = 3000;
 const int GAME_LEVEL_HEIGHT = 2000;
 const SDL_Color DEFAULT_BLACK = {0, 0, 0};

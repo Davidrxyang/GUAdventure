@@ -33,7 +33,6 @@ void Perishable::change_health(int n)
         health += n;
     } // else - health change is valid
     
-    health_bar.w = health * HEALTH_BAR_UNIT_LENGTH; // update health bar to reflect health
 
     if (health == 0)
     {
@@ -90,6 +89,7 @@ void Perishable::update_health()
     health_bar_frame.y = int(y);
     health_bar.x = int(x);
     health_bar.y = int(y);
+    health_bar.w = health * HEALTH_BAR_UNIT_LENGTH; // update health bar to reflect health
 }
 
 

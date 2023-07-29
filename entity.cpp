@@ -19,51 +19,54 @@ Entity::Entity()
 
 void Entity::handle_event(SDL_Event &e)
 {
-    // initialize scancode key states
-    const Uint8* current_key_states = SDL_GetKeyboardState(nullptr);
+    ///TODO - REIMPLEMENT VELOCITY BASED INPUT MOVEMENT HANDLING
 
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
-        if (current_key_states[SDL_SCANCODE_UP])
+        switch(e.key.keysym.sym)
         {
-            vy = vy - DEFAULT_SPEED;
-        } // if        
-        else if (current_key_states[SDL_SCANCODE_DOWN]) 
-        {
-            vy = vy + DEFAULT_SPEED;
-        } // else if
-        else if (current_key_states[SDL_SCANCODE_RIGHT])
-        {
+            case SDLK_UP:
+            vy -= DEFAULT_SPEED;
+            break;
+
+            case SDLK_DOWN:
+            vy += DEFAULT_SPEED;
+            break;
+
+            case SDLK_RIGHT:
             flip = SDL_FLIP_HORIZONTAL;
-            vx = vx + DEFAULT_SPEED;
-        } // else if  
-        else if (current_key_states[SDL_SCANCODE_LEFT])
-        {
+            vx += DEFAULT_SPEED; 
+            break;
+
+            case SDLK_LEFT:
             flip = SDL_FLIP_NONE;
-            vx = vx - DEFAULT_SPEED;
-        } // else if
+            vx -= DEFAULT_SPEED;
+            break;
+        }
     } // if - check event type
 
     // RESET VELOCITY WHEN THE KEY IS RELEASED
 
-    else if (e.type == SDL_KEYUP && e.key.repeat == 0)
+    else if (e.type == SDL_KEYUP)
     {
-        if (current_key_states[SDL_SCANCODE_UP])
+        switch(e.key.keysym.sym)
         {
-            vy = vy + DEFAULT_SPEED;
-        } // if        
-        else if (current_key_states[SDL_SCANCODE_DOWN]) 
-        {
-            vy = vy - DEFAULT_SPEED;
-        } // else if
-        else if (current_key_states[SDL_SCANCODE_RIGHT])
-        {
-            vx = vx - DEFAULT_SPEED;
-        } // else if  
-        else if (current_key_states[SDL_SCANCODE_LEFT])
-        {
-            vx = vx + DEFAULT_SPEED;
-        } // else if
+            case SDLK_UP:
+            vy += DEFAULT_SPEED;
+            break;
+
+            case SDLK_DOWN:
+            vy -= DEFAULT_SPEED;
+            break;
+
+            case SDLK_RIGHT:
+            vx -= DEFAULT_SPEED; 
+            break;
+
+            case SDLK_LEFT:
+            vx += DEFAULT_SPEED;
+            break;
+        }
     } // if - check event type
 } // Entity::handle_event
 
