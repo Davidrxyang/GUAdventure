@@ -616,6 +616,13 @@ void Game::start_test_game_6()
             {
                 switch (game_event.key.keysym.sym)
                 {
+                    case SDLK_f:
+                    me.fire_projectile(game_window);
+                    break;
+
+                    case SDLK_g:
+                    me.stop();
+                    break;
 
                 } // switch - process individual key event
             }
@@ -668,10 +675,33 @@ void Game::start_test_game_6()
             dog3.change_health(-2);
         }
 
+        if (!dog1.is_dead() && has_collided(me.projectile, dog1))
+        {
+            dog1.kill();
+            me.projectile.set_active(false);
+        }
+
+        if (!dog2.is_dead() && has_collided(me.projectile, dog2))
+        {
+            dog2.kill();
+            me.projectile.set_active(false);
+        }
+
+        if (!dog3.is_dead() && has_collided(me.projectile, dog3))
+        {
+            dog3.kill();
+            me.projectile.set_active(false);
+        }
         // PROCESS ENTITIES
         double time_step = step_timer.get_seconds();
         if (!me.is_dead())
         {me.move(game_window, time_step);}
+
+        if (me.get_projetile().is_active())
+        {
+            me.projectile.move(game_window, time_step);
+        } // projectile
+
 
         if(!dog1.is_dead())
         {dog1.move(game_window, time_step);}
@@ -729,6 +759,7 @@ void Game::start_test_game_6()
         dog2.render_dog(game_window, frame, camera);        
         dog3.render_dog(game_window, frame, camera);        
 
+        me.render_box(game_window, camera);
         game_window.update_screen();
         
         frame++; // increment frame

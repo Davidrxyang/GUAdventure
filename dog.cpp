@@ -72,6 +72,12 @@ void Dog::render_dog(Window window, int frame, Camera camera)
         render(window, 1, camera);
         render_health(window, camera);
     } // entity is stationary, no animation, fixed to frame 1
+
+    if (projectile.is_active())
+    {
+        projectile.render_projectile(window, camera);
+        projectile.render_box(window, camera);
+    }
 } // Dog::render
 
 void Dog::render_particles(Window window, Camera camera)
@@ -102,3 +108,19 @@ Dog::~Dog()
     } // for
 } // destructor
 */
+
+void Dog::fire_projectile(Window window)
+{
+    double pvx = 600;
+    double pvy = 0;
+
+    if (flip == SDL_FLIP_NONE)
+    {
+        pvx = -600;
+    } // if - flip direction
+
+    Projectile p(x, y, pvx, pvy, window);
+    projectile = p;
+    projectile.fire();
+
+}

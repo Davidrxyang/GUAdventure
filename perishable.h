@@ -23,7 +23,7 @@ class Perishable : public Renderable
         Perishable(int initial_health, bool dead); // explicit constructor
         bool is_dead() const {return dead;}; // if the entity is dead
         int get_health() const {return health;}; // get health
-        void kill() {health = 0;}; // kills the entity
+        void kill() {health = 0; dead = true;}; // kills the entity
         void change_health(int n); // change health by n units, pos or neg
 
         void render_health(Window window); // render health bar
