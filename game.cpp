@@ -620,10 +620,6 @@ void Game::start_test_game_6()
                     me.fire_projectile(game_window);
                     break;
 
-                    case SDLK_g:
-                    me.stop();
-                    break;
-
                 } // switch - process individual key event
             }
             me.handle_event(game_event);
@@ -631,7 +627,6 @@ void Game::start_test_game_6()
         
         if (has_collided(me, desk))
         {
-            me.stop();
             me.change_health(3);
             me.set_x(0);
             me.set_y(0);
@@ -654,7 +649,6 @@ void Game::start_test_game_6()
         {
             me.set_x(0);
             me.set_y(0);
-            me.stop();
             me.change_health(-1);
             dog1.change_health(-2);
         }
@@ -662,7 +656,6 @@ void Game::start_test_game_6()
         {
             me.set_x(0);
             me.set_y(0);
-            me.stop();
             me.change_health(-1);
             dog2.change_health(-2);
         }
@@ -670,7 +663,6 @@ void Game::start_test_game_6()
         {
             me.set_x(0);
             me.set_y(0);
-            me.stop();
             me.change_health(-1);
             dog3.change_health(-2);
         }

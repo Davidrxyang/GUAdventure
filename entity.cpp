@@ -19,8 +19,6 @@ Entity::Entity()
 
 void Entity::handle_event(SDL_Event &e)
 {
-    ///TODO - REIMPLEMENT VELOCITY BASED INPUT MOVEMENT HANDLING
-
     if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     {
         switch(e.key.keysym.sym)
@@ -81,32 +79,21 @@ void Entity::move(Window window, double time_step)
     if (x < 0)
     {
         x = 0;
-        vx = 0;
     } // if
     else if (x + w > window.get_background_width())
     {
         x = window.get_background_width() - w;
-        vx = 0;
     } // else if
 
     y = y + vy * time_step;
     if (y < 0)
     {
         y = 0;
-        vy = 0;
     } // if
     else if (y + h > window.get_background_height())
     {
         y = window.get_background_height() - h;
-        vy = 0;
     } // else if
 
     update_box(); // update the collision box to follow entity movement
 } // Entity::move
-
-void Entity::stop()
-{
-    vx = 0;
-    vy = 0;
-} //  Entity::stop
-

@@ -38,7 +38,6 @@ class Entity
         void set_y(int y) {this -> y = y;}; // set y
 
         void move(Window window, double time_step); // move entity
-        void stop(); // stop entity - resets velocity
 
     protected:
 

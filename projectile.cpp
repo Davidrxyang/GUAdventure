@@ -12,14 +12,23 @@ Projectile::Projectile() : Renderable()
     update_box();
 } // default constructor
 
-Projectile::Projectile(double ex, double ey, double evx, double evy, Window window)
+Projectile::Projectile(double ex, double ey, bool UP, bool LEFT, Window window)
 {
     sprite_sheet = window.load_texture("assets/media/projectile/projectile.png", 0, 0xFF, 0xFF);
 
-    x = ex - 50;
-    y = ey - 50;
-    vx = evx;
-    ey = evy;
+    x = ex + 50;
+    y = ey + 50;
+    vx = PROJECTILE_SPEED;
+    
+    if (UP)
+    {
+        vy *= -1;
+    } // if 
+    if (LEFT)
+    {
+        vx *= -1;
+    } // if
+    ey = 0; // TODO IMPLEMENT 2D PROJECTILE MOVEMENT
     w = 30;
     h = 30;
     active = false;

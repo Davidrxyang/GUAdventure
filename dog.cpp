@@ -111,15 +111,16 @@ Dog::~Dog()
 
 void Dog::fire_projectile(Window window)
 {
-    double pvx = 600;
-    double pvy = 0;
-
+    bool left = false;
+    bool up = false;
+    
     if (flip == SDL_FLIP_NONE)
     {
-        pvx = -600;
-    } // if - flip direction
+        left = true;
+    } // if - adjust orientation
 
-    Projectile p(x, y, pvx, pvy, window);
+    Projectile p(x, y, up, left, window);
+
     projectile = p;
     projectile.fire();
 
