@@ -12,8 +12,15 @@ Dog::Dog() : Perishable()
 
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        particles[i] = nullptr;
+        particles.push_back(nullptr);
     } // initialize array to null
+
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        projectiles.push_back(nullptr);
+    } // initalize projectiles to null
+
+    projectile_counter = 0; 
 } // default constructor
 
 Dog::Dog(string name, Window window) : Perishable()
@@ -54,30 +61,34 @@ Dog::Dog(string name, Window window) : Perishable()
     // initialize particles
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        particles[i] = new Particle(x, y, window);
+        particles.push_back(new Particle(x, y, window));
+        particles.push_back(new Particle(x, y, window)); 
     } // initialize array of particles
+
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        projectiles.push_back(new Projectile(x, y, window));
+    } // initalize projectiles
+
+    projectile_counter = 0;
 } // explicit constructor
 
-void Dog::render_dog(Window window, int frame, Camera camera)
+void Dog::render(Window window, int frame, Camera camera)
 {
 
     if (vx || vy)
     {
-        render(window, frame, camera);
+        Renderable::render(window, frame, camera);
         render_particles(window, camera);
+        render_projectiles(window, camera);
         render_health(window, camera);
     } // render animation and trail if moving
     else
     {
-        render(window, 1, camera);
+        Renderable::render(window, 1, camera);
+        render_projectiles(window, camera);
         render_health(window, camera);
     } // entity is stationary, no animation, fixed to frame 1
-
-    if (projectile.is_active())
-    {
-        projectile.render_projectile(window, camera);
-        projectile.render_box(window, camera);
-    }
 } // Dog::render
 
 void Dog::render_particles(Window window, Camera camera)
@@ -109,19 +120,76 @@ Dog::~Dog()
 } // destructor
 */
 
-void Dog::fire_projectile(Window window)
+void Dog::render_projectiles(Window window, Camera camera)
 {
-    bool left = false;
-    bool up = false;
-    
-    if (flip == SDL_FLIP_NONE)
+    // render the particles
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
     {
-        left = true;
-    } // if - adjust orientation
+        if (projectiles[i] -> is_active())
+        {
+            projectiles[i] -> render_projectile(window, camera);
+        } // if - render if active
+    } // for
+} // Dog::render_projectiles
 
-    Projectile p(x, y, up, left, window);
+void Dog::fire_projectile(int current_projectile)
+{
+   projectiles[current_projectile] -> fire(x, y, direction);
+} // Dog::fire_projectile - private
 
-    projectile = p;
-    projectile.fire();
+void Dog::fire_projectile()
+{
+    fire_projectile(projectile_counter);
 
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectiles[0] -> reset();
+    } // if - set active false for finished projectile
+    else
+    {
+        projectiles[projectile_counter + 1] -> reset();
+    } // else 
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectile_counter = 0;
+    } // if - reset counter
+    else
+    {
+        projectile_counter++;
+    }
+} // Dog::fire_projectile
+
+void Dog::handle_event(SDL_Event& e)
+{
+    if (!dead)
+    {
+        Entity::handle_event(e);
+        
+        if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+        {
+            switch (e.key.keysym.sym)
+            {
+                case SDLK_h:
+                fire_projectile();
+                break;
+            } // switch - process individual key event
+        } // if - process event
+    } // handle event if alive
+    else
+    {
+        kill();
+    } // else - kill
+} // Dog::handle_event
+
+void Dog::move(Window window, double time_step)
+{
+    Entity::move(window, time_step);
+
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        if (projectiles[i] -> is_active())
+        {
+            projectiles[i] -> move(window, time_step);
+        } // if - render if active
+    } // for
 }

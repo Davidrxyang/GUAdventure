@@ -22,6 +22,14 @@ Perishable::Perishable(int initial_health, bool dead) : Renderable()
     health_bar = bar;
 } // explicit constructor
 
+void Perishable::kill()
+{
+    health = 0;
+    dead = true;
+    vx = 0;
+    vy = 0;
+} // Perishable::kill
+
 void Perishable::change_health(int n)
 {
     if (health + n < 0 || health + n > MAX_HEALTH)
@@ -90,6 +98,5 @@ void Perishable::update_health()
     health_bar.x = int(x);
     health_bar.y = int(y);
     health_bar.w = health * HEALTH_BAR_UNIT_LENGTH; // update health bar to reflect health
-}
-
+} // Perishable::update_health
 

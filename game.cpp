@@ -616,20 +616,19 @@ void Game::start_test_game_6()
             {
                 switch (game_event.key.keysym.sym)
                 {
-                    case SDLK_f:
-                    me.fire_projectile(game_window);
-                    break;
 
                 } // switch - process individual key event
             }
-            me.handle_event(game_event);
+            if (!me.is_dead())
+            {
+                me.handle_event(game_event);
+            } // if - alive, handle event
         } // if - game event poll check
         
         if (has_collided(me, desk))
         {
             me.change_health(3);
-            me.set_x(0);
-            me.set_y(0);
+            me.collision_rebound();
         } // if - collision
 
         // randomize dog movement
@@ -647,53 +646,62 @@ void Game::start_test_game_6()
 
         if (!dog1.is_dead() && has_collided(me, dog1))
         {
-            me.set_x(0);
-            me.set_y(0);
+            dog1.collision_rebound();
+            me.collision_rebound();
             me.change_health(-1);
             dog1.change_health(-2);
         }
         if (!dog2.is_dead() && has_collided(me, dog2))
         {
-            me.set_x(0);
-            me.set_y(0);
+            dog2.collision_rebound();
+            me.collision_rebound();
             me.change_health(-1);
             dog2.change_health(-2);
         }
         if (!dog3.is_dead() && has_collided(me, dog3))
         {
-            me.set_x(0);
-            me.set_y(0);
+            dog3.collision_rebound();
+            me.collision_rebound();
             me.change_health(-1);
             dog3.change_health(-2);
         }
 
-        if (!dog1.is_dead() && has_collided(me.projectile, dog1))
+        for (size_t i = 0; i < me.get_projectiles().size(); i++)
         {
-            dog1.kill();
-            me.projectile.set_active(false);
-        }
+            Projectile p = me.get_projectiles()[i] -> get_projectile();
+            if (has_collided(p, dog1))
+            {
+                cout << "here";
+                //dog1.change_health(-2);
+                me.get_projectiles()[i] -> reset();
+            }
+            if (has_collided(p, dog2))
+            {
+                cout << "here";
 
-        if (!dog2.is_dead() && has_collided(me.projectile, dog2))
-        {
-            dog2.kill();
-            me.projectile.set_active(false);
+                //dog2.change_health(-2);
+                me.get_projectiles()[i] -> reset();
+            }
+            if (has_collided(p, dog3))
+            {
+                cout << "here";
+                //dog3.change_health(-2);
+                me.get_projectiles()[i] -> reset();
+            }
         }
+        
 
-        if (!dog3.is_dead() && has_collided(me.projectile, dog3))
-        {
-            dog3.kill();
-            me.projectile.set_active(false);
-        }
         // PROCESS ENTITIES
         double time_step = step_timer.get_seconds();
         if (!me.is_dead())
         {me.move(game_window, time_step);}
 
+        /*
         if (me.get_projetile().is_active())
         {
             me.projectile.move(game_window, time_step);
         } // projectile
-
+        */
 
         if(!dog1.is_dead())
         {dog1.move(game_window, time_step);}
@@ -744,14 +752,19 @@ void Game::start_test_game_6()
         game_window.render_clear();
         game_window.render_background(camera);
 
-        me.render_dog(game_window, frame, camera);
+        me.render(game_window, frame, camera);
         desk.render(game_window, camera);
 
-        dog1.render_dog(game_window, frame, camera);        
-        dog2.render_dog(game_window, frame, camera);        
-        dog3.render_dog(game_window, frame, camera);        
+        dog1.render(game_window, frame, camera);        
+        dog2.render(game_window, frame, camera);        
+        dog3.render(game_window, frame, camera);        
 
         me.render_box(game_window, camera);
+
+        for (size_t i = 0; i < me.get_projectiles().size(); i++)
+        {
+            me.get_projectiles()[i] -> render_box(game_window, camera);
+        }
         game_window.update_screen();
         
         frame++; // increment frame

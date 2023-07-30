@@ -10,6 +10,7 @@ Entity::Entity()
     vy = 0;
     angle = 0;
     flip = SDL_FLIP_NONE;
+    direction = DEFAULT;
     sprite_sheet = nullptr;
     collision_box.x = int(x);
     collision_box.y = int(y);
@@ -25,27 +26,31 @@ void Entity::handle_event(SDL_Event &e)
         {
             case SDLK_UP:
             vy -= DEFAULT_SPEED;
+            direction = UP;
             break;
 
             case SDLK_DOWN:
             vy += DEFAULT_SPEED;
+            direction = DOWN;
             break;
 
             case SDLK_RIGHT:
             flip = SDL_FLIP_HORIZONTAL;
             vx += DEFAULT_SPEED; 
+            direction = RIGHT;
             break;
 
             case SDLK_LEFT:
             flip = SDL_FLIP_NONE;
             vx -= DEFAULT_SPEED;
+            direction = LEFT;
             break;
         }
     } // if - check event type
 
     // RESET VELOCITY WHEN THE KEY IS RELEASED
 
-    else if (e.type == SDL_KEYUP)
+    else if (e.type == SDL_KEYUP && e.key.repeat == 0)
     {
         switch(e.key.keysym.sym)
         {
@@ -97,3 +102,23 @@ void Entity::move(Window window, double time_step)
 
     update_box(); // update the collision box to follow entity movement
 } // Entity::move
+
+void Entity::collision_rebound()
+{
+    if (direction == UP)
+    {
+        move_y(REBOUND_DISTANCE);
+    } // if
+    else if (direction == DOWN)
+    {
+        move_y(-REBOUND_DISTANCE);
+    } // else if 
+    else if (direction == RIGHT)
+    {
+        move_x(-REBOUND_DISTANCE);
+    } // else if
+    else if (direction == LEFT)
+    {
+        move_x(REBOUND_DISTANCE);
+    } // else if 
+} // Entity::collision_rebound

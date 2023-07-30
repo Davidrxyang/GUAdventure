@@ -12,10 +12,10 @@ class Renderable : public Entity
     public:
 
         Renderable(); // default constructor
-        void render(Window window); // render, no animation
-        void render(Window window, Camera camera); // camera offset
-        void render(Window window, int frame); // render function
-        void render(Window window, int frame, Camera camera); // camera offset
+        virtual void render(Window window); // render, no animation
+        virtual void render(Window window, Camera camera); // camera offset
+        virtual void render(Window window, int frame); // render function
+        virtual void render(Window window, int frame, Camera camera); // camera offset
         void render_box(Window window);
         void render_box(Window window, Camera camera);
 

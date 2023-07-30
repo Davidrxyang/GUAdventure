@@ -12,6 +12,8 @@
 
 using namespace std;
 
+const size_t TOTAL_PROJECTILES = 10; 
+
 class Dog : public Perishable
 {
 
@@ -23,25 +25,26 @@ class Dog : public Perishable
         
         void set_name(string name) {this -> name = name;}; // set name
         string get_name() const {return name;}; // get name
-        void render_dog(Window window, int frame, Camera camera); // render 
-
-        void fire_projectile(Window window);
-        Projectile get_projetile() const {return projectile;}; // get projectile
-        
-        Projectile projectile; // public to access
+        void render(Window window, int frame, Camera camera); // render - polymorphism
+        void handle_event(SDL_Event& e); // handle event - polymorphism
+        void move(Window window, double time_step); // move
+        void fire_projectile(); 
+        vector<Projectile*> get_projectiles() {return projectiles;}; // get projectiles
 
     private:
 
         string name;
 
         // particle engine
-        Particle* particles[TOTAL_PARTICLES];
+        vector<Particle*> particles;
+        void render_particles(Window window, Camera camera);
         
         // projectiles
-        // Projectile* projectiles[5];
-        
-        void render_particles(Window window, Camera camera);
-
+        vector<Projectile*> projectiles;
+        void fire_projectile(int current_projectile);
+        void render_projectiles(Window window, Camera camera);
+        size_t projectile_counter;
 };
+
 
 #endif 

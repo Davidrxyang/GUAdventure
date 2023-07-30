@@ -18,12 +18,15 @@ class Projectile : public Renderable
     public:
 
         Projectile(); // default constructor
-        Projectile(double ex, double ey, bool UP, bool LEFT, Window window); // explicit constructor
+        Projectile(double ex, double ey, Window window); // explicit constructor
 
-        void fire();
+        void fire(double ex, double ey, Direction direction); // with directio of firing
         void render_projectile(Window window, Camera camera); // render Projectile with camera offset
         bool is_active() const {return active;}; // is active
         void set_active(bool a) {active = a;}; // set active
+        void reset(); // reset projectile for reuse
+
+        Projectile get_projectile() {return *this;};
 
     private:
 
