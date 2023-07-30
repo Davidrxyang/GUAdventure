@@ -45,8 +45,8 @@
 
 const int GAME_SCREEN_WIDTH = 1400;
 const int GAME_SCREEN_HEIGHT = 600;
-const int GAME_LEVEL_WIDTH = 3000;
-const int GAME_LEVEL_HEIGHT = 2000;
+const int GAME_LEVEL_WIDTH = 5000;
+const int GAME_LEVEL_HEIGHT = 3000;
 const SDL_Color DEFAULT_BLACK = {0, 0, 0};
 
 using namespace std;
@@ -61,7 +61,8 @@ class Game
         
         // game-play functions
         bool has_collided(Entity a, Entity b) const; // checks collision between two entities
-
+        bool has_collided(SDL_Rect a, SDL_Rect b) const; // checks collision between two boxes
+        bool has_collided(double x, double y, Entity b) const; // point collision with entity
         void TEST_TEMPLATE(); // template for test games
 
         // test games

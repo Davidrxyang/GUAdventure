@@ -29,6 +29,7 @@ class Dog : public Perishable
         void handle_event(SDL_Event& e); // handle event - polymorphism
         void move(Window window, double time_step); // move
         void fire_projectile(); 
+        void kill_projectiles();
         vector<Projectile*> get_projectiles() {return projectiles;}; // get projectiles
 
     private:

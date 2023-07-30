@@ -53,6 +53,54 @@ bool Game::has_collided(Entity a, Entity b) const
     return true; // if none satisfy condition, the boxes do not overlap, return true
 } // Game::has_collided
 
+bool Game::has_collided(SDL_Rect a, SDL_Rect b) const
+{
+    // a COLLIDES WITH b    
+    int left_a = a.x;
+    int right_a = left_a + a.w;
+    int top_a = a.y;
+    int bottom_a = top_a + a.h;
+
+    int left_b = b.x;
+    int right_b = left_b + b.w;
+    int top_b = b.y;
+    int bottom_b = top_b + b.h;
+
+    // collision logic
+    if (bottom_a <= top_b)
+    {
+        return false;
+    } // if
+    if (top_a >= bottom_b)
+    {
+        return false;
+    } // if
+    if (right_a <= left_b)
+    {
+        return false;
+    } // if
+    if (left_a >= right_b)
+    {
+        return false;
+    } // if
+    return true; // if none satisfy condition, the boxes do not overlap, return true
+} // Game::has_collided
+
+bool Game::has_collided(double x, double y, Entity b) const
+{
+    int left_b = b.get_box().x;
+    int right_b = left_b + b.get_box().w;
+    int top_b = b.get_box().y;
+    int bottom_b = top_b + b.get_box().h;
+
+    if (x >= left_b && x <= right_b
+    && y >= top_b && y <= bottom_b)
+    {
+        return true;
+    } // if - collides
+    return false;
+} // Game::has_collided
+
 /*
 
 void Game::TEST_TEMPLATE()
@@ -619,10 +667,8 @@ void Game::start_test_game_6()
 
                 } // switch - process individual key event
             }
-            if (!me.is_dead())
-            {
-                me.handle_event(game_event);
-            } // if - alive, handle event
+
+             me.handle_event(game_event);
         } // if - game event poll check
         
         if (has_collided(me, desk))
@@ -665,30 +711,34 @@ void Game::start_test_game_6()
             me.change_health(-1);
             dog3.change_health(-2);
         }
-
+        
         for (size_t i = 0; i < me.get_projectiles().size(); i++)
         {
-            Projectile p = me.get_projectiles()[i] -> get_projectile();
-            if (has_collided(p, dog1))
-            {
-                cout << "here";
-                //dog1.change_health(-2);
-                me.get_projectiles()[i] -> reset();
-            }
-            if (has_collided(p, dog2))
-            {
-                cout << "here";
+            Projectile pro = *me.get_projectiles()[i];
 
-                //dog2.change_health(-2);
-                me.get_projectiles()[i] -> reset();
-            }
-            if (has_collided(p, dog3))
+            if (pro.is_active() 
+            && dog1.is_alive()
+            && has_collided(pro, dog1))
             {
-                cout << "here";
-                //dog3.change_health(-2);
+                dog1.change_health(-2);
                 me.get_projectiles()[i] -> reset();
             }
-        }
+            if (pro.is_active() 
+            && dog2.is_alive()
+            && has_collided(pro, dog2))
+            {
+                dog2.change_health(-2);
+                me.get_projectiles()[i] -> reset();
+            }
+            if (pro.is_active() 
+            && dog3.is_alive()
+            && has_collided(pro, dog3))
+            {
+                dog3.change_health(-2);
+                me.get_projectiles()[i] -> reset();
+            }
+        } // process all projectiles in array
+        
         
 
         // PROCESS ENTITIES
@@ -757,7 +807,11 @@ void Game::start_test_game_6()
 
         dog1.render(game_window, frame, camera);        
         dog2.render(game_window, frame, camera);        
-        dog3.render(game_window, frame, camera);        
+        dog3.render(game_window, frame, camera);   
+
+        dog1.render_box(game_window, camera);        
+        dog2.render_box(game_window, camera);        
+        dog3.render_box(game_window, camera);     
 
         me.render_box(game_window, camera);
 

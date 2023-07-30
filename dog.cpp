@@ -159,6 +159,14 @@ void Dog::fire_projectile()
     }
 } // Dog::fire_projectile
 
+void Dog::kill_projectiles()
+{
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        projectiles[i] -> reset();
+    } // for
+} // Dog::kill_projectiles
+
 void Dog::handle_event(SDL_Event& e)
 {
     if (!dead)
@@ -177,6 +185,7 @@ void Dog::handle_event(SDL_Event& e)
     } // handle event if alive
     else
     {
+        kill_projectiles();
         kill();
     } // else - kill
 } // Dog::handle_event

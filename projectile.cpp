@@ -20,7 +20,7 @@ Projectile::Projectile(double ex, double ey, Window window)
     y = ey + 50;
     vx = 0;
 
-    vy = 0; // TODO IMPLEMENT 2D PROJECTILE MOVEMENT
+    vy = 0; 
     w = 30;
     h = 30;
     active = false;

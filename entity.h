@@ -5,7 +5,7 @@
 #include "window.h"
 
 const int TOTAL_PARTICLES = 10;
-const double DEFAULT_SPEED = 640; // pixels per SECOND
+const double DEFAULT_SPEED = 1000; // pixels per SECOND
 const double REBOUND_DISTANCE = 30; // rebound distance
 
 using namespace std;
