@@ -10,7 +10,7 @@ Dog::Dog() : Perishable()
     update_box();
     update_health();
 
-    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
         particles.push_back(nullptr);
     } // initialize array to null
@@ -59,7 +59,7 @@ Dog::Dog(string name, Window window) : Perishable()
     h = 205;
 
     // initialize particles
-    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
         particles.push_back(new Particle(x, y, window));
     } // initialize array of particles
@@ -92,7 +92,7 @@ void Dog::render(Window window, int frame, Camera camera)
 
 void Dog::render_particles(Window window, Camera camera)
 {
-    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
         if (particles[i] -> is_dead())
         {
@@ -102,7 +102,7 @@ void Dog::render_particles(Window window, Camera camera)
     } // for 
 
     // render the particles
-    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
         particles[i] -> render_particle(window, camera);
     } // for
