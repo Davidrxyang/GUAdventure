@@ -16,7 +16,6 @@ Input:
 - clickable buttons supporting multiple click-states, including click, hover, release.
 - direct text input
 - keyboard input
-- keyboard-independent scancode directional input
 
 Media:
 - Multi-Format Graphics, including PNG, BMP
@@ -36,6 +35,7 @@ File Handling:
 Entity Generation:
 - built-in entity type hierarchy, type separation to eliminate non-essential functions for specific entities
 - built-in perishable entity type with life functions such as health and death
+- built-in projectile generation and interaction capabilities
 
 Game Loop Handling:
 - frame-rate independent, time-based entity movement handling
