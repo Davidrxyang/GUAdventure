@@ -10,7 +10,7 @@ Dog::Dog() : Perishable()
     update_box();
     update_health();
 
-    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
     {
         particles.push_back(nullptr);
     } // initialize array to null
@@ -59,10 +59,9 @@ Dog::Dog(string name, Window window) : Perishable()
     h = 205;
 
     // initialize particles
-    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
     {
         particles.push_back(new Particle(x, y, window));
-        particles.push_back(new Particle(x, y, window)); 
     } // initialize array of particles
 
     for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
@@ -93,7 +92,7 @@ void Dog::render(Window window, int frame, Camera camera)
 
 void Dog::render_particles(Window window, Camera camera)
 {
-    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
     {
         if (particles[i] -> is_dead())
         {
@@ -103,22 +102,11 @@ void Dog::render_particles(Window window, Camera camera)
     } // for 
 
     // render the particles
-    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    for (size_t i = 0; i < TOTAL_PARTICLES + 1; i++)
     {
         particles[i] -> render_particle(window, camera);
     } // for
 } // Dog::render_particles
-
-/*
-Dog::~Dog()
-{
-    //Delete particles
-    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
-    {
-        delete particles[i];
-    } // for
-} // destructor
-*/
 
 void Dog::render_projectiles(Window window, Camera camera)
 {
@@ -192,13 +180,30 @@ void Dog::handle_event(SDL_Event& e)
 
 void Dog::move(Window window, double time_step)
 {
-    Entity::move(window, time_step);
+    if (is_alive())
+    {
+        Entity::move(window, time_step);
+        for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+        {
+            if (projectiles[i] -> is_active())
+            {
+                projectiles[i] -> move(window, time_step);
+            } // if - render if active
+        } // for
+    }
+} // Dog::move
+
+/*
+Dog::~Dog()
+{
+    for (size_t i = 0; i < TOTAL_PARTICLES; i++)
+    {
+        delete particles[i];
+    } // for
 
     for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
     {
-        if (projectiles[i] -> is_active())
-        {
-            projectiles[i] -> move(window, time_step);
-        } // if - render if active
-    } // for
-}
+        delete projectiles[i];
+    } // for 
+} // destructor
+*/

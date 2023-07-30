@@ -25,6 +25,7 @@ class Projectile : public Renderable
         bool is_active() const {return active;}; // is active
         void set_active(bool a) {active = a;}; // set active
         void reset(); // reset projectile for reuse
+        void move(Window window, double time_step); // move - bounds checking
 
         Projectile get_projectile() {return *this;};
 

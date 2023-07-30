@@ -122,3 +122,23 @@ void Entity::collision_rebound()
         move_x(REBOUND_DISTANCE);
     } // else if 
 } // Entity::collision_rebound
+
+void Entity::collision_rebound(double rebound_distance)
+{
+    if (direction == UP)
+    {
+        move_y(rebound_distance);
+    } // if
+    else if (direction == DOWN)
+    {
+        move_y(-rebound_distance);
+    } // else if 
+    else if (direction == RIGHT)
+    {
+        move_x(-rebound_distance);
+    } // else if
+    else if (direction == LEFT)
+    {
+        move_x(rebound_distance);
+    } // else if 
+} // Entity::collision_rebound

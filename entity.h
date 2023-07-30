@@ -7,10 +7,10 @@
 const int TOTAL_PARTICLES = 10;
 const double DEFAULT_SPEED = 1000; // pixels per SECOND
 const double REBOUND_DISTANCE = 30; // rebound distance
+const int animation_frame_count = 4;
 
 using namespace std;
 
-const int animation_frame_count = 4;
 
 enum Direction
 {
@@ -51,6 +51,7 @@ class Entity
         virtual void move(Window window, double time_step); // move entity
         
         void collision_rebound(); // rebound after collision
+        void collision_rebound(double rebound_distance); // rebound after collision, spec dist
 
     protected:
 

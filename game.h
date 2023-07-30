@@ -63,22 +63,13 @@ class Game
         bool has_collided(Entity a, Entity b) const; // checks collision between two entities
         bool has_collided(SDL_Rect a, SDL_Rect b) const; // checks collision between two boxes
         bool has_collided(double x, double y, Entity b) const; // point collision with entity
-        void TEST_TEMPLATE(); // template for test games
 
         // test games
-        void start_test_game_1(); // audio testing, button testing
-        void start_test_game_2(); // frame rate timer
-        void start_test_game_3(); // text entity 
-        void start_test_game_4(); // file I/O
-        void start_test_game_5(); // jack has particles
         void start_test_game_6(); // scrolling camera
 
     private:
         Player player;
         Window game_window;
-
-        // character entities
-        Dog jack;
 
         // FPS controls 
         Timer FPS_timer;

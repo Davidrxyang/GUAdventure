@@ -32,16 +32,19 @@ void Perishable::kill()
 
 void Perishable::change_health(int n)
 {
-    if (health + n < 0 || health + n > MAX_HEALTH)
+    if (health + n < 0)
     {
-        cout << "Failed to change health: invalid health" << endl;
+        health = 0;
     } // if - health change is invalid
+    else if (health + n > MAX_HEALTH)
+    {
+        health = MAX_HEALTH;
+    } // else if - max health
     else
     {
         health += n;
     } // else - health change is valid
     
-
     if (health == 0)
     {
         dead = true;

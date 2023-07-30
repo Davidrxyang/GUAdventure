@@ -67,7 +67,24 @@ void Projectile::reset()
     active = false;
     direction = DEFAULT;
     update_box();    
-}
+} // Projectile::reset
+
+void Projectile::move(Window window, double time_step)
+{
+    // overloaded function is same as entity::move, but out of bounds results in projectile reset
+    x = x + vx * time_step; // standard physics equation x = x_0 + vt
+    y = y + vy * time_step;
+
+    // modified bounds checking for time step movement
+    if (x < 0
+    || x + w > window.get_background_width()
+    || y < 0
+    || y + h > window.get_background_height())
+    {
+        reset();
+    } // if
+    update_box(); // update the collision box to follow entity movement  
+} // Projectile::move
 
 void Projectile::render_projectile(Window window, Camera camera)
 {
