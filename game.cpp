@@ -153,9 +153,8 @@ void Game::start_test_game_6()
         
         if (has_collided(me, desk))
         {
-            me.change_health(3);
+            me.change_health(2);
             me.collision_rebound();
-            desk.orient(me.get_direction());
         } // if - collision
 
         // randomize dog movement
