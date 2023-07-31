@@ -24,11 +24,11 @@ Dog::Dog() : Perishable()
 
 } // default constructor
 
-Dog::Dog(string name, Window window) : Perishable()
+Dog::Dog(string name, double x, double y, Window window) : Perishable()
 {
     set_name(name);
-    x = 0;
-    y = 0;
+    this -> x = x;
+    this -> y = y;
     w = 64;
     h = 205;
     update_box();

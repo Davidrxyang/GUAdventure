@@ -113,39 +113,17 @@ void Game::start_test_game_6()
     double angle = 0;
     Timer step_timer;
 
-    Dog me("me", game_window);
+    Dog me("me", 0, 0, game_window);
     Desk desk("desk", game_window);
 
-    /*
-    Dog dog1("dog1", game_window);
-    Dog dog2("dog2", game_window);
-    Dog dog3("dog3", game_window);
-
-    dog1.set_x(GAME_LEVEL_WIDTH - 300);
-    dog1.set_y(300);
-    dog2.set_x(300);
-    dog2.set_y(GAME_LEVEL_HEIGHT - 300);
-    dog3.set_x(GAME_LEVEL_WIDTH - 300);
-    dog3.set_y(GAME_LEVEL_HEIGHT - 300);
-    */
-
-    vector<Dog*> dogs(30);
+    vector<Dog*> dogs(15);
 
     for (size_t i = 0; i < dogs.size(); i++)
     {
-        dogs[i] = new Dog("", game_window);
+        dogs[i] = new Dog("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, game_window);
         dogs[i] -> set_x( 300 + rand() % (GAME_LEVEL_WIDTH - 300));
         dogs[i] -> set_y(300 + rand() % (GAME_LEVEL_HEIGHT - 300));
     }
-
-    /*
-    dogs.push_back(&dog1);
-    dogs.push_back(&dog2);
-    dogs.push_back(&dog3);
-    */
-
-
-    // TESTING CAMERA SCROLLING
 
     Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
  
@@ -192,18 +170,15 @@ void Game::start_test_game_6()
             }
         }
 
-        /*
         for (size_t i = 0; i < dogs.size(); i++)
         {
-            Dog d = *dogs[i];
-            if (has_collided(me.get_box(), dogs[i] -> get_box()))
+            if (dogs[i] -> is_alive() && me.is_alive() && has_collided(me, *dogs[i]))
             {
-                me.collision_rebound();
-                dogs[i] -> collision_rebound();
                 me.change_health(-1);
+                dogs[i] -> collision_rebound();
+                me.collision_rebound(100);
             }
-        }
-        */
+        }   
 
         if (me.get_melee().is_active())
         {
@@ -212,8 +187,6 @@ void Game::start_test_game_6()
                 if (!dogs[i] -> is_dead() && has_collided(me.get_melee(), *dogs[i]))
                 {
                     dogs[i] -> collision_rebound();
-                    //me.collision_rebound(100);
-                    //me.change_health(-1);
                     me.reset_melee();
                     dogs[i] -> change_health(-2);
                 }
