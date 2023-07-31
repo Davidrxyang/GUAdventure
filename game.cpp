@@ -262,7 +262,7 @@ void Game::start_test_game_6()
         } // if - player dies
 
         // PROCESS CAMERA
-
+        process_camera(camera, me);
         camera.set_x((me.get_x() + me.get_w() / 2) - GAME_SCREEN_WIDTH / 2);
         camera.set_y((me.get_y() + me.get_h() / 2) - GAME_SCREEN_HEIGHT / 2);
 

@@ -35,13 +35,16 @@ File Handling:
 Entity Generation:
 - built-in entity type hierarchy, type separation to eliminate non-essential functions for specific entities
 - built-in perishable entity type with life functions such as health and death
-- built-in projectile generation and interaction capabilities
+
+Game Play:
+- projectile generation, natively supports shooter-style game play
+- melee attack 
 
 Game Loop Handling:
 - frame-rate independent, time-based entity movement handling
 
 Collision:
-- built-in collision box generation for entities, includingbox rendering for testing purposes
+- built-in collision box generation for entities, including collision box rendering for testing purposes
 
 Save Game:
 - framework supports efficient binary file manipulation
