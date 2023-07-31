@@ -21,6 +21,7 @@ Dog::Dog() : Perishable()
     } // initalize projectiles to null
 
     projectile_counter = 0; 
+
 } // default constructor
 
 Dog::Dog(string name, Window window) : Perishable()
@@ -70,6 +71,10 @@ Dog::Dog(string name, Window window) : Perishable()
     } // initalize projectiles
 
     projectile_counter = 0;
+
+    // iniitailize melee weapon
+    Melee m(x, y, window);
+    melee = m;
 } // explicit constructor
 
 void Dog::render(Window window, int frame, Camera camera)
@@ -80,12 +85,14 @@ void Dog::render(Window window, int frame, Camera camera)
         Renderable::render(window, frame, camera);
         render_particles(window, camera);
         render_projectiles(window, camera);
+        melee.render_melee(window, camera);
         render_health(window, camera);
     } // render animation and trail if moving
     else
     {
         Renderable::render(window, 1, camera);
         render_projectiles(window, camera);
+        melee.render_melee(window, camera);
         render_health(window, camera);
     } // entity is stationary, no animation, fixed to frame 1
 } // Dog::render
@@ -120,14 +127,36 @@ void Dog::render_projectiles(Window window, Camera camera)
     } // for
 } // Dog::render_projectiles
 
-void Dog::fire_projectile(int current_projectile)
+void Dog::fire_projectile(int current_projectile, Direction direction)
 {
    projectiles[current_projectile] -> fire(x, y, direction);
 } // Dog::fire_projectile - private
 
 void Dog::fire_projectile()
 {
-    fire_projectile(projectile_counter);
+    fire_projectile(projectile_counter, direction);
+
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectiles[0] -> reset();
+    } // if - set active false for finished projectile
+    else
+    {
+        projectiles[projectile_counter + 1] -> reset();
+    } // else 
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectile_counter = 0;
+    } // if - reset counter
+    else
+    {
+        projectile_counter++;
+    }
+} // Dog::fire_projectile
+
+void Dog::fire_projectile(Direction direction)
+{
+    fire_projectile(projectile_counter, direction);
 
     if (projectile_counter == TOTAL_PROJECTILES)
     {
@@ -155,6 +184,17 @@ void Dog::kill_projectiles()
     } // for
 } // Dog::kill_projectiles
 
+void Dog::melee_attack()
+{
+    Timer timer;
+    melee.attack(*this);
+} // Dog::melee_attack
+
+void Dog::reset_melee()
+{
+    melee.reset();
+} // Dog::reset_melee
+
 void Dog::handle_event(SDL_Event& e)
 {
     if (!dead)
@@ -165,11 +205,34 @@ void Dog::handle_event(SDL_Event& e)
         {
             switch (e.key.keysym.sym)
             {
-                case SDLK_h:
-                fire_projectile();
+                case SDLK_w:
+                fire_projectile(UP);
+                break;
+
+                case SDLK_a:
+                fire_projectile(LEFT);
+                break;
+
+                case SDLK_s:
+                fire_projectile(DOWN);
+                break;
+
+                case SDLK_d:
+                fire_projectile(RIGHT);
+                break;
+
+                case SDLK_m:
+                melee_attack();
+                break;
+
+                default:
                 break;
             } // switch - process individual key event
         } // if - process event
+        else if (e.type == SDL_KEYUP)
+        {
+            melee.reset();
+        }
     } // handle event if alive
     else
     {
@@ -190,6 +253,7 @@ void Dog::move(Window window, double time_step)
                 projectiles[i] -> move(window, time_step);
             } // if - render if active
         } // for
+        melee.move(*this);
     }
 } // Dog::move
 

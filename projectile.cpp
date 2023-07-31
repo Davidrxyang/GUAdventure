@@ -66,7 +66,7 @@ void Projectile::reset()
     vy = 0;
     active = false;
     direction = DEFAULT;
-    update_box();    
+    update_box();
 } // Projectile::reset
 
 void Projectile::move(Window window, double time_step)

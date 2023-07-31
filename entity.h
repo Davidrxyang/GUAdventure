@@ -35,12 +35,14 @@ class Entity
         SDL_Texture* get_texture() const {return sprite_sheet;}; // get texture
         SDL_Rect get_frame(int frame) const {return frames[frame];}; // get frames
         SDL_Rect get_box() const {return collision_box;}; // get collision box
+        Direction get_direction() const {return direction;}; // get direction
         
         virtual void handle_event(SDL_Event& e); // handle event input
         
         // Entity actions
 
-        void spin(double a) {angle += a;}; // spin
+        void spin(double a) {angle += a;}; // spin - RENDER ONLY
+        void orient(Direction edirection); // orient 
         void move_x(double dx) {x += dx;}; // move x
         void move_y(double dy) {y += dy;}; // move y
         void set_vx(double vx) {this -> vx = vx;}; // velocity x

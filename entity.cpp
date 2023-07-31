@@ -142,3 +142,47 @@ void Entity::collision_rebound(double rebound_distance)
         move_x(rebound_distance);
     } // else if 
 } // Entity::collision_rebound
+
+void Entity::orient(Direction edirection)
+{
+    switch(edirection)
+    {
+        case UP:
+        if (direction != UP)
+        {
+            y -= this -> h;
+            flip = SDL_FLIP_NONE;
+        } // if
+        break;
+
+        case DOWN:
+        if (direction != DOWN)
+        {
+            y += this -> h;
+            flip = SDL_FLIP_VERTICAL;
+        } // if 
+        break;
+
+        case LEFT:
+        if (direction != LEFT)
+        {
+            x -= this -> w;
+            flip = SDL_FLIP_NONE;
+        } // if
+        break;
+
+        case RIGHT:
+        if (direction != RIGHT)
+        {
+            x += this -> w;
+            flip = SDL_FLIP_HORIZONTAL;
+        } // if
+        break;
+
+        default:
+        break;
+    } // switch - direction change
+    update_box();
+    direction = edirection;
+} // Entity::orient
+

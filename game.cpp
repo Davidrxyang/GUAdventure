@@ -158,6 +158,7 @@ void Game::start_test_game_6()
         {
             me.change_health(3);
             me.collision_rebound();
+            desk.orient(me.get_direction());
         } // if - collision
 
         // randomize dog movement
@@ -173,26 +174,32 @@ void Game::start_test_game_6()
             dog3.set_vy(200 - rand()%400);
         }
 
-        if (!dog1.is_dead() && has_collided(me, dog1))
+        if (me.get_melee().is_active())
         {
-            dog1.collision_rebound();
-            me.collision_rebound(100);
-            me.change_health(-1);
-            dog1.change_health(-2);
-        }
-        if (!dog2.is_dead() && has_collided(me, dog2))
-        {
-            dog2.collision_rebound();
-            me.collision_rebound(100);
-            me.change_health(-1);
-            dog2.change_health(-2);
-        }
-        if (!dog3.is_dead() && has_collided(me, dog3))
-        {
-            dog3.collision_rebound();
-            me.collision_rebound(100);
-            me.change_health(-1);
-            dog3.change_health(-2);
+            if (!dog1.is_dead() && has_collided(me.get_melee(), dog1))
+            {
+                dog1.collision_rebound();
+                //me.collision_rebound(100);
+                //me.change_health(-1);
+                me.reset_melee();
+                dog1.change_health(-2);
+            }
+            if (!dog2.is_dead() && has_collided(me.get_melee(), dog2))
+            {
+                dog2.collision_rebound();
+                //me.collision_rebound(100);
+                //me.change_health(-1);
+                me.reset_melee();
+                dog2.change_health(-2);
+            }
+            if (!dog3.is_dead() && has_collided(me.get_melee(), dog3))
+            {
+                dog3.collision_rebound();
+                //me.collision_rebound(100);
+                //me.change_health(-1);
+                me.reset_melee();
+                dog3.change_health(-2);
+            }
         }
         
         for (size_t i = 0; i < me.get_projectiles().size(); i++)
