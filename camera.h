@@ -21,6 +21,12 @@ class Camera
         int get_w() const {return camera.w;};
         int get_h() const {return camera.h;};
 
+        void process_camera(SDL_Rect box, 
+                            int screen_width, 
+                            int screen_height, 
+                            int level_width, 
+                            int level_height);
+
     private:
         
         SDL_Rect camera;

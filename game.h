@@ -58,7 +58,7 @@ class Game
         Game(); // default constructor
         Game(string player_name); // explicit constructor
         void start_game(); // start a new game
-        
+
         // game-play functions
         bool has_collided(Entity a, Entity b) const; // checks collision between two entities
         bool has_collided(SDL_Rect a, SDL_Rect b) const; // checks collision between two boxes

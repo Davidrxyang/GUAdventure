@@ -115,6 +115,8 @@ void Game::start_test_game_6()
 
     Dog me("me", game_window);
     Desk desk("desk", game_window);
+
+    /*
     Dog dog1("dog1", game_window);
     Dog dog2("dog2", game_window);
     Dog dog3("dog3", game_window);
@@ -125,6 +127,23 @@ void Game::start_test_game_6()
     dog2.set_y(GAME_LEVEL_HEIGHT - 300);
     dog3.set_x(GAME_LEVEL_WIDTH - 300);
     dog3.set_y(GAME_LEVEL_HEIGHT - 300);
+    */
+
+    vector<Dog*> dogs(30);
+
+    for (size_t i = 0; i < dogs.size(); i++)
+    {
+        dogs[i] = new Dog("", game_window);
+        dogs[i] -> set_x( 300 + rand() % (GAME_LEVEL_WIDTH - 300));
+        dogs[i] -> set_y(300 + rand() % (GAME_LEVEL_HEIGHT - 300));
+    }
+
+    /*
+    dogs.push_back(&dog1);
+    dogs.push_back(&dog2);
+    dogs.push_back(&dog3);
+    */
+
 
     // TESTING CAMERA SCROLLING
 
@@ -166,66 +185,54 @@ void Game::start_test_game_6()
         int change_rate = (100 - rand()%30);
         if (total_frames % change_rate == 0)
         {
-            dog1.set_vx(200 - rand()%400);
-            dog2.set_vx(200 - rand()%400);
-            dog3.set_vx(200 - rand()%400);
-            dog1.set_vy(200 - rand()%400);
-            dog2.set_vy(200 - rand()%400);
-            dog3.set_vy(200 - rand()%400);
+            for (size_t i = 0; i < dogs.size(); i++)
+            {
+                dogs[i] -> set_vx(200 - rand()%400);
+                dogs[i] -> set_vx(200 - rand()%400);
+            }
         }
+
+        /*
+        for (size_t i = 0; i < dogs.size(); i++)
+        {
+            Dog d = *dogs[i];
+            if (has_collided(me.get_box(), dogs[i] -> get_box()))
+            {
+                me.collision_rebound();
+                dogs[i] -> collision_rebound();
+                me.change_health(-1);
+            }
+        }
+        */
 
         if (me.get_melee().is_active())
         {
-            if (!dog1.is_dead() && has_collided(me.get_melee(), dog1))
+            for (size_t i = 0; i < dogs.size(); i++)
             {
-                dog1.collision_rebound();
-                //me.collision_rebound(100);
-                //me.change_health(-1);
-                me.reset_melee();
-                dog1.change_health(-2);
-            }
-            if (!dog2.is_dead() && has_collided(me.get_melee(), dog2))
-            {
-                dog2.collision_rebound();
-                //me.collision_rebound(100);
-                //me.change_health(-1);
-                me.reset_melee();
-                dog2.change_health(-2);
-            }
-            if (!dog3.is_dead() && has_collided(me.get_melee(), dog3))
-            {
-                dog3.collision_rebound();
-                //me.collision_rebound(100);
-                //me.change_health(-1);
-                me.reset_melee();
-                dog3.change_health(-2);
+                if (!dogs[i] -> is_dead() && has_collided(me.get_melee(), *dogs[i]))
+                {
+                    dogs[i] -> collision_rebound();
+                    //me.collision_rebound(100);
+                    //me.change_health(-1);
+                    me.reset_melee();
+                    dogs[i] -> change_health(-2);
+                }
             }
         }
         
-        for (size_t i = 0; i < me.get_projectiles().size(); i++)
+        for (size_t j = 0; j < me.get_projectiles().size(); j++)
         {
-            Projectile pro = *me.get_projectiles()[i];
+            Projectile pro = *me.get_projectiles()[j];
 
-            if (pro.is_active() 
-            && dog1.is_alive()
-            && has_collided(pro, dog1))
+            for (size_t i = 0; i < dogs.size(); i++)
             {
-                dog1.change_health(-2);
-                me.get_projectiles()[i] -> reset();
-            }
-            if (pro.is_active() 
-            && dog2.is_alive()
-            && has_collided(pro, dog2))
-            {
-                dog2.change_health(-2);
-                me.get_projectiles()[i] -> reset();
-            }
-            if (pro.is_active() 
-            && dog3.is_alive()
-            && has_collided(pro, dog3))
-            {
-                dog3.change_health(-2);
-                me.get_projectiles()[i] -> reset();
+                if (pro.is_active() 
+                && dogs[i] -> is_alive()
+                && has_collided(pro, *dogs[i]))
+                {
+                    dogs[i] -> change_health(-2);
+                    me.get_projectiles()[j] -> reset();
+                }
             }
         } // process all projectiles in array
         
@@ -235,23 +242,16 @@ void Game::start_test_game_6()
         double time_step = step_timer.get_seconds();
 
         me.move(game_window, time_step);
-        dog1.move(game_window, time_step);
-        dog2.move(game_window, time_step);
-        dog3.move(game_window, time_step);
 
-        if (dog1.is_dead())
+        for (size_t i = 0; i < dogs.size(); i++)
         {
-            dog1.spin(30);
+            dogs[i] -> move(game_window, time_step);
+            if (dogs[i] -> is_dead())
+            {
+                dogs[i] -> spin(30);
+            }
         }
-        if (dog2.is_dead())
-        {   
-            dog2.spin(30);
-        }
-        if (dog3.is_dead())
-        {
-            dog3.spin(20);
-        }
-        
+
         step_timer.start(); // restart timer
 
         if (me.is_dead() && !has_spun)
@@ -261,22 +261,10 @@ void Game::start_test_game_6()
             has_spun = true;
         } // if - player dies
 
-        // PROCESS CAMERA
-        process_camera(camera, me);
-        camera.set_x((me.get_x() + me.get_w() / 2) - GAME_SCREEN_WIDTH / 2);
-        camera.set_y((me.get_y() + me.get_h() / 2) - GAME_SCREEN_HEIGHT / 2);
 
-        // camera bounds checking
-        if (camera.get_x() < 0)
-        {camera.set_x(0);}
-        if (camera.get_y() < 0)
-        {camera.set_y(0);}
-        if (camera.get_x() > GAME_LEVEL_WIDTH - camera.get_w())
-        {camera.set_x(GAME_LEVEL_WIDTH - camera.get_w());}
-        if (camera.get_y() > GAME_LEVEL_HEIGHT - camera.get_h())
-        {camera.set_y(GAME_LEVEL_HEIGHT - camera.get_h());} 
-        
         // RENDER
+
+        camera.process_camera(me.get_box(), GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
 
         game_window.render_clear();
         game_window.render_background(camera);
@@ -284,9 +272,10 @@ void Game::start_test_game_6()
         me.render(game_window, frame, camera);
         desk.render(game_window, camera);
 
-        dog1.render(game_window, frame, camera);        
-        dog2.render(game_window, frame, camera);        
-        dog3.render(game_window, frame, camera);   
+        for (size_t i = 0; i < dogs.size(); i++)
+        {
+            dogs[i] -> render(game_window, frame, camera);
+        }
 
         game_window.update_screen();
         
@@ -299,4 +288,10 @@ void Game::start_test_game_6()
             frame = 0; // reset frame count
         } // reset animation frame
     } // while
+
+    for (size_t i = 0; i < dogs.size(); i++)
+    {
+        delete dogs[i];
+    } // deallocate
+
 } // Game::start_test_game_6
