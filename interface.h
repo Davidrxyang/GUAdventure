@@ -1,3 +1,7 @@
+// this class is used to handle game object level generation 
+
+// the interface is activated through calling the default constructor upon initiation
+
 #ifndef INTERFACE_H
 #define INTERFACE_H
 

@@ -59,7 +59,7 @@ class Entity
 
         SDL_RendererFlip flip; // is flip?
         SDL_Texture* sprite_sheet; // sprite texture
-        SDL_Rect frames[animation_frame_count]; // for animated sprites
+        SDL_Rect frames[ANIMATION_FRAME_COUNT]; // for animated sprites
         SDL_Rect collision_box; // collision box
         
 };
