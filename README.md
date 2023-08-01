@@ -30,6 +30,10 @@ Rendering:
 File Handling:
 - binary file creation, read, and write. 
 
+Scalability
+- comprehensive encapsulation for streamlined object generation.
+- centralized dimensional data handling for one-stop global-scale manipulation across all objects.
+
 ### Game Engine Functionality
 
 Entity Generation:
