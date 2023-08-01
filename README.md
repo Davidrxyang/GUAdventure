@@ -5,7 +5,7 @@ Graphic video game engine created using C++ and SDL2
 
 This is a 2D graphics framework with built in game engine mechanics such as perishable sprite entity generation, collision detection, camera scrolling level navigation, etc.
 
-#### Framework Functionality
+### Framework Functionality
 
 Operating System Handling:
 - cross-platform OS API handling
