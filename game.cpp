@@ -204,7 +204,7 @@ void Game::start_game(int enemy_number)
         {
             me.change_health(HEAL_AMOUNT);
             me.collision_rebound();
-
+            
             // desk turns green upon impact
             if (desk.has_color_mod())
             {
