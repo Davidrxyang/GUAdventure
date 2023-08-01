@@ -155,6 +155,16 @@ void Game::start_test_game_6()
         {
             me.change_health(2);
             me.collision_rebound();
+
+            if (desk.has_color_mod())
+            {
+                desk.modulate_color(0xFF, 0xFF, 0xFF);
+            } // reset color;
+            else
+            {
+                desk.modulate_color(0, 0xFF, 0xFF);
+            } // set color
+
         } // if - collision
 
         // randomize dog movement
