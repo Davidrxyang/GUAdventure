@@ -11,3 +11,4 @@ set global constants
 consider encapsulating texture in class
     - complete overhaul, basically
     
+Move texture modulation, alpha and color modulation to renderable class

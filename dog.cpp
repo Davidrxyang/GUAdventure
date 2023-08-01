@@ -1,6 +1,6 @@
 #include "dog.h"
 
-Dog::Dog() : Renderable()
+Dog::Dog() : Perishable()
 {
     name = "default name";
     x = 0;
@@ -8,21 +8,31 @@ Dog::Dog() : Renderable()
     w = 64;
     h = 205;
     update_box();
+    update_health();
 
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        particles[i] = nullptr;
+        particles.push_back(nullptr);
     } // initialize array to null
+
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        projectiles.push_back(nullptr);
+    } // initalize projectiles to null
+
+    projectile_counter = 0; 
+
 } // default constructor
 
-Dog::Dog(string name, Window window) : Renderable()
+Dog::Dog(string name, double x, double y, Window window) : Perishable()
 {
     set_name(name);
-    x = 0;
-    y = 0;
+    this -> x = x;
+    this -> y = y;
     w = 64;
     h = 205;
     update_box();
+    update_health();
     sprite_sheet = window.load_texture("assets/media/man.png", 0, 0xFF, 0xFF);
     // loads sprite sheet with cyan background
 
@@ -52,21 +62,38 @@ Dog::Dog(string name, Window window) : Renderable()
     // initialize particles
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        particles[i] = new Particle(x, y, window);
+        particles.push_back(new Particle(x, y, window));
     } // initialize array of particles
+
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        projectiles.push_back(new Projectile(x, y, window));
+    } // initalize projectiles
+
+    projectile_counter = 0;
+
+    // iniitailize melee weapon
+    Melee m(x, y, window);
+    melee = m;
 } // explicit constructor
 
-void Dog::render_dog(Window window, int frame, Camera camera)
+void Dog::render(Window window, int frame, Camera camera)
 {
 
     if (vx || vy)
     {
-        render(window, frame, camera);
+        Renderable::render(window, frame, camera);
         render_particles(window, camera);
+        render_projectiles(window, camera);
+        melee.render_melee(window, camera);
+        render_health(window, camera);
     } // render animation and trail if moving
     else
     {
-        render(window, 1, camera);
+        Renderable::render(window, 1, camera);
+        render_projectiles(window, camera);
+        melee.render_melee(window, camera);
+        render_health(window, camera);
     } // entity is stationary, no animation, fixed to frame 1
 } // Dog::render
 
@@ -88,13 +115,159 @@ void Dog::render_particles(Window window, Camera camera)
     } // for
 } // Dog::render_particles
 
+void Dog::render_projectiles(Window window, Camera camera)
+{
+    // render the particles
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        if (projectiles[i] -> is_active())
+        {
+            projectiles[i] -> render_projectile(window, camera);
+        } // if - render if active
+    } // for
+} // Dog::render_projectiles
+
+void Dog::fire_projectile(int current_projectile, Direction direction)
+{
+   projectiles[current_projectile] -> fire(x, y, direction);
+} // Dog::fire_projectile - private
+
+void Dog::fire_projectile()
+{
+    fire_projectile(projectile_counter, direction);
+
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectiles[0] -> reset();
+    } // if - set active false for finished projectile
+    else
+    {
+        projectiles[projectile_counter + 1] -> reset();
+    } // else 
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectile_counter = 0;
+    } // if - reset counter
+    else
+    {
+        projectile_counter++;
+    }
+} // Dog::fire_projectile
+
+void Dog::fire_projectile(Direction direction)
+{
+    fire_projectile(projectile_counter, direction);
+
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectiles[0] -> reset();
+    } // if - set active false for finished projectile
+    else
+    {
+        projectiles[projectile_counter + 1] -> reset();
+    } // else 
+    if (projectile_counter == TOTAL_PROJECTILES)
+    {
+        projectile_counter = 0;
+    } // if - reset counter
+    else
+    {
+        projectile_counter++;
+    }
+} // Dog::fire_projectile
+
+void Dog::kill_projectiles()
+{
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        projectiles[i] -> reset();
+    } // for
+} // Dog::kill_projectiles
+
+void Dog::melee_attack()
+{
+    Timer timer;
+    melee.attack(*this);
+} // Dog::melee_attack
+
+void Dog::reset_melee()
+{
+    melee.reset();
+} // Dog::reset_melee
+
+void Dog::handle_event(SDL_Event& e)
+{
+    if (!dead)
+    {
+        Entity::handle_event(e);
+        
+        if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+        {
+            switch (e.key.keysym.sym)
+            {
+                case SDLK_w:
+                fire_projectile(UP);
+                break;
+
+                case SDLK_a:
+                fire_projectile(LEFT);
+                break;
+
+                case SDLK_s:
+                fire_projectile(DOWN);
+                break;
+
+                case SDLK_d:
+                fire_projectile(RIGHT);
+                break;
+
+                case SDLK_m:
+                melee_attack();
+                break;
+
+                default:
+                break;
+            } // switch - process individual key event
+        } // if - process event
+        else if (e.type == SDL_KEYUP)
+        {
+            melee.reset();
+        }
+    } // handle event if alive
+    else
+    {
+        kill_projectiles();
+        kill();
+    } // else - kill
+} // Dog::handle_event
+
+void Dog::move(Window window, double time_step)
+{
+    if (is_alive())
+    {
+        Entity::move(window, time_step);
+        for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+        {
+            if (projectiles[i] -> is_active())
+            {
+                projectiles[i] -> move(window, time_step);
+            } // if - render if active
+        } // for
+        melee.move(*this);
+    }
+} // Dog::move
+
 /*
 Dog::~Dog()
 {
-    //Delete particles
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
         delete particles[i];
     } // for
+
+    for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+    {
+        delete projectiles[i];
+    } // for 
 } // destructor
 */

@@ -11,17 +11,9 @@
 #include <sstream>
 #include "camera.h"
 
-using namespace std;
+#include "CONSTANTS.h"
 
-enum KeyPress
-{
-    key_default,
-    key_up,
-    key_down,
-    key_left,
-    key_right,
-    key_total,
-};
+using namespace std;
 
 class Window
 {
@@ -50,7 +42,6 @@ class Window
         bool load_media(); // load preset media files
         bool load_media(string media_path); // load a specfic media file
         SDL_Surface* load_surface(string media_path); // TODO implement format optimization
-        
         SDL_Texture* load_texture(string media_path); // load a fast SDL texture
         SDL_Texture* load_texture(string media_path, Uint8 key_r, Uint8 key_g, Uint8 key_b); // load texture with colorkey
         SDL_Texture* load_from_rendered_text(string text, SDL_Color text_color); // load TTF text as texture
@@ -64,8 +55,12 @@ class Window
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle, 
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
         void render_background(Camera camera);
+
+        // render conditions
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen
+
+        // modulate texture 
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
         void modulate_alpha(SDL_Texture* texture, Uint8 alpha) const; // alpha blending, modulate transparency
 

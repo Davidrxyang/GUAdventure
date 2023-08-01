@@ -5,16 +5,10 @@
 #include <string>
 #include "window.h"
 
+#include "CONSTANTS.h"
+
 using namespace std;
 
-enum MouseState
-{
-    button_mouse_out,
-    button_mouse_over,
-    button_mouse_down,
-    button_mouse_up,
-    button_mouse_total,
-};
 
 class Button
 {

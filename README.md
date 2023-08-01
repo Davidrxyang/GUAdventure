@@ -1,11 +1,9 @@
 # RY Game Engine
 Graphic video game engine created using C++ and SDL2
 
-### Game Description
+### Description
 
-This is a 2D graphics framework with built in game engine 
-mechanics such as perishable sprite entity generation, 
-collision detection, camera scrolling level navigation, etc.
+This is a 2D graphics framework with built in game engine mechanics such as perishable sprite entity generation, collision detection, camera scrolling level navigation, etc.
 
 #### Framework Functionality
 
@@ -15,11 +13,9 @@ Operating System Handling:
 - system independent event loop handling (time based iteration)
 
 Input:
-- clickable buttons supporting multiple click-states, including
-click, hover, release.
+- clickable buttons supporting multiple click-states, including click, hover, release.
 - direct text input
 - keyboard input
-- keyboard-independent scancode directional input
 
 Media:
 - Multi-Format Graphics, including PNG, BMP
@@ -34,20 +30,25 @@ Rendering:
 File Handling:
 - binary file creation, read, and write. 
 
-#### Game Engine Functionality
+Scalability:
+- comprehensive encapsulation for streamlined object generation.
+- centralized dimensional data handling for one-stop global-scale manipulation across all objects.
+
+### Game Engine Functionality
 
 Entity Generation:
-- built-in entity type hierarchy, type separation to eliminate 
-non-essential functions for specific entities
-- built-in perishable entity type with life functions such as 
-health and death
+- built-in entity type hierarchy, type separation to eliminate non-essential functions for specific entities
+- built-in perishable entity type with life functions such as health and death
+
+Game Play:
+- projectile generation, natively supports shooter-style game play
+- melee attack 
 
 Game Loop Handling:
 - frame-rate independent, time-based entity movement handling
 
 Collision:
-- built-in collision box generation for entities, including 
-box rendering for testing purposes
+- built-in collision box generation for entities, including collision box rendering for testing purposes
 
 Save Game:
 - framework supports efficient binary file manipulation

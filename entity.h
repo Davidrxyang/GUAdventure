@@ -4,12 +4,9 @@
 #include <SDL2/SDL.h>
 #include "window.h"
 
-const int TOTAL_PARTICLES = 10;
-const double DEFAULT_SPEED = 640; // pixels per SECOND
+#include "CONSTANTS.h"
 
 using namespace std;
-
-const int animation_frame_count = 4;
 
 class Entity
 {
@@ -25,20 +22,25 @@ class Entity
         SDL_Texture* get_texture() const {return sprite_sheet;}; // get texture
         SDL_Rect get_frame(int frame) const {return frames[frame];}; // get frames
         SDL_Rect get_box() const {return collision_box;}; // get collision box
-        void handle_event(SDL_Event& e); // handle event input
+        Direction get_direction() const {return direction;}; // get direction
+        
+        virtual void handle_event(SDL_Event& e); // handle event input
         
         // Entity actions
 
-        void spin(double a) {angle += a;}; // spin
-        void move_x(int dx) {x += dx;}; // move x
-        void move_y(int dy) {y += dy;}; // move y
-        void set_vx(int vx) {this -> vx = vx;}; // velocity x
-        void set_vy(int vy) {this -> vy = vy;}; // velocuty y
-        void set_x(int x) {this -> x = x;}; // set x
-        void set_y(int y) {this -> y = y;}; // set y
+        void spin(double a) {angle += a;}; // spin - RENDER ONLY
+        void orient(Direction edirection); // orient 
+        void move_x(double dx) {x += dx;}; // move x
+        void move_y(double dy) {y += dy;}; // move y
+        void set_vx(double vx) {this -> vx = vx;}; // velocity x
+        void set_vy(double vy) {this -> vy = vy;}; // velocuty y
+        void set_x(double x) {this -> x = x;}; // set x
+        void set_y(double y) {this -> y = y;}; // set y
 
-        void move(Window window, double time_step); // move entity
-        void stop(); // stop entity - resets velocity
+        virtual void move(Window window, double time_step); // move entity
+        
+        void collision_rebound(); // rebound after collision
+        void collision_rebound(double rebound_distance); // rebound after collision, spec dist
 
     protected:
 
@@ -52,6 +54,9 @@ class Entity
         double vx; // velocity x
         double vy; // velocity y
         double angle; // rotation angle
+
+        Direction direction; 
+
         SDL_RendererFlip flip; // is flip?
         SDL_Texture* sprite_sheet; // sprite texture
         SDL_Rect frames[animation_frame_count]; // for animated sprites

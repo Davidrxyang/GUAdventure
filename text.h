@@ -6,7 +6,6 @@
 #include "window.h"
 #include "renderable.h"
 
-const SDL_Color DEFAULT_FONT_COLOR = {0, 0, 0};
 
 using namespace std;
 
