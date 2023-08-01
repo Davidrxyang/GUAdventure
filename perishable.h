@@ -22,7 +22,7 @@ class Perishable : public Renderable
         bool is_alive() const {return !dead;}; // if the entity is alive
         int get_health() const {return health;}; // get health
         void kill(); // kills the entity
-        void change_health(int n); // change health by n units, pos or neg
+        HealthState change_health(int n); // change health by n units, pos or neg
 
         void render_health(Window window); // render health bar
         void render_health(Window window, Camera camera); // render health bar with cam offset

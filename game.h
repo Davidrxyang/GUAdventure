@@ -24,7 +24,7 @@
 #include "camera.h"
 
 // entities
-#include "dog.h"
+#include "dawg.h"
 #include "desk.h"
 
 // constants
@@ -36,21 +36,45 @@ class Game
 {
 
     public:
+
         Game(); // default constructor
         Game(string player_name, Window window); // explicit constructor
-        void start_game(); // start a new game
+
+
+
+        // GAME LOGIC GOES HERE 
+
+
+        // --------------------------------------------------------
+        void start_game(int enemy_number); // start a new game
+        // --------------------------------------------------------
+
+
+
+        // accessors
+        int get_enemies() const {return enemies;}; // get all enemies
+        int get_active_enemies() const {return active_enemies;}; // get active enemies
 
         // game-play functions
         bool has_collided(Entity a, Entity b) const; // checks collision between two entities
         bool has_collided(SDL_Rect a, SDL_Rect b) const; // checks collision between two boxes
         bool has_collided(double x, double y, Entity b) const; // point collision with entity
 
-        // test games
-        void start_test_game_6(); // scrolling camera
+        // interface handling
+        void quit_game() {is_quit = true;}; // quits game
+        void set_background(string media_path); // sets background from interface scope
 
     private:
+
         Player player;
         Window game_window;
+
+        // game play data
+        int enemies;
+        int active_enemies;
+        bool is_quit;
+        bool player_died;
+        bool victory;
 
         // FPS controls 
         Timer FPS_timer;

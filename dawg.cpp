@@ -1,6 +1,6 @@
-#include "dog.h"
+#include "dawg.h"
 
-Dog::Dog() : Perishable()
+Dawg::Dawg() : Perishable()
 {
     name = "default name";
     x = 0;
@@ -24,7 +24,7 @@ Dog::Dog() : Perishable()
 
 } // default constructor
 
-Dog::Dog(string name, double x, double y, Window window) : Perishable()
+Dawg::Dawg(string name, double x, double y, Window window) : Perishable()
 {
     set_name(name);
     this -> x = x;
@@ -77,7 +77,7 @@ Dog::Dog(string name, double x, double y, Window window) : Perishable()
     melee = m;
 } // explicit constructor
 
-void Dog::render(Window window, int frame, Camera camera)
+void Dawg::render(Window window, int frame, Camera camera)
 {
 
     if (vx || vy)
@@ -95,9 +95,9 @@ void Dog::render(Window window, int frame, Camera camera)
         melee.render_melee(window, camera);
         render_health(window, camera);
     } // entity is stationary, no animation, fixed to frame 1
-} // Dog::render
+} // Dawg::render
 
-void Dog::render_particles(Window window, Camera camera)
+void Dawg::render_particles(Window window, Camera camera)
 {
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
@@ -113,9 +113,9 @@ void Dog::render_particles(Window window, Camera camera)
     {
         particles[i] -> render_particle(window, camera);
     } // for
-} // Dog::render_particles
+} // Dawg::render_particles
 
-void Dog::render_projectiles(Window window, Camera camera)
+void Dawg::render_projectiles(Window window, Camera camera)
 {
     // render the particles
     for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
@@ -125,14 +125,14 @@ void Dog::render_projectiles(Window window, Camera camera)
             projectiles[i] -> render_projectile(window, camera);
         } // if - render if active
     } // for
-} // Dog::render_projectiles
+} // Dawg::render_projectiles
 
-void Dog::fire_projectile(int current_projectile, Direction direction)
+void Dawg::fire_projectile(int current_projectile, Direction direction)
 {
    projectiles[current_projectile] -> fire(x, y, direction);
-} // Dog::fire_projectile - private
+} // Dawg::fire_projectile - private
 
-void Dog::fire_projectile()
+void Dawg::fire_projectile()
 {
     fire_projectile(projectile_counter, direction);
 
@@ -152,9 +152,9 @@ void Dog::fire_projectile()
     {
         projectile_counter++;
     }
-} // Dog::fire_projectile
+} // Dawg::fire_projectile
 
-void Dog::fire_projectile(Direction direction)
+void Dawg::fire_projectile(Direction direction)
 {
     fire_projectile(projectile_counter, direction);
 
@@ -174,28 +174,28 @@ void Dog::fire_projectile(Direction direction)
     {
         projectile_counter++;
     }
-} // Dog::fire_projectile
+} // Dawg::fire_projectile
 
-void Dog::kill_projectiles()
+void Dawg::kill_projectiles()
 {
     for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
     {
         projectiles[i] -> reset();
     } // for
-} // Dog::kill_projectiles
+} // Dawg::kill_projectiles
 
-void Dog::melee_attack()
+void Dawg::melee_attack()
 {
     Timer timer;
     melee.attack(*this);
-} // Dog::melee_attack
+} // Dawg::melee_attack
 
-void Dog::reset_melee()
+void Dawg::reset_melee()
 {
     melee.reset();
-} // Dog::reset_melee
+} // Dawg::reset_melee
 
-void Dog::handle_event(SDL_Event& e)
+void Dawg::handle_event(SDL_Event& e)
 {
     if (!dead)
     {
@@ -239,9 +239,9 @@ void Dog::handle_event(SDL_Event& e)
         kill_projectiles();
         kill();
     } // else - kill
-} // Dog::handle_event
+} // Dawg::handle_event
 
-void Dog::move(Window window, double time_step)
+void Dawg::move(Window window, double time_step)
 {
     if (is_alive())
     {
@@ -255,10 +255,10 @@ void Dog::move(Window window, double time_step)
         } // for
         melee.move(*this);
     }
-} // Dog::move
+} // Dawg::move
 
 /*
-Dog::~Dog()
+Dawg::~Dawg()
 {
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {

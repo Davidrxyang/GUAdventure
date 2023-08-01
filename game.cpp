@@ -3,6 +3,11 @@
 Game::Game() 
 {
     player.set_player_name("Default");
+    enemies = 0;
+    active_enemies = 0;
+    is_quit = true;
+    player_died = false;
+    victory = false;
 } // default constructor
 
 Game::Game(string player_name, Window window) 
@@ -11,12 +16,32 @@ Game::Game(string player_name, Window window)
     player.set_player_name(player_name);
     game_window.set_background_width(GAME_LEVEL_WIDTH);
     game_window.set_background_height(GAME_LEVEL_HEIGHT);
+    enemies = 0;
+    active_enemies = 0;
+    is_quit = true;
+    player_died = false;
+    victory = false;
 } // explicit constructor
 
-void Game::start_game()
+bool Game::has_collided(double x, double y, Entity b) const
 {
-    bool isquit = false;
-} // Game::start_game - the actual logic for the game goes here
+    int left_b = b.get_box().x;
+    int right_b = left_b + b.get_box().w;
+    int top_b = b.get_box().y;
+    int bottom_b = top_b + b.get_box().h;
+
+    if (x >= left_b && x <= right_b
+    && y >= top_b && y <= bottom_b)
+    {
+        return true;
+    } // if - collides
+    return false;
+} // Game::has_collided
+
+void Game::set_background(string media_path)
+{
+    game_window.set_background(media_path);
+} // Game::set_background
 
 bool Game::has_collided(Entity a, Entity b) const
 {
@@ -84,77 +109,103 @@ bool Game::has_collided(SDL_Rect a, SDL_Rect b) const
     return true; // if none satisfy condition, the boxes do not overlap, return true
 } // Game::has_collided
 
-bool Game::has_collided(double x, double y, Entity b) const
+void Game::start_game(int enemy_number)
 {
-    int left_b = b.get_box().x;
-    int right_b = left_b + b.get_box().w;
-    int top_b = b.get_box().y;
-    int bottom_b = top_b + b.get_box().h;
+    // activates game - sets quit to false
+    is_quit = false;
 
-    if (x >= left_b && x <= right_b
-    && y >= top_b && y <= bottom_b)
-    {
-        return true;
-    } // if - collides
-    return false;
-} // Game::has_collided
+    // initiate game background internally - can be reset from interface scope
+    set_background("assets/media/track.png");
 
-void Game::start_test_game_6()
-{
-    bool isquit = false;
-
-    game_window.set_background("assets/media/track.png");
-
+    // initiate local variables for game running
     int frame = 0;
     int total_frames = 0;
     SDL_Event game_event;
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
-    double angle = 0;
     Timer step_timer;
 
-    Dog me("me", 0, 0, game_window);
+    // initialize camera for scrolling
+    Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
+
+    // initiates game play data
+    enemies = enemy_number;
+    active_enemies = enemy_number;
+    player_died = false;
+    victory = false;
+    SDL_Texture* death_text = game_window.load_from_rendered_text(DEATH_MESSAGE, DEFAULT_FONT_COLOR);
+    SDL_Texture* victory_text = game_window.load_from_rendered_text(VICTORY_MESSAGE, DEFAULT_FONT_COLOR);
+    SDL_Rect center_target = CENTER_TEXT_TARGET;
+
+    // initiate main character
+    Dawg me(player.get_player_name(), 0, 0, game_window);
     Desk desk("desk", game_window);
 
-    vector<Dog*> dogs(15);
+    // initiate dawgs - dawgs are makeshift name for the most complex character type
+    vector<Dawg*> dawgs(enemies); // these are enemy dawgs
 
-    for (size_t i = 0; i < dogs.size(); i++)
+    // randomize initial starting positions for enemies
+    for (size_t i = 0; i < dawgs.size(); i++)
     {
-        dogs[i] = new Dog("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, game_window);
-        dogs[i] -> set_x( 300 + rand() % (GAME_LEVEL_WIDTH - 300));
-        dogs[i] -> set_y(300 + rand() % (GAME_LEVEL_HEIGHT - 300));
-    }
+        dawgs[i] = new Dawg("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, game_window);
+        dawgs[i] -> set_x( 300 + rand() % (GAME_LEVEL_WIDTH - 300));
+        dawgs[i] -> set_y(300 + rand() % (GAME_LEVEL_HEIGHT - 300));
+    } // for - initializes enemy locations
 
-    Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
- 
-    // just to make sure player died
-    bool has_spun = false;
-
-    while(!isquit)
+    while(!is_quit) // game runs while quit is false
     {
-        // GAME LOOP
+        // MAIN GAME LOOP
         if (SDL_PollEvent(& game_event))
         {        
             // PROCESS EVENTS    
             if (game_event.type == SDL_QUIT)
             {
-                isquit = true;
+                is_quit = true;
             } // if - quit game
             else if (game_event.type == SDL_KEYDOWN)
             {
                 switch (game_event.key.keysym.sym)
                 {
+                    // for keypress q and ESC, quits game
+                    case SDLK_q:
+                    is_quit = true;
+                    break;
 
+                    case SDLK_ESCAPE:
+                    is_quit = true;
+                    break;
                 } // switch - process individual key event
-            }
+            } // else if
 
-             me.handle_event(game_event);
+            // using encapsulated functions to handle general player event for player with input
+            me.handle_event(game_event);
+
         } // if - game event poll check
         
+        // randomize dawg movement
+
+        // every "change_rate" frames, the velocities for dawgs are randomly reset with 
+        // dictated variance. The change rate also has randomized dictated variance for
+        // artificial randomized behavior with control.
+
+        int change_rate = (RATE_RAND_MID - rand() % RATE_RANT_RANGE);
+
+        if (total_frames % change_rate == 0)
+        {
+            for (size_t i = 0; i < dawgs.size(); i++)
+            {
+                dawgs[i] -> set_vx(DAWG_RAND_SPEED_MID - double(rand() % DAWG_RAND_SPEED_RANGE));
+                dawgs[i] -> set_vx(DAWG_RAND_SPEED_MID - double(rand() % DAWG_RAND_SPEED_RANGE));
+            } // for 
+        } // if 
+
+        // GAME PLAY LOGIC
+
+        // if player collides with desk, heal player
         if (has_collided(me, desk))
         {
-            me.change_health(2);
+            me.change_health(HEAL_AMOUNT);
             me.collision_rebound();
 
+            // desk turns green upon impact
             if (desk.has_color_mod())
             {
                 desk.modulate_color(0xFF, 0xFF, 0xFF);
@@ -163,116 +214,150 @@ void Game::start_test_game_6()
             {
                 desk.modulate_color(0, 0xFF, 0xFF);
             } // set color
-
         } // if - collision
 
-        // randomize dog movement
-
-        int change_rate = (100 - rand()%30);
-        if (total_frames % change_rate == 0)
+        // if player collides with enemy dawg, damage player
+        for (size_t i = 0; i < dawgs.size(); i++)
         {
-            for (size_t i = 0; i < dogs.size(); i++)
+            if (dawgs[i] -> is_alive() && me.is_alive() && has_collided(me, *dawgs[i]))
             {
-                dogs[i] -> set_vx(200 - rand()%400);
-                dogs[i] -> set_vx(200 - rand()%400);
-            }
-        }
-
-        for (size_t i = 0; i < dogs.size(); i++)
-        {
-            if (dogs[i] -> is_alive() && me.is_alive() && has_collided(me, *dogs[i]))
-            {
-                me.change_health(-1);
-                dogs[i] -> collision_rebound();
+                me.change_health(-ENEMY_DAMAGE);
+                dawgs[i] -> collision_rebound();
                 me.collision_rebound(100);
-            }
-        }   
+            } // if - collision
+        } // for - iterate over dawgs
 
+        // player attack
+
+        // player melee attack
         if (me.get_melee().is_active())
         {
-            for (size_t i = 0; i < dogs.size(); i++)
+            for (size_t i = 0; i < dawgs.size(); i++)
             {
-                if (!dogs[i] -> is_dead() && has_collided(me.get_melee(), *dogs[i]))
+                if (!dawgs[i] -> is_dead() && has_collided(me.get_melee(), *dawgs[i]))
                 {
-                    dogs[i] -> collision_rebound();
+                    dawgs[i] -> collision_rebound();
+
+                    HealthState state = dawgs[i] -> change_health(-2);
+                    if (state == health_state_min)
+                    {
+                        active_enemies--;
+                    } // if - killed, reduce enemies
                     me.reset_melee();
-                    dogs[i] -> change_health(-2);
-                }
-            }
-        }
+                } // if - melee collides
+            } // for - iterate over dawgs
+        } // if - melee is active - attack input detected
         
+        // player projectile range attack
         for (size_t j = 0; j < me.get_projectiles().size(); j++)
         {
             Projectile pro = *me.get_projectiles()[j];
 
-            for (size_t i = 0; i < dogs.size(); i++)
+            for (size_t i = 0; i < dawgs.size(); i++)
             {
                 if (pro.is_active() 
-                && dogs[i] -> is_alive()
-                && has_collided(pro, *dogs[i]))
+                && dawgs[i] -> is_alive()
+                && has_collided(pro, *dawgs[i]))
                 {
-                    dogs[i] -> change_health(-2);
+                    HealthState state = dawgs[i] -> change_health(-2);
+                    if (state == health_state_min)
+                    {
+                        active_enemies--;
+                    } // if - killed, reduce enemies
                     me.get_projectiles()[j] -> reset();
-                }
-            }
-        } // process all projectiles in array
+                } // if - projectile collides
+            } // for - iterate over dawgs
+        } // for - iterate over projectiles
         
-        
+        // PROCESS DEATH
 
-        // PROCESS ENTITIES
-        double time_step = step_timer.get_seconds();
-
-        me.move(game_window, time_step);
-
-        for (size_t i = 0; i < dogs.size(); i++)
-        {
-            dogs[i] -> move(game_window, time_step);
-            if (dogs[i] -> is_dead())
-            {
-                dogs[i] -> spin(30);
-            }
-        }
-
-        step_timer.start(); // restart timer
-
-        if (me.is_dead() && !has_spun)
+        // only activates death spin animation if player is not already dead
+        if (me.is_dead() && !player_died)
         {
             me.spin(90);
-            cout << "You died..." << endl;
-            has_spun = true;
+            player_died = true;
         } // if - player dies
 
+        if (active_enemies == 0)
+        {
+            victory = true;
+        } // if - VICTORY!!
+        
+        // PROCESS MOVEMENT ON SCREEN
 
-        // RENDER
+        // enter time window
+        double time_step = step_timer.get_seconds();
 
+        // move player
+        me.move(game_window, time_step);
+
+        // move enemy dawgs
+        for (size_t i = 0; i < dawgs.size(); i++)
+        {
+            if (dawgs[i]->is_alive())
+            {
+                dawgs[i] -> move(game_window, time_step);
+            } // move if alive
+        } // for - iterate over all dawgs
+
+        step_timer.start(); // restart timer
+        
+        // exits time window
+
+        // RENDER 
+
+        // process camera for movement
         camera.process_camera(me.get_box(), GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
 
+        // reset window
         game_window.render_clear();
+
+        // render background
         game_window.render_background(camera);
 
+        // render player
         me.render(game_window, frame, camera);
+
+        // render object
         desk.render(game_window, camera);
 
-        for (size_t i = 0; i < dogs.size(); i++)
+        // render enemies if alive
+        for (size_t i = 0; i < dawgs.size(); i++)
         {
-            dogs[i] -> render(game_window, frame, camera);
-        }
+            if (dawgs[i]->is_alive())
+            {
+                dawgs[i] -> render(game_window, frame, camera);
+            } // if - alvie
+        } // for - iterate
 
+        // END GAME MESSAGES
+
+        if (player_died)
+        {
+            game_window.render(death_text, &center_target);
+        } // if - death text
+
+        if (victory)
+        {
+            game_window.render(victory_text, &center_target);
+        } // if - victory text
+
+        // update screen
         game_window.update_screen();
         
+        // increment frame counts
         frame++; // increment frame
         total_frames++;
-
+        
         // the game will have four frame animaiton speed, four frame animation too
-        if (frame / 4 >= animation_frame_count)
+        if (frame / 4 >= ANIMATION_FRAME_COUNT)
         {
             frame = 0; // reset frame count
         } // reset animation frame
     } // while
 
-    for (size_t i = 0; i < dogs.size(); i++)
+    for (size_t i = 0; i < dawgs.size(); i++)
     {
-        delete dogs[i];
-    } // deallocate
-
-} // Game::start_test_game_6
+        delete dawgs[i];
+    } // deallocate enemies
+} // Game::start_game - the actual logic for the game goes here

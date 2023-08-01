@@ -1,5 +1,5 @@
-#ifndef DOG_H
-#define DOG_H
+#ifndef DAWG_H
+#define DAWG_H
 
 #include <SDL2/SDL.h>
 #include <string>
@@ -16,14 +16,14 @@
 
 using namespace std;
 
-class Dog : public Perishable
+class Dawg : public Perishable
 {
 
     public:
 
-        Dog(); // default constructor
-        Dog(string name, double x, double y, Window window); // explicit constructor, spec name and window
-        // ~Dog(); // destructor TODO MOVE THIS TO MAIN GAME DESTRUCTOR WHEN BUILT
+        Dawg(); // default constructor
+        Dawg(string name, double x, double y, Window window); // explicit constructor, spec name and window
+        // ~Dawg(); // destructor TODO MOVE THIS TO MAIN GAME DESTRUCTOR WHEN BUILT
         
         void set_name(string name) {this -> name = name;}; // set name
         string get_name() const {return name;}; // get name
