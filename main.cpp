@@ -2,7 +2,6 @@
 
 int main()
 {
-    Game game("David");
-    game.start_test_game_6();
+    Interface Interface;
     return 0;
 }

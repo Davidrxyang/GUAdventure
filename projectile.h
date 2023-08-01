@@ -10,7 +10,6 @@
 
 using namespace std;
 
-const double PROJECTILE_SPEED = 2500;
 
 class Projectile : public Renderable
 {

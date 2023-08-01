@@ -5,14 +5,11 @@
 #include "renderable.h"
 #include "camera.h"
 #include "window.h"
-
 #include <iostream>
 
-using namespace std;
+#include "CONSTANTS.h"
 
-const int MAX_HEALTH = 10;
-const int HEALTH_BAR_UNIT_LENGTH = 8;
-const int HEALTH_BAR_HEIGHT = 10;
+using namespace std;
 
 class Perishable : public Renderable
 {

@@ -7,7 +7,7 @@ Window::Window()
     background = nullptr;
     temp_image = nullptr;
     window_surface = nullptr;
-
+    
     set_name("default name");
     set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
     center_x = SDL_WINDOWPOS_CENTERED;
@@ -15,13 +15,8 @@ Window::Window()
     width = 680;
     height = 480;
 
-    window = build_window(center_x, center_y, width, height);   
-    renderer = build_renderer(window);
-
-    if(!window)
-    {
-        cout << "Failed to create window: " << SDL_GetError();
-    } // if
+    window = nullptr;
+    renderer = nullptr;
 } // Window::Window default constructor             
 
 Window::Window(string name)

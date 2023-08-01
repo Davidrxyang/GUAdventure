@@ -12,9 +12,9 @@
 #include "camera.h"
 #include "timer.h"
 
-using namespace std;
+#include "CONSTANTS.h"
 
-const size_t TOTAL_PROJECTILES = 10; 
+using namespace std;
 
 class Dog : public Perishable
 {

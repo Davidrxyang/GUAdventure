@@ -11,17 +11,9 @@
 #include <sstream>
 #include "camera.h"
 
-using namespace std;
+#include "CONSTANTS.h"
 
-enum KeyPress
-{
-    key_default,
-    key_up,
-    key_down,
-    key_left,
-    key_right,
-    key_total,
-};
+using namespace std;
 
 class Window
 {

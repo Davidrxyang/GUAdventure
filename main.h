@@ -9,7 +9,7 @@
 #include <SDL2/SDL.h>
 
 //original files
-#include "game.h"
+#include "interface.h"
 
 using namespace std;
 

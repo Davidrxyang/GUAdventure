@@ -2,14 +2,13 @@
 
 Game::Game() 
 {
-    // calls class default constructors
+    player.set_player_name("Default");
 } // default constructor
 
-Game::Game(string player_name) 
-: game_window("Game", 0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT)
+Game::Game(string player_name, Window window) 
 {
+    game_window = window;
     player.set_player_name(player_name);
-
     game_window.set_background_width(GAME_LEVEL_WIDTH);
     game_window.set_background_height(GAME_LEVEL_HEIGHT);
 } // explicit constructor

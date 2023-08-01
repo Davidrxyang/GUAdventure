@@ -4,22 +4,9 @@
 #include <SDL2/SDL.h>
 #include "window.h"
 
-const int TOTAL_PARTICLES = 10;
-const double DEFAULT_SPEED = 1000; // pixels per SECOND
-const double REBOUND_DISTANCE = 30; // rebound distance
-const int animation_frame_count = 4;
+#include "CONSTANTS.h"
 
 using namespace std;
-
-
-enum Direction
-{
-    DEFAULT,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-};
 
 class Entity
 {
