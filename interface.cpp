@@ -8,6 +8,6 @@ Interface::Interface()
     // builds game 
     Game game("David", g_window);
 
-    int enemy_count = 40;
+    int enemy_count = DEFAULT_ENEMY_COUNT;
     game.start_game(enemy_count);
 } // Interface::Interface

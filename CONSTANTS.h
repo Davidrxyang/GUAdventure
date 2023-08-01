@@ -55,6 +55,7 @@ const SDL_Rect CENTER_TEXT_TARGET = {CENTER_MESSAGE_X, CENTER_MESSAGE_Y, CENTER_
 // game play variables
 const int HEAL_AMOUNT = 2;
 const int ENEMY_DAMAGE = 1;
+const int DEFAULT_ENEMY_COUNT = 20;
 
 // directions 
 enum Direction
