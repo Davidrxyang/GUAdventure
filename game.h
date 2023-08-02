@@ -46,23 +46,30 @@ class Game
 
 
         // --------------------------------------------------------
-        void start_game(int enemy_number); // start a new game
+        GameEndState start_game(int enemy_number); // start a new game, return end state when quit
         // --------------------------------------------------------
 
 
 
-        // accessors
-        int get_enemies() const {return enemies;}; // get all enemies
-        int get_active_enemies() const {return active_enemies;}; // get active enemies
+        // modifiers
+        size_t get_enemies() const {return enemies;}; // get all enemies
+        size_t get_active_enemies() const {return active_enemies;}; // get active enemies
+        void set_current_level(size_t level) {current_level = level;}; // set level counter
+        size_t get_current_level() const {return current_level;}; // gets level counter
 
         // game-play functions
         bool has_collided(Entity a, Entity b) const; // checks collision between two entities
         bool has_collided(SDL_Rect a, SDL_Rect b) const; // checks collision between two boxes
         bool has_collided(double x, double y, Entity b) const; // point collision with entity
 
-        // interface handling
+        // game handling
         void quit_game() {is_quit = true;}; // quits game
         void set_background(string media_path); // sets background from interface scope
+        void handle_game_event(SDL_Event &e); // handles game event like pause, quit
+        void process_end_game(); // sets game state on end game
+        void set_enemy_speed(double speed); // sets enemy speed externally from interface
+        void increase_enemy_speed(double speed); // sets enemy speed externally from interface
+        void render_data_panel(int current_health); // renders data panel
 
     private:
 
@@ -73,8 +80,13 @@ class Game
         int enemies;
         int active_enemies;
         bool is_quit;
+        bool is_paused;
         bool player_died;
         bool victory;
+        bool can_continue;
+        GameEndState state;
+        double dawg_speed_mid;
+        size_t current_level;
 
         // FPS controls 
         Timer FPS_timer;

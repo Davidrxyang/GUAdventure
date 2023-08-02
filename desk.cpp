@@ -16,8 +16,8 @@ Desk::Desk() : Renderable()
 Desk::Desk(string name, Window window) : Renderable()
 {
     set_name(name);
-    x = 400;
-    y = 400;
+    x = 900;
+    y = GAME_LEVEL_HEIGHT - 200;
     w = 400;
     h = 200;
     collision_box.x = x;

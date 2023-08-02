@@ -50,6 +50,9 @@ Game Loop Handling:
 Collision:
 - built-in collision box generation for entities, including collision box rendering for testing purposes
 
+Data Panel:
+- built-in game data panel for better user experience
+
 Save Game:
 - framework supports efficient binary file manipulation
 

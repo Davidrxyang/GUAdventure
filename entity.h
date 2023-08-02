@@ -38,7 +38,7 @@ class Entity
         void set_y(double y) {this -> y = y;}; // set y
 
         virtual void move(Window window, double time_step); // move entity
-        
+        void stop(); // stops entity movement
         void collision_rebound(); // rebound after collision
         void collision_rebound(double rebound_distance); // rebound after collision, spec dist
 

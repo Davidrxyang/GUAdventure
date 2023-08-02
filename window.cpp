@@ -361,6 +361,12 @@ void Window::render_background(Camera camera)
     render(background, &target);
 } // Window::render_background
 
+void Window::render_rect(SDL_Rect* rect, Uint8 r, Uint8 g, Uint8 b)
+{
+    SDL_SetRenderDrawColor(renderer, r, g, b, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(renderer, rect);
+} // Window::render_rect
+
 void Window::render_clear() const
 {
     SDL_RenderClear(renderer);
