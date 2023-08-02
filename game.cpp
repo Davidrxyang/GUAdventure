@@ -250,7 +250,7 @@ GameEndState Game::start_game(int enemy_number)
     can_continue = false;
 
     // initiate game background internally - can be reset from interface scope
-    set_background("assets/media/track.png");
+    set_background("assets/media/background/playground.png");
 
     // initiate local variables for game running
     int frame = 0;
@@ -445,7 +445,7 @@ GameEndState Game::start_game(int enemy_number)
             render_data_panel(me.get_health());
 
             // END GAME MESSAGES
-
+            
             if (player_died)
             {
                 game_window.render(death_text, &center_target);
@@ -454,9 +454,6 @@ GameEndState Game::start_game(int enemy_number)
             {
                 game_window.render(victory_text, &center_target);
             } // if - victory text
-
-            // update screen
-            game_window.update_screen();
             
             // increment frame counts
             frame++; // increment frame
@@ -484,10 +481,24 @@ GameEndState Game::start_game(int enemy_number)
                     me.stop();
                     
                     // one - off render data panel to show paused message
+
+                    if (player_died)
+                    {
+                        game_window.render(death_text, &center_target);
+                    } // if - death text
+                    if (victory)
+                    {
+                        game_window.render(victory_text, &center_target);
+                    } // if - victory text
+
                     render_data_panel(me.get_health());
-                    game_window.update_screen();
                 } // if - stop me and render pause
             } // if - game event poll check
+
+            // UPDATE SCREEN
+
+            game_window.update_screen();
+            
         } // while - PAUSE
 
         // PAUSED GAME FUNCTIONS

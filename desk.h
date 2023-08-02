@@ -6,6 +6,8 @@
 #include "window.h"
 #include "renderable.h"
 
+#include "CONSTANTS.h"
+
 using namespace std;
 
 class Desk : public Renderable

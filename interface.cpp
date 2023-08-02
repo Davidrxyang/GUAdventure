@@ -24,7 +24,7 @@ Interface::Interface()
         game.set_current_level(current_level);
         state = game.start_game(enemy_count);
 
-        if (current_level > 2)
+        if (current_level >= 2)
         {
             game.increase_enemy_speed(100);
             enemy_count -= 5;
