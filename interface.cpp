@@ -8,7 +8,6 @@ Interface::Interface()
     // declares a global window
     Window g_window("Game", 0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT + DATA_PANEL_HEIGHT);
 
-    // game mode
 
     // enters menu
     Menu menu(player, g_window); 
@@ -22,6 +21,9 @@ Interface::Interface()
     {
         mode = admin;
     } // set admin mode 
+
+    // set initial score
+    int score = 0;
 
     // enter game upon successful menu exit
     if (m == menu_quit)

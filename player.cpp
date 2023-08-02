@@ -3,11 +3,13 @@
 Player::Player()
 {
     set_player_name("default name");
+    score = 0;
 } // default constructor
 
 Player::Player(string name)
 {
     set_player_name(name);
+    score = 0;
 } // explicit constructor
 
 void Player::set_player_name(string name)

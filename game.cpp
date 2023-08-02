@@ -235,7 +235,7 @@ void Game::render_data_panel(int current_health)
 
     SDL_Rect data_panel = DATA_PANEL;
     SDL_Texture* level_text = game_window.load_from_rendered_text("Level: " + to_string(current_level), DEFAULT_FONT_COLOR);
-    SDL_Texture* total_enemies_text = game_window.load_from_rendered_text("Enemies: " + to_string(enemies), DEFAULT_FONT_COLOR);
+    SDL_Texture* score_text = game_window.load_from_rendered_text("Score: " + to_string(player -> get_score()), DEFAULT_FONT_COLOR);
     SDL_Texture* active_enemies_text = game_window.load_from_rendered_text("Remaining Enemies: " + to_string(active_enemies), DEFAULT_FONT_COLOR);
     SDL_Texture* health_text = game_window.load_from_rendered_text("Health: " + to_string(current_health), DEFAULT_FONT_COLOR);
     SDL_Texture* state_text = game_window.load_from_rendered_text(s_text, DEFAULT_FONT_COLOR);
@@ -243,7 +243,7 @@ void Game::render_data_panel(int current_health)
     SDL_Texture* espeed_text = game_window.load_from_rendered_text("Enemy Speed: " + to_string(int(dawg_speed_mid)), DEFAULT_FONT_COLOR);
  
     SDL_Rect level_text_target = {DATA_PANEL_X + 10, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
-    SDL_Rect tenemies_text_target = {DATA_PANEL_WIDTH / 4, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
+    SDL_Rect score_text_target = {DATA_PANEL_WIDTH / 4, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
     SDL_Rect aenemies_text_target = {DATA_PANEL_WIDTH / 2, DATA_PANEL_Y, 240, DATA_PANEL_HEIGHT / 2};
     SDL_Rect health_text_target = {DATA_PANEL_WIDTH - DATA_PANEL_WIDTH / 4, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
     SDL_Rect state_text_target = {DATA_PANEL_X + 10, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 600, DATA_PANEL_HEIGHT / 2};
@@ -252,7 +252,7 @@ void Game::render_data_panel(int current_health)
 
     game_window.render_rect(&data_panel, 0xFF, 0xFF, 0xFF);
     game_window.render(level_text, &level_text_target);
-    game_window.render(total_enemies_text, &tenemies_text_target);
+    game_window.render(score_text, &score_text_target);
     game_window.render(active_enemies_text, &aenemies_text_target);     
     game_window.render(health_text, &health_text_target);     
     game_window.render(state_text, &state_text_target);     
@@ -337,7 +337,7 @@ GameEndState Game::start_game(int enemy_number)
                 for (size_t i = 0; i < dawgs.size(); i++)
                 {
                     dawgs[i] -> set_vx(dawg_speed_mid - double(rand() % (2 * int(dawg_speed_mid))));
-                    dawgs[i] -> set_vx(dawg_speed_mid - double(rand() % (2 * int(dawg_speed_mid))));
+                    dawgs[i] -> set_vy(dawg_speed_mid - double(rand() % (2 * int(dawg_speed_mid))));
                 } // for 
             } // if 
 
@@ -386,6 +386,7 @@ GameEndState Game::start_game(int enemy_number)
                         if (state == health_state_min)
                         {
                             active_enemies--;
+                            player -> increment_score();
                         } // if - killed, reduce enemies
                         me.reset_melee();
                     } // if - melee collides
@@ -407,6 +408,7 @@ GameEndState Game::start_game(int enemy_number)
                         if (state == health_state_min)
                         {
                             active_enemies--;
+                            player -> increment_score();
                         } // if - killed, reduce enemies
                         me.get_projectiles()[j] -> reset();
                     } // if - projectile collides
