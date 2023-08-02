@@ -39,8 +39,6 @@ class Window
         int get_height() const {return height;}; // get height
         SDL_Renderer* get_renderer() const {return renderer;}; // get renderer
         
-        bool load_media(); // load preset media files
-        bool load_media(string media_path); // load a specfic media file
         SDL_Surface* load_surface(string media_path); // TODO implement format optimization
         SDL_Texture* load_texture(string media_path); // load a fast SDL texture
         SDL_Texture* load_texture(string media_path, Uint8 key_r, Uint8 key_g, Uint8 key_b); // load texture with colorkey
@@ -48,20 +46,21 @@ class Window
         SDL_Texture* texture_from_surface(SDL_Surface* surface); // wrap SDL function to convert surface to texture
         SDL_Texture* texture_from_surface(SDL_Surface* surface, Uint8 key_r, Uint8 key_g, Uint8 key_b); // with color key
 
-        // wrapping render and update functions from SDL in class methods
+        // local window render functions
         void render(SDL_Texture* texture) const; // renders to full screen
         void render(SDL_Texture* texture, SDL_Rect* target) const; // renders to a position and size on the screen
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip) const; // clip rendering
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle, 
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
-        void render_background(Camera camera);
-        void render_rect(SDL_Rect* rect, Uint8 r, Uint8 g, Uint8 b); // render a rectangle
+        void render_background() const; // render background
+        void render_background(Camera camera) const;
+        void render_rect(SDL_Rect* rect, Uint8 r, Uint8 g, Uint8 b) const; // render a rectangle
 
         // render conditions
         void render_clear() const; // clears renderer
         void update_screen() const; // updates screen, renders to screen
 
-        // modulate texture 
+        // modulate local texture 
         void modulate_color(SDL_Texture* texture, Uint8 r, Uint8 g, Uint8 b) const; // modulate texture color
         void modulate_alpha(SDL_Texture* texture, Uint8 alpha) const; // alpha blending, modulate transparency
 
@@ -76,7 +75,6 @@ class Window
         bool initialize() const;
 
         // window data dimensions
-
         int center_x;
         int center_y;
         int width;
@@ -85,18 +83,17 @@ class Window
         TTF_Font* font;
         SDL_Color font_color;
 
+        // local texture rendering
         SDL_Texture* texture;
         SDL_Texture* text_texture;
-        SDL_Surface* temp_image;
         SDL_Surface* window_surface;
-        SDL_Surface* KeyPress[key_total]; // TESTING array for corresponding keypress surfaces
-        SDL_Rect rect; // TESTING
 
         // background
         SDL_Texture* background;
         int background_width;
         int background_height;
 
+        // local seed
         SDL_Window* window;
         SDL_Renderer* renderer;
 };

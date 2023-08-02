@@ -2,32 +2,68 @@
 
 Interface::Interface()
 {
+    // declare a player
+    Player* player = new Player(); 
+
     // declares a global window
     Window g_window("Game", 0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT + DATA_PANEL_HEIGHT);
 
-    // builds game 
-    Game game("David", g_window);
 
-    size_t enemy_count = INITIAL_ENEMY_COUNT;
-    size_t current_level = 0;
-    GameEndState state;
+    // enters menu
+    Menu menu(player, g_window); 
+    MenuExitState m;
 
-    current_level = 1;
-    game.set_current_level(current_level);
-    state = game.start_game(enemy_count); // start the first level
+    m = menu.start_menu();
 
-    while(state == game_victory)
+    // set game mode
+    GameMode mode = normal;
+    if (player -> get_player_name() == "AdminDavid"
+    || player -> get_player_name() == "AdminAdmin"
+    
+    // ADD ADDITIONAL ADMIN USERNAMES HERE
+    
+    )
     {
-        current_level++;
-        // enemy_count *= ENEMY_COUNT_INCREMENT_FACTOR;
-        enemy_count += 10;
-        game.set_current_level(current_level);
-        state = game.start_game(enemy_count);
+        mode = admin;
+    } // set admin mode 
 
-        if (current_level >= 2)
+    // set initial score
+    int score = 0;
+
+    // enter game upon successful menu exit
+    if (m == menu_quit)
+    {
+        g_window.close_window();
+    } // if - quit
+    else if (m == menu_exit_success)
+    {
+        // builds game 
+        Game game(player, g_window, mode);
+
+        size_t enemy_count = INITIAL_ENEMY_COUNT;
+        size_t current_level = 0;
+        GameEndState state;
+
+        current_level = 1;
+        game.set_current_level(current_level);
+        state = game.start_game(enemy_count); // start the first level
+
+        while(state == game_victory)
         {
-            game.increase_enemy_speed(100);
-            enemy_count -= 5;
-        } // if - after level three, increase speed, increase enemy count by less
-    } // while - keep winning, keep playing
+            current_level++;
+            // enemy_count *= ENEMY_COUNT_INCREMENT_FACTOR;
+            enemy_count += 10;
+            game.set_current_level(current_level);
+            state = game.start_game(enemy_count);
+
+            if (current_level >= 2)
+            {
+                game.increase_enemy_speed(100);
+                enemy_count -= 5;
+            } // if - after level three, increase speed, increase enemy count by less
+        } // while - keep winning, keep playing
+
+        // close window deallocates window objects and quits SDL libraries
+        g_window.close_window(); 
+    } // if - menu exit success, can begin game
 } // Interface::Interface

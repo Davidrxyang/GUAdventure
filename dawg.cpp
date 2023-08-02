@@ -257,17 +257,23 @@ void Dawg::move(Window window, double time_step)
     }
 } // Dawg::move
 
-/*
+
 Dawg::~Dawg()
 {
     for (size_t i = 0; i < TOTAL_PARTICLES; i++)
     {
-        delete particles[i];
+        if (particles[i] != nullptr)
+        {
+            delete particles[i];
+        } // if - allocated, deallocate
     } // for
 
     for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
     {
-        delete projectiles[i];
+        if (projectiles[i] != nullptr)
+        {
+            delete projectiles[i];
+        } // if - allocated, dellocate
     } // for 
 } // destructor
-*/
+

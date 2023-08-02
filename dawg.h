@@ -23,7 +23,7 @@ class Dawg : public Perishable
 
         Dawg(); // default constructor
         Dawg(string name, double x, double y, Window window); // explicit constructor, spec name and window
-        // ~Dawg(); // destructor TODO MOVE THIS TO MAIN GAME DESTRUCTOR WHEN BUILT
+        ~Dawg(); // destructor
         
         void set_name(string name) {this -> name = name;}; // set name
         string get_name() const {return name;}; // get name
