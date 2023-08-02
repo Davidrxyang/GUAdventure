@@ -17,7 +17,12 @@ Interface::Interface()
 
     // set game mode
     GameMode mode = normal;
-    if (player -> get_player_name() == "AdminDavid")
+    if (player -> get_player_name() == "AdminDavid"
+    || player -> get_player_name() == "AdminAdmin"
+    
+    // ADD ADDITIONAL ADMIN USERNAMES HERE
+    
+    )
     {
         mode = admin;
     } // set admin mode 
