@@ -79,7 +79,7 @@ MenuExitState Menu::start_menu()
             
                     default:
                     break;
-                }
+                } // switch - basic KEYDOWN handling
             } // else if - keydown
 
             switch(function)
@@ -90,7 +90,7 @@ MenuExitState Menu::start_menu()
 
                 default:
                 break;
-            }
+            } // switch - current menu function
         } // if - poll event
     } // while - runs while not quit
 
@@ -113,7 +113,6 @@ void Menu::render_title()
 {
     SDL_Texture* text = menu_window.load_from_rendered_text("MENU", DEFAULT_WHITE);
     SDL_Rect text_target = {GAME_SCREEN_WIDTH / 2 - 200, 20, 400, 200};
-
     menu_window.render(text, &text_target);
 } // Menu::render_title
 
