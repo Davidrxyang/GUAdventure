@@ -18,6 +18,7 @@ const int DATA_PANEL_HEIGHT = 100;
 
 // default colors
 const SDL_Color DEFAULT_BLACK = {0, 0, 0};
+const SDL_Color DEFAULT_WHITE = {0xFF, 0xFF, 0xFF};
 const SDL_Color DEFAULT_FONT_COLOR = {0, 0, 0};
 
 // data panel
@@ -52,7 +53,7 @@ const int ANIMATION_FRAME_COUNT = 4;
 // text
 const string DEATH_MESSAGE = "YOU DIED ... ";
 const string VICTORY_MESSAGE = "YOU WIN ... ";
-const int CENTER_MESSAGE_W = 800;
+const int CENTER_MESSAGE_W = 1000;
 const int CENTER_MESSAGE_H = 300;
 const int CENTER_MESSAGE_X = GAME_SCREEN_WIDTH / 2 - CENTER_MESSAGE_W / 2; 
 const int CENTER_MESSAGE_Y = GAME_SCREEN_HEIGHT / 2 - CENTER_MESSAGE_H / 2;
@@ -65,6 +66,9 @@ const size_t DEFAULT_ENEMY_COUNT = 20;
 const size_t INITIAL_ENEMY_COUNT = 5;
 const int ENEMY_COUNT_INCREMENT_FACTOR = 2;
 
+// menu
+const int MAX_PLAYER_NAME_LENGTH = 10;
+
 // directions 
 enum Direction
 {
@@ -73,17 +77,6 @@ enum Direction
     DOWN,
     LEFT,
     RIGHT,
-};
-
-// key presses
-enum KeyPress
-{
-    key_default,
-    key_up,
-    key_down,
-    key_left,
-    key_right,
-    key_total,
 };
 
 // mouse states
@@ -96,6 +89,7 @@ enum MouseState
     button_mouse_total,
 };
 
+// entity health states
 enum HealthState
 {
     health_state_normal,
@@ -103,12 +97,36 @@ enum HealthState
     health_state_min,
 };
 
+// game exit states
 enum GameEndState
 {
     game_default,
     game_victory,
     game_defeat,
     game_quit,
+};
+
+// menu function states
+enum MenuFunction
+{
+    menu_default,
+    menu_enter_player_name,
+}; // TODO ADD MORE LATER
+
+// menu exit states
+enum MenuExitState
+{
+    menu_exit_default,
+    menu_exit_success,
+    menu_exit_failed,
+    menu_quit,
+};
+
+// game modes
+enum GameMode
+{
+    normal,
+    admin,
 };
 
 #endif

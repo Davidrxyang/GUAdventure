@@ -9,6 +9,7 @@
 #include <SDL2/SDL.h>
 
 #include "game.h"
+#include "menu.h"
 #include "CONSTANTS.h"
 
 using namespace std;

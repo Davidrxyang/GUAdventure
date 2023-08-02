@@ -5,7 +5,6 @@ Window::Window()
     // initialize all pointers to nullptr
     renderer = nullptr;
     background = nullptr;
-    temp_image = nullptr;
     window_surface = nullptr;
     
     set_name("default name");
@@ -26,7 +25,6 @@ Window::Window(string name)
     // initialize all pointers to nullptr
     renderer = nullptr;
     background = nullptr;
-    temp_image = nullptr;
     window_surface = nullptr;
 
     set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
@@ -52,7 +50,6 @@ Window::Window(string name, int x, int y, int w, int h)
     // initialize all pointers to nullptr
     renderer = nullptr;
     background = nullptr;
-    temp_image = nullptr;
     window_surface = nullptr;
     
     set_font("assets/fonts/default_font.ttf", 30, 0, 0, 0);
@@ -77,7 +74,6 @@ Window::Window(string name, int x, int y, int w, int h, string font_path, int fo
     // initialize all pointers to nullptr
     renderer = nullptr;
     background = nullptr;
-    temp_image = nullptr;
     window_surface = nullptr;
     
     set_name(name);
@@ -188,57 +184,6 @@ bool Window::initialize() const // private member function
     return success;
 } // Window::initialize - initializes the SDL2 libraries
 
-bool Window::load_media()
-{
-    bool success = true;
-    
-    KeyPress[key_default] = load_surface("assets/assets/media/coke.png");
-    if (KeyPress[key_default] == nullptr)
-    {
-        cout << "Failed to load image: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-
-    KeyPress[key_up] = load_surface("assets/media/jack.png");
-    if (KeyPress[key_up] == nullptr)
-    {
-        cout << "Failed to load image: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-
-    KeyPress[key_down] = load_surface("assets/media/fish.png");
-    if (KeyPress[key_down] == nullptr)
-    {
-        cout << "Failed to load image: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-
-    KeyPress[key_left] = load_surface("assets/media/hotdog.png");
-    if (KeyPress[key_left] == nullptr)
-    {
-        cout << "Failed to load image: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-
-    KeyPress[key_right] = load_surface("assets/media/potato.png");
-    if (KeyPress[key_right] == nullptr)
-    {
-        cout << "Failed to load image: " << SDL_GetError() << endl;
-        success = false;
-    } // if
-
-    return success;
-} // Window::load_media
-
-bool Window::load_media(string media_path)
-{
-    bool success = true;
-
-    temp_image = load_surface(media_path);
-    
-    return success;
-} // Window::load_media
-
 SDL_Surface* Window::load_surface(string media_path)
 {
     SDL_Surface* loaded_surface = IMG_Load(media_path.c_str());
@@ -301,18 +246,8 @@ SDL_Texture* Window::load_from_rendered_text(string text, SDL_Color text_color)
     SDL_Surface* text_surface = TTF_RenderText_Solid(font, text.c_str(), text_color);
     SDL_Texture* text_texture = nullptr;
 
-    if (text_surface == nullptr)
-    {
-        cout << "Failed to load text: " << TTF_GetError() << endl;
-    } // if
-    else
-    {
-        text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-        if (text_texture == nullptr)
-        {
-            cout << "Failed to create text from surface: " << TTF_GetError() << endl;
-        } // if
-    } // else
+    text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+
     SDL_FreeSurface(text_surface); 
     return text_texture;
 } // Window::load_from_rendered_text
@@ -355,13 +290,18 @@ void Window::render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, doub
     SDL_RenderCopyEx(renderer, texture, clip, target, rotate_angle, rotate_center, flip);
 } // Window::render - above, with rotation specs
 
-void Window::render_background(Camera camera)
+void Window::render_background() const 
+{
+    render(background);
+} // Window::render_background
+
+void Window::render_background(Camera camera) const
 {
     SDL_Rect target = { 0 - camera.get_x(), 0 - camera.get_y(), background_width, background_height};
     render(background, &target);
 } // Window::render_background
 
-void Window::render_rect(SDL_Rect* rect, Uint8 r, Uint8 g, Uint8 b)
+void Window::render_rect(SDL_Rect* rect, Uint8 r, Uint8 g, Uint8 b) const
 {
     SDL_SetRenderDrawColor(renderer, r, g, b, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, rect);
@@ -390,24 +330,38 @@ void Window::modulate_alpha(SDL_Texture* texture, Uint8 alpha) const
 
 void Window::close_window()
 {
+    if (background)
+    {
+        SDL_DestroyTexture(background);
+        background = nullptr;
+    } // if - background
 
-	for (size_t i = 0; i < key_total; ++i)
-	{
-		SDL_FreeSurface( KeyPress[i] );
-		KeyPress[i] = nullptr;
-	}
+    if (text_texture)
+    {
+        SDL_DestroyTexture(text_texture);
+        text_texture = nullptr;
+    } // if - text texture
 
-    SDL_DestroyTexture(background);
-    background = nullptr;
+    if (window_surface)
+    {
+        SDL_FreeSurface(window_surface);
+        window_surface = nullptr;
+    } // if - window surface
 
-    // frees allocated image surface
-    SDL_FreeSurface(temp_image);
-    temp_image = nullptr;
+    if (window)
+    {
+        SDL_DestroyWindow(window);
+        window = nullptr;
+    } // if - window
 
-    // this frees window and the window surface
-    SDL_DestroyWindow(window);
-    window = nullptr;
+    if (renderer)
+    {
+        SDL_DestroyRenderer(renderer);
+        renderer = nullptr;
+    } // if - renderer
 
-    // quit sdl
+    // quit all SDL
+    IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 } // Window::close_window

@@ -2,7 +2,7 @@
 
 Game::Game() 
 {
-    player.set_player_name("Default");
+    player = nullptr;
     enemies = 0;
     active_enemies = 0;
     is_quit = true;
@@ -12,16 +12,18 @@ Game::Game()
     victory = false;
     state = game_default;
     current_level = 0;
+    loading_screen = nullptr;
+    mode = normal;
 
     dawg_speed_mid = DAWG_RAND_SPEED_MID;
 } // default constructor
 
-Game::Game(string player_name, Window window) 
+Game::Game(Player* player, Window window, GameMode mode) 
 {
     game_window = window;
-    player.set_player_name(player_name);
     game_window.set_background_width(GAME_LEVEL_WIDTH);
     game_window.set_background_height(GAME_LEVEL_HEIGHT);
+    this -> player = player;
     enemies = 0;
     active_enemies = 0;
     is_quit = true;
@@ -31,25 +33,17 @@ Game::Game(string player_name, Window window)
     victory = false;
     state = game_default;
     current_level = 0;
+    this -> mode = mode;
+
+    loading_screen = game_window.load_texture("assets/media/interface/loading.png");
 
     dawg_speed_mid = DAWG_RAND_SPEED_MID;
 } // explicit constructor
 
-void Game::set_enemy_speed(double speed)
+void Game::set_background(string media_path)
 {
-    if (speed > 0)
-    {
-        dawg_speed_mid = speed;
-    } // if - bounds checking
-} // Game::set_enemy_speed
-
-void Game::increase_enemy_speed(double speed)
-{
-    if (dawg_speed_mid + speed > 0)
-    {
-        dawg_speed_mid += speed;
-    } // if - bounds checking
-} // Game::increase_enemy_speed
+    game_window.set_background(media_path);
+} // Game::set_background
 
 bool Game::has_collided(double x, double y, Entity b) const
 {
@@ -65,11 +59,6 @@ bool Game::has_collided(double x, double y, Entity b) const
     } // if - collides
     return false;
 } // Game::has_collided
-
-void Game::set_background(string media_path)
-{
-    game_window.set_background(media_path);
-} // Game::set_background
 
 bool Game::has_collided(Entity a, Entity b) const
 {
@@ -165,7 +154,10 @@ void Game::handle_game_event(SDL_Event &e)
 
             // TODO - REMOVE THIS - TAB to skip level, for TESTING 
             case SDLK_TAB:
-            victory = true;
+            if (mode == admin)
+            {
+                victory = true;
+            } // if - only allowed to skip if on admin mode
             break;
         } // switch - process individual key event
 
@@ -197,8 +189,31 @@ void Game::process_end_game()
     } // else - state remains default
 } // Game::process_end_game
 
+void Game::set_enemy_speed(double speed)
+{
+    if (speed > 0)
+    {
+        dawg_speed_mid = speed;
+    } // if - bounds checking
+} // Game::set_enemy_speed
+
+void Game::increase_enemy_speed(double speed)
+{
+    if (dawg_speed_mid + speed > 0)
+    {
+        dawg_speed_mid += speed;
+    } // if - bounds checking
+} // Game::increase_enemy_speed
+
 void Game::render_data_panel(int current_health)
 {
+    // set name, special case for admin mode
+    string name = player -> get_player_name();
+    if (mode == admin)
+    {
+        name += "(A)";
+    } // if - admin name
+
     // set game state display text first 
     string s_text = "";
     if (victory)
@@ -224,13 +239,15 @@ void Game::render_data_panel(int current_health)
     SDL_Texture* active_enemies_text = game_window.load_from_rendered_text("Remaining Enemies: " + to_string(active_enemies), DEFAULT_FONT_COLOR);
     SDL_Texture* health_text = game_window.load_from_rendered_text("Health: " + to_string(current_health), DEFAULT_FONT_COLOR);
     SDL_Texture* state_text = game_window.load_from_rendered_text(s_text, DEFAULT_FONT_COLOR);
+    SDL_Texture* name_text = game_window.load_from_rendered_text("Name: " + name, DEFAULT_FONT_COLOR);
     SDL_Texture* espeed_text = game_window.load_from_rendered_text("Enemy Speed: " + to_string(int(dawg_speed_mid)), DEFAULT_FONT_COLOR);
  
     SDL_Rect level_text_target = {DATA_PANEL_X + 10, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
     SDL_Rect tenemies_text_target = {DATA_PANEL_WIDTH / 4, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
     SDL_Rect aenemies_text_target = {DATA_PANEL_WIDTH / 2, DATA_PANEL_Y, 240, DATA_PANEL_HEIGHT / 2};
     SDL_Rect health_text_target = {DATA_PANEL_WIDTH - DATA_PANEL_WIDTH / 4, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
-    SDL_Rect state_text_target = {DATA_PANEL_X + 10, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 700, DATA_PANEL_HEIGHT / 2};
+    SDL_Rect state_text_target = {DATA_PANEL_X + 10, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 600, DATA_PANEL_HEIGHT / 2};
+    SDL_Rect name_text_target = {DATA_PANEL_WIDTH - DATA_PANEL_WIDTH / 2, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 240, DATA_PANEL_HEIGHT / 2};
     SDL_Rect espeed_text_target = {DATA_PANEL_WIDTH - DATA_PANEL_WIDTH / 4, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 240, DATA_PANEL_HEIGHT / 2};
 
     game_window.render_rect(&data_panel, 0xFF, 0xFF, 0xFF);
@@ -239,11 +256,27 @@ void Game::render_data_panel(int current_health)
     game_window.render(active_enemies_text, &aenemies_text_target);     
     game_window.render(health_text, &health_text_target);     
     game_window.render(state_text, &state_text_target);     
+    game_window.render(name_text, &name_text_target);
     game_window.render(espeed_text, &espeed_text_target);
 } // Game::render_data_panel
 
+int Game::poll_event(SDL_Event* e)
+{
+    return SDL_PollEvent(e);
+} // Game::poll_event
+
+void Game::loading()
+{
+    game_window.render_clear();
+    game_window.render(loading_screen);
+    game_window.update_screen();
+} // Game::loading_screen
+
 GameEndState Game::start_game(int enemy_number)
 {
+    // enters loading screen while initializing game objects, automatically quits when game renders
+    loading();
+
     // activates game - sets quit to false
     is_quit = false;
     is_paused = false;
@@ -266,12 +299,12 @@ GameEndState Game::start_game(int enemy_number)
     active_enemies = enemy_number;
     player_died = false;
     victory = false;
-    SDL_Texture* death_text = game_window.load_from_rendered_text(DEATH_MESSAGE, DEFAULT_FONT_COLOR);
-    SDL_Texture* victory_text = game_window.load_from_rendered_text(VICTORY_MESSAGE, DEFAULT_FONT_COLOR);
+    SDL_Texture* death_text = game_window.load_from_rendered_text(player -> get_player_name() + ", " + DEATH_MESSAGE, DEFAULT_FONT_COLOR);
+    SDL_Texture* victory_text = game_window.load_from_rendered_text(player -> get_player_name() + ", " + VICTORY_MESSAGE, DEFAULT_FONT_COLOR);
     SDL_Rect center_target = CENTER_TEXT_TARGET;
 
     // initiate main character
-    Dawg me(player.get_player_name(), 0, 0, game_window);
+    Dawg me(player -> get_player_name(), 0, 0, game_window);
     Desk desk("desk", game_window);
 
     // initiate dawgs - dawgs are makeshift name for the most complex character type
@@ -471,7 +504,7 @@ GameEndState Game::start_game(int enemy_number)
 
             // PROCESS NEW EVENTS, incl GAME QUIT/GAME PAUSE
 
-            if (SDL_PollEvent(& game_event))
+            if (poll_event(&game_event))
             {        
                 // PROCESS EVENTS    
                 handle_game_event(game_event);
@@ -504,7 +537,7 @@ GameEndState Game::start_game(int enemy_number)
         // PAUSED GAME FUNCTIONS
 
         // during pause, poll for unpause event or quit, if game did not finish
-        if (SDL_PollEvent(& game_event))
+        if (poll_event(&game_event))
         {        
             handle_game_event(game_event);
         } // if - game event poll

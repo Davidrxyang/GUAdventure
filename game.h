@@ -9,7 +9,7 @@
 #include <string>
 
 // functionality
-// #include "window.h"
+#include "window.h"
 #include "entity.h"
 #include "renderable.h"
 #include "perishable.h"
@@ -38,7 +38,7 @@ class Game
     public:
 
         Game(); // default constructor
-        Game(string player_name, Window window); // explicit constructor
+        Game(Player* player, Window window, GameMode mode); // explicit constructor
 
 
 
@@ -70,10 +70,11 @@ class Game
         void set_enemy_speed(double speed); // sets enemy speed externally from interface
         void increase_enemy_speed(double speed); // sets enemy speed externally from interface
         void render_data_panel(int current_health); // renders data panel
-
+        int poll_event(SDL_Event* e); // poll event
+        void loading(); // enter loading screen
     private:
 
-        Player player;
+        Player* player;
         Window game_window;
 
         // game play data
@@ -87,6 +88,12 @@ class Game
         GameEndState state;
         double dawg_speed_mid;
         size_t current_level;
+
+        // game mode
+        GameMode mode;
+
+        // interface objects
+        SDL_Texture* loading_screen;
 
         // FPS controls 
         Timer FPS_timer;
