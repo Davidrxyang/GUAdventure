@@ -55,6 +55,7 @@ class Window
         void render(SDL_Texture* texture, SDL_Rect* target, SDL_Rect* clip, double rotate_angle, 
                     SDL_Point* rotate_center, SDL_RendererFlip flip) const; // render with rotation specs
         void render_background(Camera camera);
+        void render_rect(SDL_Rect* rect, Uint8 r, Uint8 g, Uint8 b); // render a rectangle
 
         // render conditions
         void render_clear() const; // clears renderer

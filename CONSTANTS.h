@@ -13,10 +13,17 @@ const int GAME_SCREEN_WIDTH = 1400;
 const int GAME_SCREEN_HEIGHT = 600;
 const int GAME_LEVEL_WIDTH = 3000;
 const int GAME_LEVEL_HEIGHT = 1500;
+const int DATA_PANEL_WIDTH = GAME_SCREEN_WIDTH;
+const int DATA_PANEL_HEIGHT = 100;
 
 // default colors
 const SDL_Color DEFAULT_BLACK = {0, 0, 0};
 const SDL_Color DEFAULT_FONT_COLOR = {0, 0, 0};
+
+// data panel
+const int DATA_PANEL_X = 0;
+const int DATA_PANEL_Y = GAME_SCREEN_HEIGHT;
+const SDL_Rect DATA_PANEL = {DATA_PANEL_X, DATA_PANEL_Y, DATA_PANEL_WIDTH, DATA_PANEL_HEIGHT};
 
 // particles and projectiles
 const size_t TOTAL_PROJECTILES = 10; 
@@ -26,14 +33,13 @@ const int TOTAL_PARTICLES = 10;
 const double PROJECTILE_SPEED = 2500;
 const double DEFAULT_SPEED = 1000; // pixels per SECOND
 const double DAWG_RAND_SPEED_MID = 200;
-const int DAWG_RAND_SPEED_RANGE = 400; // + - this to MID for randomized speed range, int for % operator
 
 // change rate for randomization based on frame count
 const int RATE_RAND_MID = 100; // every one hundred frames, activate randomized speed change
 const int RATE_RANT_RANGE = 30; // this is the variance for above variable
 
 // interaction distances
-const double REBOUND_DISTANCE = 30; // rebound distance
+const double REBOUND_DISTANCE = 50; // rebound distance
 
 // health
 const int MAX_HEALTH = 10;
@@ -55,7 +61,9 @@ const SDL_Rect CENTER_TEXT_TARGET = {CENTER_MESSAGE_X, CENTER_MESSAGE_Y, CENTER_
 // game play variables
 const int HEAL_AMOUNT = 2;
 const int ENEMY_DAMAGE = 1;
-const int DEFAULT_ENEMY_COUNT = 20;
+const size_t DEFAULT_ENEMY_COUNT = 20;
+const size_t INITIAL_ENEMY_COUNT = 5;
+const int ENEMY_COUNT_INCREMENT_FACTOR = 2;
 
 // directions 
 enum Direction
@@ -93,6 +101,14 @@ enum HealthState
     health_state_normal,
     health_state_max,
     health_state_min,
+};
+
+enum GameEndState
+{
+    game_default,
+    game_victory,
+    game_defeat,
+    game_quit,
 };
 
 #endif

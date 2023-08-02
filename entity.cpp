@@ -186,3 +186,8 @@ void Entity::orient(Direction edirection)
     direction = edirection;
 } // Entity::orient
 
+void Entity::stop()
+{
+    vx = 0;
+    vy = 0;
+}
