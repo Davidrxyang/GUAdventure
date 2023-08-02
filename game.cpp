@@ -246,7 +246,7 @@ void Game::render_data_panel(int current_health)
     SDL_Rect score_text_target = {DATA_PANEL_WIDTH / 4, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
     SDL_Rect aenemies_text_target = {DATA_PANEL_WIDTH / 2, DATA_PANEL_Y, 240, DATA_PANEL_HEIGHT / 2};
     SDL_Rect health_text_target = {DATA_PANEL_WIDTH - DATA_PANEL_WIDTH / 4, DATA_PANEL_Y, 120, DATA_PANEL_HEIGHT / 2};
-    SDL_Rect state_text_target = {DATA_PANEL_X + 10, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 600, DATA_PANEL_HEIGHT / 2};
+    SDL_Rect state_text_target = {DATA_PANEL_X + 10, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, DATA_PANEL_WIDTH / 2 - 40, DATA_PANEL_HEIGHT / 2};
     SDL_Rect name_text_target = {DATA_PANEL_WIDTH - DATA_PANEL_WIDTH / 2, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 240, DATA_PANEL_HEIGHT / 2};
     SDL_Rect espeed_text_target = {DATA_PANEL_WIDTH - DATA_PANEL_WIDTH / 4, DATA_PANEL_Y + DATA_PANEL_HEIGHT / 2, 240, DATA_PANEL_HEIGHT / 2};
 

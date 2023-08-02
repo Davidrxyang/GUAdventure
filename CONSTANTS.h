@@ -9,12 +9,12 @@ using namespace std;
 // ALL DATA FOR GAME AND GAME ENGINE STORED HERE FOR EASY MANIPULATION
 
 // game dimensions
-const int GAME_SCREEN_WIDTH = 1400;
-const int GAME_SCREEN_HEIGHT = 600;
+const int GAME_SCREEN_WIDTH = 1200;
+const int GAME_SCREEN_HEIGHT = 500;
 const int GAME_LEVEL_WIDTH = 3000;
 const int GAME_LEVEL_HEIGHT = 1500;
 const int DATA_PANEL_WIDTH = GAME_SCREEN_WIDTH;
-const int DATA_PANEL_HEIGHT = 100;
+const int DATA_PANEL_HEIGHT = 80;
 
 // default colors
 const SDL_Color DEFAULT_BLACK = {0, 0, 0};
