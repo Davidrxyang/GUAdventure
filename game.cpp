@@ -18,22 +18,22 @@ Game::Game()
     dawg_speed_mid = DAWG_RAND_SPEED_MID;
 } // default constructor
 
-Game::Game(Player* player, Window window, GameMode mode) 
+Game::Game(Player* player, Window window) 
 {
     game_window = window;
     game_window.set_background_width(GAME_LEVEL_WIDTH);
     game_window.set_background_height(GAME_LEVEL_HEIGHT);
     this -> player = player;
     enemies = 0;
-    active_enemies = 0;
+    active_enemies = player -> get_remaining_enemies();
     is_quit = true;
     is_paused = true;
     can_continue = false;
     player_died = false;
     victory = false;
     state = game_default;
-    current_level = 0;
-    this -> mode = mode;
+    current_level = player -> get_level();
+    mode = player -> get_mode();
 
     loading_screen = game_window.load_texture("assets/media/interface/loading.png");
 
@@ -126,6 +126,20 @@ bool Game::has_collided(SDL_Rect a, SDL_Rect b) const
     return true; // if none satisfy condition, the boxes do not overlap, return true
 } // Game::has_collided
 
+double Game::get_distance(Entity a, Entity b) const
+{
+    // find the center of each entity
+    double a_x = a.get_x() - a.get_w() / 2;
+    double a_y = a.get_y() - a.get_h() / 2;
+    double b_x = b.get_x() - b.get_w() / 2;
+    double b_y = b.get_y() - b.get_h() / 2;
+    double dx = abs(a_x - b_x);
+    double dy = abs(a_y - b_y);
+    double distance = sqrt(dx * dx - dy * dy);
+
+    return distance;
+} // Game::get_distance
+
 void Game::handle_game_event(SDL_Event &e)
 {
     if (e.type == SDL_QUIT)
@@ -207,12 +221,24 @@ void Game::increase_enemy_speed(double speed)
 
 void Game::render_data_panel(int current_health)
 {
-    // set name, special case for admin mode
+    // set name and mode
     string name = player -> get_player_name();
     if (mode == admin)
     {
         name += "(A)";
     } // if - admin name
+    else if (mode == melee)
+    {
+        name += "(M)";
+    } // else if
+    else if (mode == projectile)
+    {
+        name += "(P)";
+    } // else if
+    else if (mode == hybrid)
+    {
+        name += "(H)";
+    } // else if 
 
     // set game state display text first 
     string s_text = "";
@@ -234,7 +260,7 @@ void Game::render_data_panel(int current_health)
     } // else if - default
 
     SDL_Rect data_panel = DATA_PANEL;
-    SDL_Texture* level_text = game_window.load_from_rendered_text("Level: " + to_string(current_level), DEFAULT_FONT_COLOR);
+    SDL_Texture* level_text = game_window.load_from_rendered_text("Level: " + to_string(player -> get_level()), DEFAULT_FONT_COLOR);
     SDL_Texture* score_text = game_window.load_from_rendered_text("Score: " + to_string(player -> get_score()), DEFAULT_FONT_COLOR);
     SDL_Texture* active_enemies_text = game_window.load_from_rendered_text("Remaining Enemies: " + to_string(active_enemies), DEFAULT_FONT_COLOR);
     SDL_Texture* health_text = game_window.load_from_rendered_text("Health: " + to_string(current_health), DEFAULT_FONT_COLOR);
@@ -272,7 +298,7 @@ void Game::loading()
     game_window.update_screen();
 } // Game::loading_screen
 
-GameEndState Game::start_game(int enemy_number)
+GameEndState Game::start_game(Player* player)
 {
     // enters loading screen while initializing game objects, automatically quits when game renders
     loading();
@@ -295,8 +321,12 @@ GameEndState Game::start_game(int enemy_number)
     Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
 
     // initiates game play data
-    enemies = enemy_number;
-    active_enemies = enemy_number;
+    enemies = (player -> get_level()) * 10;
+    active_enemies = player -> get_remaining_enemies();
+    if (enemies != active_enemies)
+    {
+        enemies = active_enemies;
+    } // if - to handle game save in middle of game
     player_died = false;
     victory = false;
     SDL_Texture* death_text = game_window.load_from_rendered_text(player -> get_player_name() + ", " + DEATH_MESSAGE, DEFAULT_FONT_COLOR);
@@ -304,8 +334,9 @@ GameEndState Game::start_game(int enemy_number)
     SDL_Rect center_target = CENTER_TEXT_TARGET;
 
     // initiate main character
-    Dawg me(player -> get_player_name(), 0, 0, game_window);
-    Desk desk("desk", game_window);
+    Dawg me(player -> get_player_name(), player -> get_x(), player -> get_y(), player -> get_mode(), game_window);
+    me.set_health(player -> get_health());
+    Desk desk("desk", 500 + rand() % (GAME_LEVEL_WIDTH - 500), 500 + rand() % (GAME_LEVEL_WIDTH - 500), game_window);
 
     // initiate dawgs - dawgs are makeshift name for the most complex character type
     vector<Dawg*> dawgs(enemies); // these are enemy dawgs
@@ -313,8 +344,8 @@ GameEndState Game::start_game(int enemy_number)
     // randomize initial starting positions for enemies
     for (size_t i = 0; i < dawgs.size(); i++)
     {
-        dawgs[i] = new Dawg("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, game_window);
-        dawgs[i] -> set_x( 300 + rand() % (GAME_LEVEL_WIDTH - 300));
+        dawgs[i] = new Dawg("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, normal, game_window);
+        dawgs[i] -> set_x(300 + rand() % (GAME_LEVEL_WIDTH - 300));
         dawgs[i] -> set_y(300 + rand() % (GAME_LEVEL_HEIGHT - 300));
     } // for - initializes enemy locations
 
@@ -323,7 +354,7 @@ GameEndState Game::start_game(int enemy_number)
         while (!is_paused && !is_quit) // game runs while not paused
         {
             // MAIN GAME LOOP
-
+            
             // randomize dawg movement
 
             // every "change_rate" frames, the velocities for dawgs are randomly reset with 
@@ -381,9 +412,16 @@ GameEndState Game::start_game(int enemy_number)
                     if (!dawgs[i] -> is_dead() && has_collided(me.get_melee(), *dawgs[i]))
                     {
                         dawgs[i] -> collision_rebound();
-
-                        HealthState state = dawgs[i] -> change_health(-2);
-                        if (state == health_state_min)
+                        HealthState h_state = health_state_normal;
+                        if (mode == melee || mode == admin)
+                        {
+                            h_state = dawgs[i] -> change_health(-4);
+                        } // if - mode
+                        if (mode == hybrid)
+                        {
+                            h_state = dawgs[i] -> change_health(-2);
+                        } // if - mode
+                        if (h_state == health_state_min)
                         {
                             active_enemies--;
                             player -> increment_score();
@@ -404,8 +442,16 @@ GameEndState Game::start_game(int enemy_number)
                     && dawgs[i] -> is_alive()
                     && has_collided(pro, *dawgs[i]))
                     {
-                        HealthState state = dawgs[i] -> change_health(-2);
-                        if (state == health_state_min)
+                        HealthState h_state = health_state_normal;
+                        if (mode == projectile || mode == admin)
+                        {
+                            h_state = dawgs[i] -> change_health(-2);
+                        } // if - projectile damage
+                        if (mode == hybrid)
+                        {
+                            h_state = dawgs[i] -> change_health(-1);
+                        }
+                        if (h_state == health_state_min)
                         {
                             active_enemies--;
                             player -> increment_score();
@@ -414,7 +460,7 @@ GameEndState Game::start_game(int enemy_number)
                     } // if - projectile collides
                 } // for - iterate over dawgs
             } // for - iterate over projectiles
-            
+
             // PROCESS DEATH
 
             // only activates death spin animation if player is not already dead
@@ -428,7 +474,6 @@ GameEndState Game::start_game(int enemy_number)
             {
                 victory = true;
             } // if - VICTORY!!
-            
             // PROCESS MOVEMENT ON SCREEN
 
             // enter time window
@@ -478,7 +523,7 @@ GameEndState Game::start_game(int enemy_number)
 
             // render data panel
             render_data_panel(me.get_health());
-
+            
             // END GAME MESSAGES
             
             if (player_died)
@@ -555,6 +600,12 @@ GameEndState Game::start_game(int enemy_number)
             } // if - can continue, quits
         } // if 
     } // while - QUIT
+
+    // before quit, update player state
+    player -> set_remaining_enemies(active_enemies);
+    player -> set_health(me.get_health());
+    player -> set_x(me.get_x());
+    player -> set_y(me.get_y());
 
     for (size_t i = 0; i < dawgs.size(); i++)
     {

@@ -32,13 +32,17 @@ void Perishable::kill()
 
 HealthState Perishable::change_health(int n)
 {
-    if (health + n <= 0)
+    // convert to double to handle negatives
+    double h = health;
+    double dh = n;
+
+    if (h + dh <= 0)
     {
         health = 0;
         dead = true;
         return health_state_min;
     } // if - health change is invalid
-    else if (health + n > MAX_HEALTH)
+    else if (h + dh > MAX_HEALTH)
     {
         health = MAX_HEALTH;
         return health_state_max;
@@ -49,6 +53,15 @@ HealthState Perishable::change_health(int n)
         return health_state_normal;
     } // else - health change is valid
 } // Perishable::change_health - the change amount can be POSITIVE OR NEGATIVE, but usually negative 
+
+void Perishable::set_health(size_t health)
+{
+    this -> health = health;
+    if (health == 0)
+    {
+        dead = true;
+    } // if - dead
+} // Perishable::set_health
 
 void Perishable::render_health(Window window)
 {
@@ -101,4 +114,5 @@ void Perishable::update_health()
     health_bar.y = int(y);
     health_bar.w = health * HEALTH_BAR_UNIT_LENGTH; // update health bar to reflect health
 } // Perishable::update_health
+
 

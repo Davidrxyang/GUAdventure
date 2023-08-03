@@ -20,7 +20,8 @@ class Perishable : public Renderable
         Perishable(int initial_health, bool dead); // explicit constructor
         bool is_dead() const {return dead;}; // if the entity is dead
         bool is_alive() const {return !dead;}; // if the entity is alive
-        int get_health() const {return health;}; // get health
+        void set_health(size_t health); // set, for initialization
+        size_t get_health() const {return health;}; // get health
         void kill(); // kills the entity
         HealthState change_health(int n); // change health by n units, pos or neg
 
@@ -31,7 +32,7 @@ class Perishable : public Renderable
 
         void update_health(); // update health bar position
 
-        int health;
+        size_t health;
         SDL_Rect health_bar_frame;
         SDL_Rect health_bar;
         bool dead;

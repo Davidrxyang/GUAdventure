@@ -4,12 +4,22 @@ Player::Player()
 {
     set_player_name("default name");
     score = 0;
+    level = 1;
+    health = 10;
+    x = 0;
+    y = 0;
+    remaining_enemies = INITIAL_ENEMY_COUNT;
 } // default constructor
 
 Player::Player(string name)
 {
     set_player_name(name);
     score = 0;
+    level = 1;
+    health = 10;
+    x = 0;
+    y = 0;
+    remaining_enemies = INITIAL_ENEMY_COUNT;
 } // explicit constructor
 
 void Player::set_player_name(string name)

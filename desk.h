@@ -16,7 +16,7 @@ class Desk : public Renderable
     public:
 
         Desk(); // default constructor
-        Desk(string name, Window window); // explicit constructor, spec name and window
+        Desk(string name, double x, double y, Window window); // explicit constructor, spec name and window
         
         void set_name(string name) {this -> name = name;}; // set name
         string get_name() const {return name;}; // get name

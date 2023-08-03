@@ -15,3 +15,7 @@ Move texture modulation, alpha and color modulation to renderable class
 
 create menu for game start 
     - implement in interface??
+
+CLEAN EXTRA ALLOCATION GENERATIONS
+    - clean all textures?
+    - find which data types in SDL2 library deallocate automatically and which needs freeing

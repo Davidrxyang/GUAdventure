@@ -7,6 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 #include <string>
+#include <cmath>
 
 // functionality
 #include "window.h"
@@ -38,15 +39,14 @@ class Game
     public:
 
         Game(); // default constructor
-        Game(Player* player, Window window, GameMode mode); // explicit constructor
-
+        Game(Player* player, Window window); // explicit constructor
 
 
         // GAME LOGIC GOES HERE 
 
 
         // --------------------------------------------------------
-        GameEndState start_game(int enemy_number); // start a new game, return end state when quit
+        GameEndState start_game(Player* player); // start a new game, return end state when quit
         // --------------------------------------------------------
 
 
@@ -61,6 +61,7 @@ class Game
         bool has_collided(Entity a, Entity b) const; // checks collision between two entities
         bool has_collided(SDL_Rect a, SDL_Rect b) const; // checks collision between two boxes
         bool has_collided(double x, double y, Entity b) const; // point collision with entity
+        double get_distance(Entity a, Entity b) const; // returns distance between two entities
 
         // game handling
         void quit_game() {is_quit = true;}; // quits game
