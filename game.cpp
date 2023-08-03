@@ -126,6 +126,20 @@ bool Game::has_collided(SDL_Rect a, SDL_Rect b) const
     return true; // if none satisfy condition, the boxes do not overlap, return true
 } // Game::has_collided
 
+double Game::get_distance(Entity a, Entity b) const
+{
+    // find the center of each entity
+    double a_x = a.get_x() - a.get_w() / 2;
+    double a_y = a.get_y() - a.get_h() / 2;
+    double b_x = b.get_x() - b.get_w() / 2;
+    double b_y = b.get_y() - b.get_h() / 2;
+    double dx = abs(a_x - b_x);
+    double dy = abs(a_y - b_y);
+    double distance = sqrt(dx * dx - dy * dy);
+
+    return distance;
+} // Game::get_distance
+
 void Game::handle_game_event(SDL_Event &e)
 {
     if (e.type == SDL_QUIT)
