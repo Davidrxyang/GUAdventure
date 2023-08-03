@@ -39,15 +39,14 @@ class Game
     public:
 
         Game(); // default constructor
-        Game(Player* player, Window window, GameMode mode); // explicit constructor
-
+        Game(Player* player, Window window); // explicit constructor
 
 
         // GAME LOGIC GOES HERE 
 
 
         // --------------------------------------------------------
-        GameEndState start_game(int enemy_number); // start a new game, return end state when quit
+        GameEndState start_game(Player* player); // start a new game, return end state when quit
         // --------------------------------------------------------
 
 

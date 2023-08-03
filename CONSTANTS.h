@@ -110,7 +110,12 @@ enum GameEndState
 enum MenuFunction
 {
     menu_default,
+    menu_select_game,
     menu_enter_player_name,
+    menu_select_type,
+    menu_admin_pwd,
+    menu_confirm,
+    menu_complete,
 }; // TODO ADD MORE LATER
 
 // menu exit states
@@ -126,6 +131,9 @@ enum MenuExitState
 enum GameMode
 {
     normal,
+    melee,
+    projectile,
+    hybrid,
     admin,
 };
 

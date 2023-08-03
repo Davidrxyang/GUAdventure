@@ -4,15 +4,25 @@ Menu::Menu()
 {
     is_quit = true;
     player_name = "";
+    current_file = 0;
     // calls default constructors
 } // Default Constructor
 
 Menu::Menu(Player* player, Window window)
 {
+    
+    save_1.read("assets/data/s1.txt");
+    save_2.read("assets/data/s2.txt");
+    save_3.read("assets/data/s3.txt");
+    save_4.read("assets/data/s4.txt");
+    save_5.read("assets/data/s5.txt");
+    
+
     is_quit = true;
     menu_window = window;
     player_name = "";
     this -> player = player;
+    current_file = 0;
 } // explicit constructor
 
 MenuExitState Menu::start_menu()
@@ -21,7 +31,8 @@ MenuExitState Menu::start_menu()
     int frame = 0;
     SDL_Event menu_event;
     menu_window.set_background("assets/media/background/menu.png");
-    function = menu_enter_player_name;
+    // load initial function - select game
+    function = menu_select_game;
     
     while (!is_quit)
     {   
@@ -38,8 +49,17 @@ MenuExitState Menu::start_menu()
         // render current function
         switch(function)
         {
+            case menu_select_game:
+            render_select_game();
+            break;
+
+
             case menu_enter_player_name:
             render_enter_player_name();
+            break;
+
+            case menu_select_type:
+            render_select_type();
             break;
 
             default:
@@ -56,38 +76,23 @@ MenuExitState Menu::start_menu()
                 is_quit = true;
                 return menu_quit;
             } // if - quit
-            else if (menu_event.type == SDL_KEYDOWN)
-            {
-                switch (menu_event.key.keysym.sym)
-                {
-                    case SDLK_RETURN:
-                    if (player_name == "")
-                    {
-                        player_name = " ";
-                    } // if - empty, add space for rendering purposes
-                    player -> set_player_name(player_name);
-                    is_quit = true;
-                    return menu_exit_success;
-                    break;
-
-                    // handle backspace
-                    case SDLK_BACKSPACE:
-                    if (player_name.length() > 0)
-                    {
-                        player_name.pop_back();
-                    } // if - backspace
-            
-                    default:
-                    break;
-                } // switch - basic KEYDOWN handling
-            } // else if - keydown
 
             switch(function)
             {
+                case menu_select_game:
+                select_game(menu_event);
+                break;
+
                 case menu_enter_player_name:
                 enter_player_name(menu_event);
                 break;
 
+                case menu_select_type:
+                select_player_type(menu_event);
+                break;
+
+                case menu_complete:
+                is_quit = true;
                 default:
                 break;
             } // switch - current menu function
@@ -109,12 +114,201 @@ void Menu::initialize()
     SDL_StartTextInput();
 } // Menu::initialize
 
+void Menu::select_game(SDL_Event &e)
+{
+    if (e.type == SDL_KEYDOWN)
+    {
+        switch (e.key.keysym.sym)
+        {
+            case SDLK_1:
+            if (!save_1.empty("assets/data/s1.txt"))
+            {
+                set_player(save_1);
+                function = menu_complete;
+            } // if - empty
+            else
+            {
+                current_file = 1;
+                function = menu_enter_player_name;
+            } // else - if empty, start new game
+            break;
+
+            case SDLK_2:
+            if (!save_2.empty("assets/data/s2.txt"))
+            {
+                set_player(save_2);
+                function = menu_complete;
+            } // if - empty
+            else
+            {
+                current_file = 2;
+                function = menu_enter_player_name;
+            } // else - if empty, start new game
+            break;
+
+            case SDLK_3:
+            if (!save_3.empty("assets/data/s3.txt"))
+            {
+                set_player(save_3);
+                function = menu_complete;
+            } // if - empty
+            else
+            {
+                current_file = 3;
+                function = menu_enter_player_name;
+            } // else - if empty, start new game
+            break;
+
+            case SDLK_4:
+            if (!save_4.empty("assets/data/s4.txt"))
+            {
+                set_player(save_4);
+                function = menu_complete;
+            } // if - empty
+            else
+            {
+                current_file = 4;
+                function = menu_enter_player_name;
+            } // else - if empty, start new game
+            break;
+
+            case SDLK_5:
+            if (!save_5.empty("assets/data/s5.txt"))
+            {
+                set_player(save_5);
+                function = menu_complete;
+            } // if - empty
+            else
+            {
+                current_file = 5;
+                function = menu_enter_player_name;
+            } // else - if empty, start new game
+            break;
+    
+            default:
+            break;
+        } // switch - basic KEYDOWN handling
+    } // if - keydown
+}// Menu::select_game
+
+void Menu::enter_player_name(SDL_Event &e)
+{
+    if (e.type == SDL_KEYDOWN)
+    {
+        switch (e.key.keysym.sym)
+        {
+            case SDLK_RETURN:
+            if (player_name == "")
+            {
+                player_name = " ";
+            } // if - empty, add space for rendering purposes
+            player -> set_player_name(player_name);
+            // advance to next function
+            function = menu_select_type;
+            break;
+
+            // handle backspace
+            case SDLK_BACKSPACE:
+            if (player_name.length() > 0)
+            {
+                player_name.pop_back();
+            } // if - backspace
+    
+            default:
+            break;
+        } // switch - basic KEYDOWN handling
+    } // else if - keydown
+    else if (e.type == SDL_TEXTINPUT)
+    {
+        if (player_name.length() < MAX_PLAYER_NAME_LENGTH)
+        {
+            player_name += e.text.text;
+        } // if - name length bounds checking
+    } // if - text input
+} // Menu::enter_player_name
+
+void Menu::select_player_type(SDL_Event& e)
+{
+    if (e.type == SDL_KEYDOWN)
+    {
+        switch (e.key.keysym.sym)
+        {
+            case SDLK_1:
+            player -> set_mode(melee);
+            new_game();
+            function = menu_complete;
+            break;
+
+            case SDLK_2:
+            player -> set_mode(projectile);
+            new_game();
+            function = menu_complete;
+            break;
+
+            case SDLK_3:
+            player -> set_mode(hybrid);
+            new_game();
+            function = menu_complete;
+            break;
+
+            default:
+            break;
+        } // switch - mode
+    } // if - keydown
+} // Menu::select_player_type
+
+void Menu::set_player(GameFile save)
+{
+    player -> set_player_name(save.get_name());
+    player -> set_mode(save.get_player_mode());
+    player -> set_score(save.get_current_score());
+    player -> set_level(save.get_current_level());
+    player -> set_remaining_enemies(save.get_remaining_enemies());
+} // Menu::set_player
+
+void Menu::new_game()
+{
+    switch(current_file)
+    {
+        case 1:
+        save_1.write("assets/data/s1.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        break;
+
+        case 2:
+        save_2.write("assets/data/s2.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        break;
+
+        case 3:
+        save_3.write("assets/data/s3.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        break;
+
+        case 4:
+        save_4.write("assets/data/s4.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        break;
+
+        case 5:
+        save_5.write("assets/data/s5.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        break;
+
+        default:
+        break;
+    } // switch - write file
+} // Menu::new_game
+
 void Menu::render_title()
 {
     SDL_Texture* text = menu_window.load_from_rendered_text("MENU", DEFAULT_WHITE);
     SDL_Rect text_target = {GAME_SCREEN_WIDTH / 2 - 200, 20, 400, 200};
     menu_window.render(text, &text_target);
 } // Menu::render_title
+
+void Menu::render_select_game()
+{
+    SDL_Texture* text = menu_window.load_from_rendered_text("Select Game", DEFAULT_WHITE);
+    SDL_Rect text_target = {0, 0, 200, 200};
+
+    menu_window.render(text, &text_target);
+} // Menu::render_select_game
 
 void Menu::render_enter_player_name()
 {
@@ -129,20 +323,16 @@ void Menu::render_enter_player_name()
     menu_window.render(name, &name_target);
 } // Menu::render_enter_player_name
 
-void Menu::enter_player_name(SDL_Event &e)
+void Menu::render_select_type()
 {
-    if (e.type == SDL_TEXTINPUT)
-    {
-        if (!empty_name && player_name.length() < MAX_PLAYER_NAME_LENGTH)
-        {
-            player_name += e.text.text;
-        } // if - name length bounds checking
-    } // if - text input
-} // Menu::enter_player_name
+    SDL_Texture* text = menu_window.load_from_rendered_text("Select Type", DEFAULT_WHITE);
+    SDL_Rect text_target = {0, 0, 200, 200};
+
+    menu_window.render(text, &text_target);
+} // Menu::render_select_type
 
 Menu::~Menu()
 {
     // quits text input
     SDL_StopTextInput();
 } // destructor
-

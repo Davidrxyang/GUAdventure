@@ -16,7 +16,6 @@ Interface::Interface()
     m = menu.start_menu();
 
     // set game mode
-    GameMode mode = normal;
     if (player -> get_player_name() == "AdminDavid"
     || player -> get_player_name() == "AdminAdmin"
     
@@ -24,7 +23,7 @@ Interface::Interface()
     
     )
     {
-        mode = admin;
+        player -> set_mode(admin);
     } // set admin mode 
 
     // set initial score
@@ -38,15 +37,14 @@ Interface::Interface()
     else if (m == menu_exit_success)
     {
         // builds game 
-        Game game(player, g_window, mode);
+        Game game(player, g_window);
 
         size_t enemy_count = INITIAL_ENEMY_COUNT;
-        size_t current_level = 0;
+        size_t active_count = player -> get_remaining_enemies();
+        size_t current_level = player -> get_level();
         GameEndState state;
 
-        current_level = 1;
-        game.set_current_level(current_level);
-        state = game.start_game(enemy_count); // start the first level
+        state = game.start_game(player); // start the first level
 
         while(state == game_victory)
         {
@@ -54,7 +52,9 @@ Interface::Interface()
             // enemy_count *= ENEMY_COUNT_INCREMENT_FACTOR;
             enemy_count += 10;
             game.set_current_level(current_level);
-            state = game.start_game(enemy_count);
+            player -> set_level(current_level);
+            player -> set_remaining_enemies(current_level * 10);
+            state = game.start_game(player);
 
             if (current_level >= 2)
             {

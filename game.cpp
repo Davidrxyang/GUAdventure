@@ -18,22 +18,22 @@ Game::Game()
     dawg_speed_mid = DAWG_RAND_SPEED_MID;
 } // default constructor
 
-Game::Game(Player* player, Window window, GameMode mode) 
+Game::Game(Player* player, Window window) 
 {
     game_window = window;
     game_window.set_background_width(GAME_LEVEL_WIDTH);
     game_window.set_background_height(GAME_LEVEL_HEIGHT);
     this -> player = player;
     enemies = 0;
-    active_enemies = 0;
+    active_enemies = player -> get_remaining_enemies();
     is_quit = true;
     is_paused = true;
     can_continue = false;
     player_died = false;
     victory = false;
     state = game_default;
-    current_level = 0;
-    this -> mode = mode;
+    current_level = player -> get_level();
+    mode = player -> get_mode();
 
     loading_screen = game_window.load_texture("assets/media/interface/loading.png");
 
@@ -286,7 +286,7 @@ void Game::loading()
     game_window.update_screen();
 } // Game::loading_screen
 
-GameEndState Game::start_game(int enemy_number)
+GameEndState Game::start_game(Player* player)
 {
     // enters loading screen while initializing game objects, automatically quits when game renders
     loading();
@@ -309,8 +309,12 @@ GameEndState Game::start_game(int enemy_number)
     Camera camera(0, 0, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
 
     // initiates game play data
-    enemies = enemy_number;
-    active_enemies = enemy_number;
+    enemies = (player -> get_level()) * 10;
+    active_enemies = player -> get_remaining_enemies();
+    if (enemies != active_enemies)
+    {
+        enemies = active_enemies;
+    } // if - to handle game save in middle of game
     player_died = false;
     victory = false;
     SDL_Texture* death_text = game_window.load_from_rendered_text(player -> get_player_name() + ", " + DEATH_MESSAGE, DEFAULT_FONT_COLOR);

@@ -13,6 +13,7 @@
 #include "player.h"
 #include "timer.h"
 #include "text.h"
+#include "file.h"
 
 // tools
 #include "audio.h"
@@ -38,13 +39,20 @@ class Menu
         ~Menu(); // quits SDL libraries if necessary
         
         MenuExitState start_menu(); // start menu
+
+        void select_game(SDL_Event &e);
         void enter_player_name(SDL_Event &e);
+        void select_player_type(SDL_Event &e);
 
         int poll_event(SDL_Event* e); // poll event
+        void set_player(GameFile save);
+        void new_game();
         void initialize();
 
         void render_title(); // renders "menu"
+        void render_select_game();
         void render_enter_player_name(); // render epn
+        void render_select_type();
 
 
     private:
@@ -53,10 +61,15 @@ class Menu
         Window menu_window;
         bool is_quit;
         MenuFunction function;
+        GameFile save_1;
+        GameFile save_2;
+        GameFile save_3;
+        GameFile save_4;
+        GameFile save_5;
+
+        int current_file;
 
         string player_name;
-        bool empty_name;
-
 };
 
 #endif
