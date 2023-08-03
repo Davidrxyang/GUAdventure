@@ -18,6 +18,8 @@ class Player
         void set_health(size_t health) {this -> health = health;}; // set health
         void set_level(size_t level) {this -> level = level;}; // set level
         void set_remaining_enemies(size_t enemies) {remaining_enemies = enemies;}; // set enemies
+        void set_x(double x) {this -> x = x;}; // set x
+        void set_y(double y) {this -> y = y;}; // set y
         
         string get_player_name() const;
         size_t get_score() const {return score;}; // get score
@@ -25,6 +27,8 @@ class Player
         size_t get_health() const {return health;}; // get health
         size_t get_level() const {return level;}; // get level
         size_t get_remaining_enemies() const {return remaining_enemies;}; // get r enemies
+        double get_x() const {return x;}; // get x
+        double get_y() const {return y;}; // get y
 
     private:
         string player_name;
