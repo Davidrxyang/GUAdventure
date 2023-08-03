@@ -18,7 +18,7 @@ Input:
 - keyboard input
 
 Media:
-- Multi-Format Graphics, including PNG, BMP
+- Multi-Format Graphics, including PNG and BMP
 - Audio, supports WAV format for effects and music 
 
 Rendering:
