@@ -10,7 +10,7 @@ using namespace std;
 
 // game dimensions
 const int GAME_SCREEN_WIDTH = 1200;
-const int GAME_SCREEN_HEIGHT = 500;
+const int GAME_SCREEN_HEIGHT = 600;
 const int GAME_LEVEL_WIDTH = 3000;
 const int GAME_LEVEL_HEIGHT = 1500;
 const int DATA_PANEL_WIDTH = GAME_SCREEN_WIDTH;
@@ -69,6 +69,9 @@ const int ENEMY_COUNT_INCREMENT_FACTOR = 2;
 // menu
 const int MAX_PLAYER_NAME_LENGTH = 10;
 
+// admin
+const string ADMIN_PWD = "02871";
+
 // directions 
 enum Direction
 {
@@ -116,6 +119,7 @@ enum MenuFunction
     menu_admin_pwd,
     menu_confirm,
     menu_complete,
+    menu_delete_save,
 }; // TODO ADD MORE LATER
 
 // menu exit states

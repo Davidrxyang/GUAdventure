@@ -250,7 +250,7 @@ void Dawg::handle_event(SDL_Event& e)
                 if (mode == melee || mode == hybrid || mode == admin)
                 {
                     melee_attack();
-                }
+                } // if - mode check
                 break;
 
                 default:

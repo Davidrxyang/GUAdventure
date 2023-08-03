@@ -32,13 +32,17 @@ void Perishable::kill()
 
 HealthState Perishable::change_health(int n)
 {
-    if (health + n <= 0)
+    // convert to double to handle negatives
+    double h = health;
+    double dh = n;
+
+    if (h + dh <= 0)
     {
         health = 0;
         dead = true;
         return health_state_min;
     } // if - health change is invalid
-    else if (health + n > MAX_HEALTH)
+    else if (h + dh > MAX_HEALTH)
     {
         health = MAX_HEALTH;
         return health_state_max;

@@ -45,8 +45,13 @@ class Menu
         void select_game(SDL_Event &e);
         void enter_player_name(SDL_Event &e);
         void select_player_type(SDL_Event &e);
+        void delete_save(SDL_Event &e);
+        void admin_pwd(SDL_Event &e);
+        void complete(SDL_Event &e);
+
         GameFile get_current_file() const; // get current file
         int get_file_number() const {return current_file;}; // file number
+        string mode_to_text(GameMode mode) const; // converter
 
         // menu methods
         int poll_event(SDL_Event* e); // poll event
@@ -59,6 +64,9 @@ class Menu
         void render_select_game();
         void render_enter_player_name(); // render epn
         void render_select_type();
+        void render_delete_save();
+        void render_admin_pwd();
+        void render_complete();
 
 
     private:
@@ -76,6 +84,7 @@ class Menu
         int current_file;
 
         string player_name;
+        string pwd;
 };
 
 #endif

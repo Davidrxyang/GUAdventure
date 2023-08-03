@@ -41,8 +41,11 @@ Interface::Interface()
         {
             current_level++;
             player -> set_level(current_level);
+            player -> set_x(0);
+            player -> set_y(0);
             player -> set_remaining_enemies(current_level * 10);
             state = game.start_game(player);
+            game.increase_enemy_speed(50);
         } // while - keep winning, keep playing
 
         // after selecting quit game, leaves loop - SAVE GAME STATE BEFORE EXITING

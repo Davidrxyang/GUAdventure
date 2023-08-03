@@ -221,12 +221,24 @@ void Game::increase_enemy_speed(double speed)
 
 void Game::render_data_panel(int current_health)
 {
-    // set name, special case for admin mode
+    // set name and mode
     string name = player -> get_player_name();
     if (mode == admin)
     {
         name += "(A)";
     } // if - admin name
+    else if (mode == melee)
+    {
+        name += "(M)";
+    } // else if
+    else if (mode == projectile)
+    {
+        name += "(P)";
+    } // else if
+    else if (mode == hybrid)
+    {
+        name += "(H)";
+    } // else if 
 
     // set game state display text first 
     string s_text = "";
@@ -324,7 +336,7 @@ GameEndState Game::start_game(Player* player)
     // initiate main character
     Dawg me(player -> get_player_name(), player -> get_x(), player -> get_y(), player -> get_mode(), game_window);
     me.set_health(player -> get_health());
-    Desk desk("desk", game_window);
+    Desk desk("desk", 500 + rand() % (GAME_LEVEL_WIDTH - 500), 500 + rand() % (GAME_LEVEL_WIDTH - 500), game_window);
 
     // initiate dawgs - dawgs are makeshift name for the most complex character type
     vector<Dawg*> dawgs(enemies); // these are enemy dawgs
@@ -333,7 +345,7 @@ GameEndState Game::start_game(Player* player)
     for (size_t i = 0; i < dawgs.size(); i++)
     {
         dawgs[i] = new Dawg("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, normal, game_window);
-        dawgs[i] -> set_x( 300 + rand() % (GAME_LEVEL_WIDTH - 300));
+        dawgs[i] -> set_x(300 + rand() % (GAME_LEVEL_WIDTH - 300));
         dawgs[i] -> set_y(300 + rand() % (GAME_LEVEL_HEIGHT - 300));
     } // for - initializes enemy locations
 
@@ -400,16 +412,16 @@ GameEndState Game::start_game(Player* player)
                     if (!dawgs[i] -> is_dead() && has_collided(me.get_melee(), *dawgs[i]))
                     {
                         dawgs[i] -> collision_rebound();
-
+                        HealthState h_state = health_state_normal;
                         if (mode == melee || mode == admin)
                         {
-                            HealthState state = dawgs[i] -> change_health(-4);
+                            h_state = dawgs[i] -> change_health(-4);
                         } // if - mode
                         if (mode == hybrid)
                         {
-                            HealthState state = dawgs[i] -> change_health(-2);
+                            h_state = dawgs[i] -> change_health(-2);
                         } // if - mode
-                        if (state == health_state_min)
+                        if (h_state == health_state_min)
                         {
                             active_enemies--;
                             player -> increment_score();
@@ -430,15 +442,16 @@ GameEndState Game::start_game(Player* player)
                     && dawgs[i] -> is_alive()
                     && has_collided(pro, *dawgs[i]))
                     {
+                        HealthState h_state = health_state_normal;
                         if (mode == projectile || mode == admin)
                         {
-                            HealthState state = dawgs[i] -> change_health(-2);
+                            h_state = dawgs[i] -> change_health(-2);
                         } // if - projectile damage
                         if (mode == hybrid)
                         {
-                            HealthState state = dawgs[i] -> change_health(-1);
+                            h_state = dawgs[i] -> change_health(-1);
                         }
-                        if (state == health_state_min)
+                        if (h_state == health_state_min)
                         {
                             active_enemies--;
                             player -> increment_score();

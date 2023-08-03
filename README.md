@@ -28,7 +28,11 @@ Rendering:
 - built in direct text rendering
 
 File Handling:
-- binary file creation, read, and write. 
+- file creation, read, and write. 
+
+Menu:
+- supports menu creation and handling
+- handles user input from menu to manipulate game state
 
 Scalability:
 - comprehensive encapsulation for streamlined object and level generation.
@@ -53,8 +57,11 @@ Collision:
 Data Panel:
 - built-in game data panel for better user experience
 
+Menu:
+- built-in menu infrastructure to allow for user input game manipulation
+
 Save Game:
-- framework supports efficient binary file manipulation
+- automatic save game functionality using file read/write capabilities
 
 ### Back-End Information
 

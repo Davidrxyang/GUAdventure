@@ -13,11 +13,11 @@ Desk::Desk() : Renderable()
     collision_box.h = h;
 } // default constructor
 
-Desk::Desk(string name, Window window) : Renderable()
+Desk::Desk(string name, double x, double y, Window window) : Renderable()
 {
     set_name(name);
-    x = 900;
-    y = GAME_LEVEL_HEIGHT - 200;
+    this -> x = x;
+    this -> y = y;
     w = 400;
     h = 200;
     collision_box.x = x;
