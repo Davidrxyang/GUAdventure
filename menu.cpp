@@ -340,6 +340,8 @@ void Menu::set_player(GameFile save)
     player -> set_level(save.get_current_level());
     player -> set_remaining_enemies(save.get_remaining_enemies());
     player -> set_health(save.get_health());
+    player -> set_x(save.get_x());
+    player -> set_y(save.get_y());
 } // Menu::set_player
 
 void Menu::new_game()
@@ -348,27 +350,27 @@ void Menu::new_game()
     {
         case 1:
         save_1.write("assets/data/s1.txt", player -> get_player_name(), player -> get_mode(), 
-        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health(), player -> get_x(), player -> get_y());
         break;
 
         case 2:
         save_2.write("assets/data/s2.txt", player -> get_player_name(), player -> get_mode(), 
-        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health(), player -> get_x(), player -> get_y());
         break;
 
         case 3:
         save_3.write("assets/data/s3.txt", player -> get_player_name(), player -> get_mode(), 
-        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health(), player -> get_x(), player -> get_y());
         break;
 
         case 4:
         save_4.write("assets/data/s4.txt", player -> get_player_name(), player -> get_mode(), 
-        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health(), player -> get_x(), player -> get_y());
         break;
 
         case 5:
         save_5.write("assets/data/s5.txt", player -> get_player_name(), player -> get_mode(), 
-        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health(), player -> get_x(), player -> get_y());
         break;
 
         default:

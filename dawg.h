@@ -22,11 +22,13 @@ class Dawg : public Perishable
     public:
 
         Dawg(); // default constructor
-        Dawg(string name, double x, double y, Window window); // explicit constructor, spec name and window
+        Dawg(string name, double x, double y, GameMode mode, Window window); // explicit constructor, spec name and window
         ~Dawg(); // destructor
         
         void set_name(string name) {this -> name = name;}; // set name
         string get_name() const {return name;}; // get name
+        void set_mode(GameMode mode) {this -> mode = mode;}; // set mode
+        GameMode get_mode() const {return mode;}; // get mode
         void render(Window window, int frame, Camera camera); // render - polymorphism
         void handle_event(SDL_Event& e); // handle event - polymorphism
         void move(Window window, double time_step); // move
@@ -37,11 +39,12 @@ class Dawg : public Perishable
 
         void melee_attack(); // melee attack
         void reset_melee(); // reset melee
-        Melee get_melee() {return melee;}; // get melee
+        Melee get_melee() {return m;}; // get melee
 
     private:
 
         string name;
+        GameMode mode;
 
         // particle engine
         vector<Particle*> particles;
@@ -54,7 +57,7 @@ class Dawg : public Perishable
         size_t projectile_counter;
 
         // melee
-        Melee melee;
+        Melee m;
 };
 
 

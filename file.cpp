@@ -33,8 +33,8 @@ void GameFile::read(string file_path)
 
         player_name = read_string(in_file);
 
-        in_file >> delim >> player_type >> delim >> current_level
-        >> delim >> current_score >> delim >> remaining_enemies >> delim >> health;
+        in_file >> delim >> player_type >> delim >> current_level >> delim >> current_score >> delim >> 
+        remaining_enemies >> delim >> health >> delim >> x >> delim >> y;
     
         switch (player_type)
         {
@@ -63,14 +63,15 @@ void GameFile::read(string file_path)
     } // else - file open success
 } // GameFile::read
 
-void GameFile::write(string file_path, string p_name, int p_type, size_t c_level, size_t c_score, size_t r_enemies, size_t health)
+void GameFile::write(string file_path, string p_name, int p_type, size_t c_level, size_t c_score, size_t r_enemies, size_t health, double x, double y)
 {
     is_empty = false;
     fstream out_file;
     out_file.open(file_path.c_str(), ios::out);
     char delim = '_';
 
-    out_file << '\"' << p_name << '\"' << delim << p_type << delim << c_level << delim << c_score << delim << r_enemies << delim << health;
+    out_file << '\"' << p_name << '\"' << delim << p_type << delim << c_level << delim << c_score << delim << 
+    r_enemies << delim << health << delim << x << delim << y;
 
     out_file.close();
 } // GameFile::write

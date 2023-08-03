@@ -24,11 +24,12 @@ Dawg::Dawg() : Perishable()
 
 } // default constructor
 
-Dawg::Dawg(string name, double x, double y, Window window) : Perishable()
+Dawg::Dawg(string name, double x, double y, GameMode mode, Window window) : Perishable()
 {
     set_name(name);
     this -> x = x;
     this -> y = y;
+    this -> mode = mode;
     w = 64;
     h = 205;
     update_box();
@@ -73,8 +74,8 @@ Dawg::Dawg(string name, double x, double y, Window window) : Perishable()
     projectile_counter = 0;
 
     // iniitailize melee weapon
-    Melee m(x, y, window);
-    melee = m;
+    Melee me(x, y, window);
+    m = me;
 } // explicit constructor
 
 void Dawg::render(Window window, int frame, Camera camera)
@@ -84,15 +85,27 @@ void Dawg::render(Window window, int frame, Camera camera)
     {
         Renderable::render(window, frame, camera);
         render_particles(window, camera);
-        render_projectiles(window, camera);
-        melee.render_melee(window, camera);
+        if (mode == projectile || mode == hybrid || mode == admin)
+        {
+            render_projectiles(window, camera);
+        } // if - projectile
+        if (mode == melee || mode == hybrid || mode == admin)
+        {
+            m.render_melee(window, camera);
+        } // if - melee
         render_health(window, camera);
     } // render animation and trail if moving
     else
     {
         Renderable::render(window, 1, camera);
-        render_projectiles(window, camera);
-        melee.render_melee(window, camera);
+        if (mode == projectile || mode == hybrid || mode == admin)
+        {
+            render_projectiles(window, camera);
+        } // if - projectile
+        if (mode == melee || mode == hybrid || mode == admin)
+        {
+            m.render_melee(window, camera);
+        } // if - melee
         render_health(window, camera);
     } // entity is stationary, no animation, fixed to frame 1
 } // Dawg::render
@@ -187,12 +200,12 @@ void Dawg::kill_projectiles()
 void Dawg::melee_attack()
 {
     Timer timer;
-    melee.attack(*this);
+    m.attack(*this);
 } // Dawg::melee_attack
 
 void Dawg::reset_melee()
 {
-    melee.reset();
+    m.reset();
 } // Dawg::reset_melee
 
 void Dawg::handle_event(SDL_Event& e)
@@ -206,23 +219,38 @@ void Dawg::handle_event(SDL_Event& e)
             switch (e.key.keysym.sym)
             {
                 case SDLK_w:
-                fire_projectile(UP);
+                if (mode == projectile || mode == hybrid || mode == admin)
+                {
+                    fire_projectile(UP);
+                } // if - mode check
                 break;
 
                 case SDLK_a:
-                fire_projectile(LEFT);
+                if (mode == projectile || mode == hybrid || mode == admin)
+                {
+                    fire_projectile(LEFT);
+                } // if - mode check
                 break;
 
                 case SDLK_s:
-                fire_projectile(DOWN);
+                if (mode == projectile || mode == hybrid || mode == admin)
+                {
+                    fire_projectile(DOWN);
+                } // if - mode check
                 break;
 
                 case SDLK_d:
-                fire_projectile(RIGHT);
+                if (mode == projectile || mode == hybrid || mode == admin)
+                {
+                    fire_projectile(RIGHT);
+                } // if - mode check
                 break;
 
-                case SDLK_m:
-                melee_attack();
+                case SDLK_t:
+                if (mode == melee || mode == hybrid || mode == admin)
+                {
+                    melee_attack();
+                }
                 break;
 
                 default:
@@ -231,7 +259,7 @@ void Dawg::handle_event(SDL_Event& e)
         } // if - process event
         else if (e.type == SDL_KEYUP)
         {
-            melee.reset();
+            m.reset();
         }
     } // handle event if alive
     else
@@ -246,15 +274,21 @@ void Dawg::move(Window window, double time_step)
     if (is_alive())
     {
         Entity::move(window, time_step);
-        for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
+        if (mode == projectile || mode == hybrid || mode == admin)
         {
-            if (projectiles[i] -> is_active())
+            for (size_t i = 0; i < TOTAL_PROJECTILES + 1; i++)
             {
-                projectiles[i] -> move(window, time_step);
-            } // if - render if active
-        } // for
-        melee.move(*this);
-    }
+                if (projectiles[i] -> is_active())
+                {
+                    projectiles[i] -> move(window, time_step);
+                } // if - render if active
+            } // for
+        } // if - mode check
+        if (mode == melee || mode == hybrid || mode == admin)
+        {
+            m.move(*this);
+        } // if - mode check
+    } // if - is alive 
 } // Dawg::move
 
 

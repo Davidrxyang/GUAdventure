@@ -322,7 +322,7 @@ GameEndState Game::start_game(Player* player)
     SDL_Rect center_target = CENTER_TEXT_TARGET;
 
     // initiate main character
-    Dawg me(player -> get_player_name(), player -> get_x(), player -> get_y(), game_window);
+    Dawg me(player -> get_player_name(), player -> get_x(), player -> get_y(), player -> get_mode(), game_window);
     me.set_health(player -> get_health());
     Desk desk("desk", game_window);
 
@@ -332,7 +332,7 @@ GameEndState Game::start_game(Player* player)
     // randomize initial starting positions for enemies
     for (size_t i = 0; i < dawgs.size(); i++)
     {
-        dawgs[i] = new Dawg("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, game_window);
+        dawgs[i] = new Dawg("", GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, normal, game_window);
         dawgs[i] -> set_x( 300 + rand() % (GAME_LEVEL_WIDTH - 300));
         dawgs[i] -> set_y(300 + rand() % (GAME_LEVEL_HEIGHT - 300));
     } // for - initializes enemy locations
@@ -401,7 +401,14 @@ GameEndState Game::start_game(Player* player)
                     {
                         dawgs[i] -> collision_rebound();
 
-                        HealthState state = dawgs[i] -> change_health(-2);
+                        if (mode == melee || mode == admin)
+                        {
+                            HealthState state = dawgs[i] -> change_health(-4);
+                        } // if - mode
+                        if (mode == hybrid)
+                        {
+                            HealthState state = dawgs[i] -> change_health(-2);
+                        } // if - mode
                         if (state == health_state_min)
                         {
                             active_enemies--;
@@ -423,7 +430,14 @@ GameEndState Game::start_game(Player* player)
                     && dawgs[i] -> is_alive()
                     && has_collided(pro, *dawgs[i]))
                     {
-                        HealthState state = dawgs[i] -> change_health(-2);
+                        if (mode == projectile || mode == admin)
+                        {
+                            HealthState state = dawgs[i] -> change_health(-2);
+                        } // if - projectile damage
+                        if (mode == hybrid)
+                        {
+                            HealthState state = dawgs[i] -> change_health(-1);
+                        }
                         if (state == health_state_min)
                         {
                             active_enemies--;
@@ -577,6 +591,8 @@ GameEndState Game::start_game(Player* player)
     // before quit, update player state
     player -> set_remaining_enemies(active_enemies);
     player -> set_health(me.get_health());
+    player -> set_x(me.get_x());
+    player -> set_y(me.get_y());
 
     for (size_t i = 0; i < dawgs.size(); i++)
     {

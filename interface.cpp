@@ -48,7 +48,7 @@ Interface::Interface()
         // after selecting quit game, leaves loop - SAVE GAME STATE BEFORE EXITING
         string file_path = "assets/data/s" + to_string(file_number) + ".txt";
         current_file.write(file_path, player -> get_player_name(), player -> get_mode(), player -> get_level(), 
-        player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
+        player -> get_score(), player -> get_remaining_enemies(), player -> get_health(), player -> get_x(), player -> get_y());
 
         // close window deallocates window objects and quits SDL libraries
         g_window.close_window(); 
