@@ -14,7 +14,7 @@ class GameFile
         GameFile(); // default constructor
         void read(string file_path); // reads a file
         void write(string file_path, string p_name, 
-        int p_type, size_t c_level, size_t c_score, size_t r_enemies);
+        int p_type, size_t c_level, size_t c_score, size_t r_enemies, size_t health);
         void write(string file_path);
         
         // accessors
@@ -24,6 +24,7 @@ class GameFile
         size_t get_current_level() const {return current_level;};
         size_t get_current_score() const {return current_score;};
         size_t get_remaining_enemies() const {return remaining_enemies;};
+        size_t get_health() const {return health;};
 
     private:
 
@@ -34,7 +35,10 @@ class GameFile
         size_t current_level;
         size_t current_score;
         size_t remaining_enemies;
+        size_t health;
         bool is_empty;
+
+        string read_string(istream& in_file) const; // read double quoted string
 };
 
 #endif

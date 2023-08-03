@@ -50,6 +50,15 @@ HealthState Perishable::change_health(int n)
     } // else - health change is valid
 } // Perishable::change_health - the change amount can be POSITIVE OR NEGATIVE, but usually negative 
 
+void Perishable::set_health(size_t health)
+{
+    this -> health = health;
+    if (health == 0)
+    {
+        dead = true;
+    } // if - dead
+} // Perishable::set_health
+
 void Perishable::render_health(Window window)
 {
     update_health();
@@ -101,4 +110,5 @@ void Perishable::update_health()
     health_bar.y = int(y);
     health_bar.w = health * HEALTH_BAR_UNIT_LENGTH; // update health bar to reflect health
 } // Perishable::update_health
+
 

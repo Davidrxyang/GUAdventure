@@ -8,6 +8,7 @@ GameFile::GameFile()
     current_level = 1;
     current_score = 0;
     remaining_enemies = 0;
+    health = 0;
     bool is_empty = true;
 } // default constructor
 
@@ -30,8 +31,10 @@ void GameFile::read(string file_path)
         // READING FILE
         char delim = '_';
 
-        in_file >> player_name >> delim >> player_type >> delim >> current_level
-        >> delim >> current_score >> delim >> remaining_enemies;
+        player_name = read_string(in_file);
+
+        in_file >> delim >> player_type >> delim >> current_level
+        >> delim >> current_score >> delim >> remaining_enemies >> delim >> health;
     
         switch (player_type)
         {
@@ -60,17 +63,16 @@ void GameFile::read(string file_path)
     } // else - file open success
 } // GameFile::read
 
-void GameFile::write(string file_path, string p_name, int p_type, size_t c_level, size_t c_score, size_t r_enemies)
+void GameFile::write(string file_path, string p_name, int p_type, size_t c_level, size_t c_score, size_t r_enemies, size_t health)
 {
     is_empty = false;
     fstream out_file;
     out_file.open(file_path.c_str(), ios::out);
     char delim = '_';
 
-    out_file << p_name << delim << p_type << delim << c_level << delim << c_score << delim << r_enemies;
+    out_file << '\"' << p_name << '\"' << delim << p_type << delim << c_level << delim << c_score << delim << r_enemies << delim << health;
 
     out_file.close();
-
 } // GameFile::write
 
 void GameFile::write(string file_path)
@@ -96,3 +98,16 @@ bool GameFile::empty(string file_path)
         return false;
     } // else
 } // GameFile::empty
+
+string GameFile::read_string (istream &in_file) const
+{
+    string s;
+    char ch;
+    char delim = '\"';
+
+    in_file >> ch;
+
+    getline(in_file, s, delim);
+
+    return s;
+} // File::read_string

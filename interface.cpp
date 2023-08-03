@@ -14,17 +14,8 @@ Interface::Interface()
     MenuExitState m;
 
     m = menu.start_menu();
-
-    // set game mode
-    if (player -> get_player_name() == "AdminDavid"
-    || player -> get_player_name() == "AdminAdmin"
-    
-    // ADD ADDITIONAL ADMIN USERNAMES HERE
-    
-    )
-    {
-        player -> set_mode(admin);
-    } // set admin mode 
+    GameFile current_file = menu.get_current_file();
+    int file_number = menu.get_file_number();
 
     // set initial score
     int score = 0;
@@ -49,19 +40,15 @@ Interface::Interface()
         while(state == game_victory)
         {
             current_level++;
-            // enemy_count *= ENEMY_COUNT_INCREMENT_FACTOR;
-            enemy_count += 10;
-            game.set_current_level(current_level);
             player -> set_level(current_level);
             player -> set_remaining_enemies(current_level * 10);
             state = game.start_game(player);
-
-            if (current_level >= 2)
-            {
-                game.increase_enemy_speed(100);
-                enemy_count -= 5;
-            } // if - after level three, increase speed, increase enemy count by less
         } // while - keep winning, keep playing
+
+        // after selecting quit game, leaves loop - SAVE GAME STATE BEFORE EXITING
+        string file_path = "assets/data/s" + to_string(file_number) + ".txt";
+        current_file.write(file_path, player -> get_player_name(), player -> get_mode(), player -> get_level(), 
+        player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
 
         // close window deallocates window objects and quits SDL libraries
         g_window.close_window(); 

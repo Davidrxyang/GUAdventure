@@ -248,7 +248,7 @@ void Game::render_data_panel(int current_health)
     } // else if - default
 
     SDL_Rect data_panel = DATA_PANEL;
-    SDL_Texture* level_text = game_window.load_from_rendered_text("Level: " + to_string(current_level), DEFAULT_FONT_COLOR);
+    SDL_Texture* level_text = game_window.load_from_rendered_text("Level: " + to_string(player -> get_level()), DEFAULT_FONT_COLOR);
     SDL_Texture* score_text = game_window.load_from_rendered_text("Score: " + to_string(player -> get_score()), DEFAULT_FONT_COLOR);
     SDL_Texture* active_enemies_text = game_window.load_from_rendered_text("Remaining Enemies: " + to_string(active_enemies), DEFAULT_FONT_COLOR);
     SDL_Texture* health_text = game_window.load_from_rendered_text("Health: " + to_string(current_health), DEFAULT_FONT_COLOR);
@@ -323,6 +323,7 @@ GameEndState Game::start_game(Player* player)
 
     // initiate main character
     Dawg me(player -> get_player_name(), 0, 0, game_window);
+    me.set_health(player -> get_health());
     Desk desk("desk", game_window);
 
     // initiate dawgs - dawgs are makeshift name for the most complex character type
@@ -341,7 +342,7 @@ GameEndState Game::start_game(Player* player)
         while (!is_paused && !is_quit) // game runs while not paused
         {
             // MAIN GAME LOOP
-
+            
             // randomize dawg movement
 
             // every "change_rate" frames, the velocities for dawgs are randomly reset with 
@@ -446,7 +447,6 @@ GameEndState Game::start_game(Player* player)
             {
                 victory = true;
             } // if - VICTORY!!
-            
             // PROCESS MOVEMENT ON SCREEN
 
             // enter time window
@@ -496,7 +496,7 @@ GameEndState Game::start_game(Player* player)
 
             // render data panel
             render_data_panel(me.get_health());
-
+            
             // END GAME MESSAGES
             
             if (player_died)
@@ -573,6 +573,10 @@ GameEndState Game::start_game(Player* player)
             } // if - can continue, quits
         } // if 
     } // while - QUIT
+
+    // before quit, update player state
+    player -> set_remaining_enemies(active_enemies);
+    player -> set_health(me.get_health());
 
     for (size_t i = 0; i < dawgs.size(); i++)
     {

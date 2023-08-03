@@ -10,6 +10,7 @@
 
 #include "game.h"
 #include "menu.h"
+#include "file.h"
 #include "CONSTANTS.h"
 
 using namespace std;

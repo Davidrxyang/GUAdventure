@@ -38,17 +38,23 @@ class Menu
         Menu(Player* player, Window window); // explicit constructor
         ~Menu(); // quits SDL libraries if necessary
         
+        // start menu
         MenuExitState start_menu(); // start menu
 
+        // menu function levels
         void select_game(SDL_Event &e);
         void enter_player_name(SDL_Event &e);
         void select_player_type(SDL_Event &e);
+        GameFile get_current_file() const; // get current file
+        int get_file_number() const {return current_file;}; // file number
 
+        // menu methods
         int poll_event(SDL_Event* e); // poll event
         void set_player(GameFile save);
         void new_game();
         void initialize();
 
+        // menu rendering
         void render_title(); // renders "menu"
         void render_select_game();
         void render_enter_player_name(); // render epn

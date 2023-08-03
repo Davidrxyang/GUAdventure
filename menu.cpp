@@ -10,13 +10,46 @@ Menu::Menu()
 
 Menu::Menu(Player* player, Window window)
 {
-    
-    save_1.read("assets/data/s1.txt");
-    save_2.read("assets/data/s2.txt");
-    save_3.read("assets/data/s3.txt");
-    save_4.read("assets/data/s4.txt");
-    save_5.read("assets/data/s5.txt");
-    
+    if (save_1.empty("assets/data/s1.txt"))
+    {
+        save_1.write("assets/data/s1.txt");
+    } // if - empty
+    else
+    {
+        save_1.read("assets/data/s1.txt");
+    } // else - not empty, read 
+    if (save_2.empty("assets/data/s2.txt"))
+    {
+        save_2.write("assets/data/s2.txt");
+    } // if - empty
+    else
+    {
+        save_2.read("assets/data/s2.txt");
+    } // else - not empty, read 
+    if (save_3.empty("assets/data/s3.txt"))
+    {
+        save_3.write("assets/data/s3.txt");
+    } // if - empty
+    else
+    {
+        save_3.read("assets/data/s3.txt");
+    } // else - not empty, read 
+    if (save_4.empty("assets/data/s4.txt"))
+    {
+        save_4.write("assets/data/s4.txt");
+    } // if - empty
+    else
+    {
+        save_4.read("assets/data/s4.txt");
+    } // else - not empty, read 
+    if (save_5.empty("assets/data/s5.txt"))
+    {
+        save_5.write("assets/data/s5.txt");
+    } // if - empty
+    else
+    {
+        save_5.read("assets/data/s5.txt");
+    } // else - not empty, read 
 
     is_quit = true;
     menu_window = window;
@@ -93,6 +126,18 @@ MenuExitState Menu::start_menu()
 
                 case menu_complete:
                 is_quit = true;
+
+                if (player -> get_player_name() == "AdminDavid"
+                || player -> get_player_name() == "AdminAdmin"
+                
+                // ADD ADDITIONAL ADMIN USERNAMES HERE
+                
+                )
+                {
+                    player -> set_mode(admin);
+                } // set admin mode 
+                break;
+
                 default:
                 break;
             } // switch - current menu function
@@ -102,6 +147,36 @@ MenuExitState Menu::start_menu()
     // exit success
     return menu_exit_success;
 } // Menu::start_menu
+
+GameFile Menu::get_current_file() const
+{
+    switch (current_file)
+    {
+        case 1:
+        return save_1;
+        break;
+
+        case 2:
+        return save_2;
+        break;
+
+        case 3:
+        return save_3;
+        break;
+
+        case 4:
+        return save_4;
+        break;
+
+        case 5:
+        return save_5;
+        break;
+
+        default:
+        return save_1;
+        break;
+    } // switch - return file
+} // Menu::get_current_file
 
 int Menu::poll_event(SDL_Event* e)
 {
@@ -121,6 +196,7 @@ void Menu::select_game(SDL_Event &e)
         switch (e.key.keysym.sym)
         {
             case SDLK_1:
+            current_file = 1;
             if (!save_1.empty("assets/data/s1.txt"))
             {
                 set_player(save_1);
@@ -128,12 +204,12 @@ void Menu::select_game(SDL_Event &e)
             } // if - empty
             else
             {
-                current_file = 1;
                 function = menu_enter_player_name;
             } // else - if empty, start new game
             break;
 
             case SDLK_2:
+            current_file = 2;
             if (!save_2.empty("assets/data/s2.txt"))
             {
                 set_player(save_2);
@@ -141,12 +217,12 @@ void Menu::select_game(SDL_Event &e)
             } // if - empty
             else
             {
-                current_file = 2;
                 function = menu_enter_player_name;
             } // else - if empty, start new game
             break;
 
             case SDLK_3:
+            current_file = 3;
             if (!save_3.empty("assets/data/s3.txt"))
             {
                 set_player(save_3);
@@ -154,12 +230,12 @@ void Menu::select_game(SDL_Event &e)
             } // if - empty
             else
             {
-                current_file = 3;
                 function = menu_enter_player_name;
             } // else - if empty, start new game
             break;
 
             case SDLK_4:
+            current_file = 4;
             if (!save_4.empty("assets/data/s4.txt"))
             {
                 set_player(save_4);
@@ -167,12 +243,12 @@ void Menu::select_game(SDL_Event &e)
             } // if - empty
             else
             {
-                current_file = 4;
                 function = menu_enter_player_name;
             } // else - if empty, start new game
             break;
 
             case SDLK_5:
+            current_file = 5;
             if (!save_5.empty("assets/data/s5.txt"))
             {
                 set_player(save_5);
@@ -180,7 +256,6 @@ void Menu::select_game(SDL_Event &e)
             } // if - empty
             else
             {
-                current_file = 5;
                 function = menu_enter_player_name;
             } // else - if empty, start new game
             break;
@@ -264,6 +339,7 @@ void Menu::set_player(GameFile save)
     player -> set_score(save.get_current_score());
     player -> set_level(save.get_current_level());
     player -> set_remaining_enemies(save.get_remaining_enemies());
+    player -> set_health(save.get_health());
 } // Menu::set_player
 
 void Menu::new_game()
@@ -271,23 +347,28 @@ void Menu::new_game()
     switch(current_file)
     {
         case 1:
-        save_1.write("assets/data/s1.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        save_1.write("assets/data/s1.txt", player -> get_player_name(), player -> get_mode(), 
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
         break;
 
         case 2:
-        save_2.write("assets/data/s2.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        save_2.write("assets/data/s2.txt", player -> get_player_name(), player -> get_mode(), 
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
         break;
 
         case 3:
-        save_3.write("assets/data/s3.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        save_3.write("assets/data/s3.txt", player -> get_player_name(), player -> get_mode(), 
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
         break;
 
         case 4:
-        save_4.write("assets/data/s4.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        save_4.write("assets/data/s4.txt", player -> get_player_name(), player -> get_mode(), 
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
         break;
 
         case 5:
-        save_5.write("assets/data/s5.txt", player -> get_player_name(), player -> get_mode(), player -> get_level(), player -> get_score(), player -> get_remaining_enemies());
+        save_5.write("assets/data/s5.txt", player -> get_player_name(), player -> get_mode(), 
+        player -> get_level(), player -> get_score(), player -> get_remaining_enemies(), player -> get_health());
         break;
 
         default:

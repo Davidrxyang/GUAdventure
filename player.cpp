@@ -13,6 +13,7 @@ Player::Player(string name)
     set_player_name(name);
     score = 0;
     level = 1;
+    health = 10;
     remaining_enemies = INITIAL_ENEMY_COUNT;
 } // explicit constructor
 
