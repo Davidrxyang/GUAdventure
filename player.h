@@ -35,6 +35,8 @@ class Player
         size_t health;
         size_t level;
         size_t remaining_enemies;
+        double x;
+        double y;
 };
 
 #endif

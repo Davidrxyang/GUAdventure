@@ -322,7 +322,7 @@ GameEndState Game::start_game(Player* player)
     SDL_Rect center_target = CENTER_TEXT_TARGET;
 
     // initiate main character
-    Dawg me(player -> get_player_name(), 0, 0, game_window);
+    Dawg me(player -> get_player_name(), player -> get_x(), player -> get_y(), game_window);
     me.set_health(player -> get_health());
     Desk desk("desk", game_window);
 
@@ -433,7 +433,7 @@ GameEndState Game::start_game(Player* player)
                     } // if - projectile collides
                 } // for - iterate over dawgs
             } // for - iterate over projectiles
-            
+
             // PROCESS DEATH
 
             // only activates death spin animation if player is not already dead
